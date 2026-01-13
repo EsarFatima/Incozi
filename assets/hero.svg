@@ -1,0 +1,13 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1120 720' width='1120' height='720' role='img' aria-label='Hero illustration'>
+  <defs>
+    <linearGradient id='g' x1='0' x2='1'>
+      <stop offset='0' stop-color='%23e9f2ff'/>
+      <stop offset='1' stop-color='%23ffffff'/>
+    </linearGradient>
+  </defs>
+  <rect width='100%' height='100%' fill='url(#g)' />
+  <g font-family='Inter, Arial, sans-serif' fill='%23666' font-size='28' text-anchor='middle'>
+    <text x='50%' y='45%'>US company formation</text>
+    <text x='50%' y='55%' font-size='18'>Placeholder illustration</text>
+  </g>
+</svg>

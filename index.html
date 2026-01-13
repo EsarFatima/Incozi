@@ -4,27 +4,128 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>My Website</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 </body>
 <body>
   <header class="site-header">
     <div class="container">
-      <a class="brand" href="#">My Website</a>
+      <a class="brand" href="#">Entity-like</a>
       <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav">☰ <span class="sr-only">Menu</span></button>
       <nav id="site-nav" class="site-nav" aria-label="Main navigation">
         <ul>
           <li><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Services</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#process">How it works</a></li>
+          <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
     </div>
   </header>
 
-  <main class="container">
-    <h1>Hello World</h1>
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <h1>US company formation, tax filing & compliance, all in one place</h1>
+          <p class="lead">Start and manage your US company from anywhere — formation, banking, taxes, payroll, and compliance streamlined for global entrepreneurs.</p>
+          <div class="hero-ctas">
+            <a class="btn primary" href="#services">Start your US company</a>
+            <a class="btn ghost" href="#contact">Book a consultation</a>
+          </div>
+        </div>
+        <div class="hero-media">
+          <img alt="US company formation" src="assets/hero.svg">
+        </div>
+      </div>
+    </section>
+
+    <section class="brands container" aria-label="Featured in">
+      <p class="muted">Our brands featured in:</p>
+      <div class="brand-logos">
+        <img src="assets/brand1.svg" alt="Forbes logo">
+        <img src="assets/brand2.svg" alt="WSJ logo">
+        <img src="assets/brand3.svg" alt="CNBC logo">
+        <img src="assets/brand4.svg" alt="USA Today logo">
+        <img src="assets/brand5.svg" alt="LA Times logo">
+      </div>
+    </section>
+
+    <section id="services" class="services container">
+      <h2>Services: We’ll take care of all the paperwork</h2>
+      <div class="row">
+        <div class="col card">
+          <h3>US incorporation</h3>
+          <p>Start your US business easily — EIN, bank account, registered agent, and everything else you need.</p>
+          <a class="link" href="#">Start your US business</a>
+        </div>
+        <div class="col card">
+          <h3>Tax & compliance</h3>
+          <p>Personalized tax strategy, prep, and filing for cross-border entrepreneurs.</p>
+          <a class="link" href="#">See tax packages</a>
+        </div>
+        <div class="col card">
+          <h3>Consultation</h3>
+          <p>Book a consultation to get personalized advice about your company's needs.</p>
+          <a class="link" href="#">Book a consultation</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="process" class="process container">
+      <h2>A streamlined process we’ve perfected</h2>
+      <div class="row">
+        <div class="col step">
+          <div class="step-num">1</div>
+          <h4>Purchase a package</h4>
+          <p>Choose the package that fits your needs, or book a consultation.</p>
+        </div>
+        <div class="col step">
+          <div class="step-num">2</div>
+          <h4>Benefit from expert guidance</h4>
+          <p>We guide you through the next steps with clarity and confidence.</p>
+        </div>
+        <div class="col step">
+          <div class="step-num">3</div>
+          <h4>Relax as we handle the rest</h4>
+          <p>We file, monitor compliance, and keep you in the loop year-round.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials container">
+      <h2>Entrepreneurs trust Entity Inc.</h2>
+      <div class="row">
+        <div class="col testimonial card">
+          <blockquote>They use their common sense to make sure my information is correct... I recommend it to anyone who needs help with their taxes.</blockquote>
+          <cite>— Danny L.</cite>
+        </div>
+        <div class="col testimonial card">
+          <blockquote>They have been handling the taxes for my foreign owned LLC and have gone above and beyond.</blockquote>
+          <cite>— Mahendra S.</cite>
+        </div>
+      </div>
+    </section>
+
+    <footer id="contact" class="site-footer">
+      <div class="container footer-inner">
+        <div>
+          <h3>Entity-like</h3>
+          <p>347 5th Avenue Suite 1402-171 New York, NY 10016, U.S.A.</p>
+        </div>
+        <div>
+          <h4>Services</h4>
+          <ul>
+            <li><a href="#">Incorporation</a></li>
+            <li><a href="#">Tax & Compliance</a></li>
+            <li><a href="#">Bookkeeping</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-copyright container">© Entity Inc.</div>
+    </footer>
+
   </main>
 
   <script src="script.js"></script>

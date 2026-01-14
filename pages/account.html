@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Account — Sign In / Sign Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../index.html">Entity-like</a>
+      <div class="header-actions">
+        <a href="../pages/account.html" class="account-btn" title="Account" aria-label="Account">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5z" fill="#111" opacity="0.9"/>
+            <path d="M2 22c0-3.314 4.686-6 10-6s10 2.686 10 6" stroke="#111" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav">☰ <span class="sr-only">Menu</span></button>
+        <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+          <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#services">Services</a></li>
+            <li><a href="../index.html#process">How it works</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container account-page">
+    <section class="auth-card card">
+      <h2>Account</h2>
+      <div class="auth-tabs" role="tablist" aria-label="Authentication Tabs">
+        <button class="tab active" data-target="signin" role="tab" aria-selected="true">Sign In</button>
+        <button class="tab" data-target="signup" role="tab" aria-selected="false">Sign Up</button>
+      </div>
+
+      <div class="auth-panels">
+        <form id="signin" class="auth-panel" autocomplete="on">
+          <label for="si-email">Email</label>
+          <input id="si-email" name="email" type="email" required>
+          <label for="si-password">Password</label>
+          <input id="si-password" name="password" type="password" required>
+          <div style="display:flex;gap:0.75rem;margin-top:0.75rem">
+            <button class="btn primary" type="submit">Sign In</button>
+            <div id="signin-msg" class="muted" aria-live="polite"></div>
+          </div>
+        </form>
+
+        <form id="signup" class="auth-panel hidden" autocomplete="on">
+          <label for="su-name">Full name</label>
+          <input id="su-name" name="name" required>
+          <label for="su-email">Email</label>
+          <input id="su-email" name="email" type="email" required>
+          <label for="su-password">Password</label>
+          <input id="su-password" name="password" type="password" required>
+          <div style="display:flex;gap:0.75rem;margin-top:0.75rem">
+            <button class="btn primary" type="submit">Create account</button>
+            <div id="signup-msg" class="muted" aria-live="polite"></div>
+          </div>
+        </form>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="../script.js"></script>
+</body>
+</html>

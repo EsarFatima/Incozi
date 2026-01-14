@@ -126,3 +126,24 @@ label{display:block;margin-bottom:0.25rem;font-weight:600}
 /* Minor utilities */
 .muted{color:#666;margin:0 0 0.5rem}
 
+/* Account button in header */
+.account-btn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:transparent;border:0;margin-right:0.5rem;text-decoration:none}
+.account-btn svg{display:block}
+.account-btn:hover{background:rgba(11,102,255,0.06)}
+
+/* Account page */
+.account-page{padding:2rem 0}
+.auth-card{max-width:520px;margin:1.5rem auto;padding:1.25rem}
+.auth-tabs{display:flex;gap:0.5rem;margin-bottom:1rem}
+.auth-tabs .tab{background:transparent;border:1px solid #e6e6e6;padding:0.5rem 0.75rem;border-radius:8px;cursor:pointer}
+.auth-tabs .tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.auth-panels{min-height:220px}
+.auth-panel{display:block}
+.auth-panel.hidden{display:none}
+
+/* Header actions grouping to keep nav to the right of the account button */
+.header-actions{display:flex;align-items:center;gap:0.5rem;margin-left:auto}
+.header-actions .site-nav{margin-left:0}
+
+
+

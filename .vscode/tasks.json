@@ -1,0 +1,41 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "append_css",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-Command",
+				"Add-Content -Path 'd:\\IncoziProject\\Incozi\\style.css' -Value '\n\n/* Quick Links Grid */\n.quick-links-grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n    gap: 2rem;\n    margin-top: 4rem;\n}\n\n.quick-card {\n    background: #fff;\n    padding: 2rem;\n    border-radius: 12px;\n    border: 1px solid var(--bg-300);\n    box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* very light shadow */\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start; /* Left align like screenshot */\n    text-align: left;\n    transition: transform 0.2s, box-shadow 0.2s;\n}\n\n.quick-card:hover {\n    transform: translateY(-5px);\n    box-shadow: 0 10px 20px rgba(0,0,0,0.1);\n}\n\n.quick-icon {\n    font-size: 2rem;\n    color: var(--accent-200); /* Icon color from screenshot */\n    background: var(--primary-100); /* Light background for icon */\n    width: 50px;\n    height: 50px;\n    border-radius: 8px; /* Rounded square shape */\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    margin-bottom: 1.5rem;\n}\n.quick-icon i {\n    font-size: 1.5rem;\n}\n\n.quick-card h3 {\n    font-size: 1.25rem;\n    margin-bottom: 1rem;\n    color: var(--text-100); /* Dark text for title */\n}\n\n.quick-card p {\n    font-size: 0.95rem;\n    color: var(--text-200);\n    line-height: 1.6;\n    margin-bottom: 2rem;\n    flex-grow: 1; /* Push button to bottom */\n}\n\n.btn-quick {\n    display: inline-block;\n    padding: 0.75rem 1.5rem;\n    background: var(--bg-200); /* Light beige/grey background like screenshot */\n    color: var(--text-100);\n    border-radius: 99px;\n    font-weight: 600;\n    text-decoration: none;\n    transition: background 0.2s;\n    width: 100%;\n    text-align: center;\n}\n\n.btn-quick:hover {\n    background: var(--bg-300); /* Slightly darker on hover */\n}\n/* Specific button override for \"Start your US business\" to match screenshot green */\n.quick-card:first-child .btn-quick {\n    background: var(--success);\n    color: #fff;\n}\n.quick-card:first-child .btn-quick:hover {\n    background: #3ac16e; \n}\n'"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "none"
+		},
+		{
+			"label": "append_process_css",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-Command",
+				"Add-Content -Path 'd:\\IncoziProject\\Incozi\\style.css' -Value '\n\n/* Process Section */\n.process-section {\n    padding: 6rem 1.5rem;\n    text-align: center;\n    background: linear-gradient(to bottom, var(--bg-100), var(--bg-200)); /* Subtle gradient */\n}\n\n.process-steps {\n    display: flex;\n    justify-content: space-between;\n    align-items: flex-start;\n    gap: 2rem;\n    max-width: 1000px;\n    margin: 4rem auto 0;\n    position: relative;\n}\n\n.process-step {\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    text-align: center;\n    max-width: 280px;\n}\n\n.step-number {\n    width: 60px;\n    height: 60px;\n    background: #fff;\n    color: var(--accent-200);\n    font-size: 1.5rem;\n    font-weight: 700;\n    border-radius: 50%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    margin-bottom: 2rem;\n    box-shadow: 0 4px 10px rgba(0,0,0,0.05);\n    border: 2px solid var(--primary-100);\n}\n\n.process-step h3 {\n    font-size: 1.25rem;\n    margin-bottom: 1rem;\n    color: var(--text-100);\n}\n\n.process-step p {\n    font-size: 1rem;\n    color: var(--text-200);\n    line-height: 1.6;\n}\n\n.process-arrow {\n    display: flex;\n    self: flex-start;\n    padding-top: 20px; /* Aligns roughly with circle centers */\n    color: var(--primary-200);\n    font-size: 1.5rem;\n    flex: 0 0 auto;\n}\n\n@media (max-width: 768px) {\n    .process-steps {\n        flex-direction: column;\n        align-items: center;\n        gap: 3rem;\n    }\n    .process-arrow {\n        transform: rotate(90deg);\n        padding: 0;\n        self: center;\n    }\n}\n'"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "none"
+		},
+		{
+			"label": "append_process_css_v2",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-Command",
+				"Add-Content -Path 'd:\\IncoziProject\\Incozi\\style.css' -Value '\n\n/* Process / Path Section */\n.process-section {\n    padding: 6rem 1.5rem;\n    background: #fff;\n    text-align: center; /* Center the section title */\n}\n\n.process-steps {\n    display: flex;\n    justify-content: space-between;\n    align-items: flex-start; /* Align tops */\n    gap: 1.5rem;\n    max-width: 1100px;\n    margin: 4rem auto 0;\n}\n\n.process-step {\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start; /* Left align content */\n    text-align: left;\n}\n\n.step-number {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    width: 40px;\n    height: 40px;\n    background: var(--bg-200);\n    color: var(--accent-200);\n    font-weight: 700;\n    border-radius: 8px; /* Rounded square */\n    margin-bottom: 1.5rem;\n    font-size: 1.1rem;\n}\n/* Colorful backgrounds for numbers */\n.process-step:nth-of-type(1) .step-number { background: #ede9fe; color: #7c3aed; }\n.process-step:nth-of-type(2) .step-number { background: #e0e7ff; color: #4338ca; }\n.process-step:nth-of-type(3) .step-number { background: #dbeafe; color: #1d4ed8; }\n\n.process-step h3 {\n    font-size: 1.25rem;\n    margin-bottom: 0.75rem;\n    color: var(--text-100);\n}\n\n.process-step p {\n    font-size: 1rem;\n    color: var(--text-200);\n    line-height: 1.6;\n}\n\n.process-arrow {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding-top: 10px; /* Align with top part of content approximately */\n    color: var(--text-200);\n    opacity: 0.5;\n    font-size: 1rem;\n    width: 60px; /* fixed width for spacing */\n    flex-shrink: 0;\n}\n\n@media (max-width: 768px) {\n    .process-steps {\n        flex-direction: column;\n        align-items: center;\n        gap: 2rem;\n    }\n    .process-step {\n        align-items: center;\n        text-align: center;\n        max-width: 100%;\n    }\n    .process-arrow {\n        transform: rotate(90deg);\n        width: auto;\n        padding: 0;\n        margin: 0.5rem 0;\n    }\n}\n'"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "none"
+		}
+	]
+}

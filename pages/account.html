@@ -1,73 +1,172 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Account — Sign In / Sign Up</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account - Incozi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
-      <a class="brand" href="../index.html">Entity-like</a>
-      <div class="header-actions">
-        <a href="../pages/account.html" class="account-btn" title="Account" aria-label="Account">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5z" fill="#111" opacity="0.9"/>
-            <path d="M2 22c0-3.314 4.686-6 10-6s10 2.686 10 6" stroke="#111" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-        <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav">☰ <span class="sr-only">Menu</span></button>
-        <nav id="site-nav" class="site-nav" aria-label="Main navigation">
-          <ul>
-            <li><a href="../index.html">Home</a></li>
-            <li><a href="../index.html#services">Services</a></li>
-            <li><a href="../index.html#process">How it works</a></li>
-            <li><a href="../index.html#contact">Contact</a></li>
-          </ul>
-        </nav>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <span>US Business Services</span>
+      <div class="top-bar-links">
+        <a href="../pages/account.html">Client Login</a>
       </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">incozi.</a>
+      
+      <button class="mobile-menu-toggle"><i class="fa-solid fa-bars"></i></button>
+
+      <nav class="main-nav">
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="../index.html" class="nav-link">Services & Pricing <i class="fa-solid fa-chevron-down"></i></a>
+            <ul class="dropdown-menu">
+              <li><a href="../index.html">Incorporation</a></li>
+              <li><a href="../index.html">Tax & Compliance</a></li>
+              <li><a href="../index.html">Bookkeeping</a></li>
+            </ul>
+          </li>
+          <li><a href="#" class="nav-link">About Us</a></li>
+          <li><a href="#" class="nav-link">Blog</a></li>
+          <li><a href="../pages/account.html" class="btn btn-primary">My Account</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
 
-  <main class="container account-page">
-    <section class="auth-card card">
-      <h2>Account</h2>
-      <div class="auth-tabs" role="tablist" aria-label="Authentication Tabs">
-        <button class="tab active" data-target="signin" role="tab" aria-selected="true">Sign In</button>
-        <button class="tab" data-target="signup" role="tab" aria-selected="false">Sign Up</button>
-      </div>
+  <!-- Account Section -->
+  <main class="account-section">
+    <div class="container">
+      <div class="auth-card-container">
+        
+        <div class="auth-header">
+           <h1>Welcome Back</h1>
+           <p>Manage your business services in one place</p>
+        </div>
 
-      <div class="auth-panels">
-        <form id="signin" class="auth-panel" autocomplete="on">
-          <label for="si-email">Email</label>
-          <input id="si-email" name="email" type="email" required>
-          <label for="si-password">Password</label>
-          <input id="si-password" name="password" type="password" required>
-          <div style="display:flex;gap:0.75rem;margin-top:0.75rem">
-            <button class="btn primary" type="submit">Sign In</button>
-            <div id="signin-msg" class="muted" aria-live="polite"></div>
+        <div class="auth-card">
+          <div class="auth-tabs">
+            <button class="auth-tab active" data-target="signin">Sign In</button>
+            <button class="auth-tab" data-target="signup">Create Account</button>
           </div>
-        </form>
 
-        <form id="signup" class="auth-panel hidden" autocomplete="on">
-          <label for="su-name">Full name</label>
-          <input id="su-name" name="name" required>
-          <label for="su-email">Email</label>
-          <input id="su-email" name="email" type="email" required>
-          <label for="su-password">Password</label>
-          <input id="su-password" name="password" type="password" required>
-          <div style="display:flex;gap:0.75rem;margin-top:0.75rem">
-            <button class="btn primary" type="submit">Create account</button>
-            <div id="signup-msg" class="muted" aria-live="polite"></div>
+          <!-- Sign In Form -->
+          <div class="auth-form active" id="signin">
+            <form autocomplete="on">
+               <div class="form-group">
+                 <label for="si-email">Email Address</label>
+                 <div class="input-wrapper">
+                   <i class="fa-regular fa-envelope input-icon"></i>
+                   <input type="email" id="si-email" placeholder="you@company.com" required>
+                 </div>
+               </div>
+               
+               <div class="form-group">
+                 <label for="si-password">Password</label>
+                 <div class="input-wrapper">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="si-password" placeholder="••••••••" required>
+                 </div>
+                 <a href="#" class="forgot-link">Forgot password?</a>
+               </div>
+
+               <button type="submit" class="btn btn-primary btn-block">Log In</button>
+            </form>
           </div>
-        </form>
-      </div>
 
-    </section>
+          <!-- Sign Up Form -->
+          <div class="auth-form" id="signup">
+            <form autocomplete="on">
+               <div class="form-group">
+                 <label for="su-name">Full Name</label>
+                 <div class="input-wrapper">
+                   <i class="fa-regular fa-user input-icon"></i>
+                   <input type="text" id="su-name" placeholder="John Doe" required>
+                 </div>
+               </div>
+
+               <div class="form-group">
+                 <label for="su-email">Email Address</label>
+                 <div class="input-wrapper">
+                   <i class="fa-regular fa-envelope input-icon"></i>
+                   <input type="email" id="su-email" placeholder="you@company.com" required>
+                 </div>
+               </div>
+               
+               <div class="form-group">
+                 <label for="su-password">Password</label>
+                 <div class="input-wrapper">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="su-password" placeholder="Create a strong password" required>
+                 </div>
+               </div>
+
+               <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+               <p class="terms-text">By joining, you agree to our Terms of Service and Privacy Policy.</p>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
   </main>
 
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-col brand-col">
+        <a href="#" class="footer-logo">incozi.</a>
+        <p class="tagline">Dream Worldwide, <br>Launch Stateside</p>
+        <div class="social-links">
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#">Incorporation</a></li>
+          <li><a href="#">Tax & Compliance</a></li>
+          <li><a href="#">Bookkeeping</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Login</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
   <script src="../script.js"></script>
+  <script>
+    // Tab Logic for Auth Page
+    const tabs = document.querySelectorAll('.auth-tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+         // remove active
+         document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+         document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+         
+         // add active
+         tab.classList.add('active');
+         document.getElementById(tab.getAttribute('data-target')).classList.add('active');
+      });
+    });
+  </script>
 </body>
 </html>

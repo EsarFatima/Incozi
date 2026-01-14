@@ -1,166 +1,778 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Website</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <title>Incozi - US Company Formation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <!-- Header -->
   <header class="site-header">
-    <div class="container">
-      <a class="brand" href="#">Entity-like</a>
-      <div class="header-actions">
-        <a href="pages/account.html" class="account-btn" title="Account" aria-label="Account">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5z" fill="#111" opacity="0.9"/>
-            <path d="M2 22c0-3.314 4.686-6 10-6s10 2.686 10 6" stroke="#111" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-        <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav">☰ <span class="sr-only">Menu</span></button>
-        <nav id="site-nav" class="site-nav" aria-label="Main navigation">
-          <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#process">How it works</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </nav>
-      </div>
+    <div class="container header-inner">
+      <a href="index.html" class="logo">incozi.</a>
+      <button class="menu-toggle" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
     </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <div class="container hero-inner">
-        <div class="hero-copy">
-          <h1>US company formation, tax filing & compliance, all in one place</h1>
-          <p class="lead">Start and manage your US company from anywhere — formation, banking, taxes, payroll, and compliance streamlined for global entrepreneurs.</p>
-          <div class="hero-ctas">
-            <a class="btn primary" href="#services">Start your US company</a>
-            <a class="btn ghost" href="#contact">Book a consultation</a>
-          </div>
-        </div>
-        <div class="hero-media">
-          <img alt="US company formation" src="assets/hero.svg">
-        </div>
-      </div>
-    </section>
-
-    <section class="brands container" aria-label="Featured in">
-      <p class="muted">Our brands featured in:</p>
-      <div class="brand-logos">
-        <img src="assets/brand1.svg" alt="Forbes logo">
-        <img src="assets/brand2.svg" alt="WSJ logo">
-        <img src="assets/brand3.svg" alt="CNBC logo">
-        <img src="assets/brand4.svg" alt="USA Today logo">
-        <img src="assets/brand5.svg" alt="LA Times logo">
-      </div>
-    </section>
-
-    <section id="services" class="services container">
-      <h2>Services: We’ll take care of all the paperwork</h2>
-      <div class="row">
-        <div class="col card">
-          <h3>US incorporation</h3>
-          <p>Start your US business easily — EIN, bank account, registered agent, and everything else you need.</p>
-          <a class="link" href="#">Start your US business</a>
-        </div>
-        <div class="col card">
-          <h3>Tax & compliance</h3>
-          <p>Personalized tax strategy, prep, and filing for cross-border entrepreneurs.</p>
-          <a class="link" href="#">See tax packages</a>
-        </div>
-        <div class="col card">
-          <h3>Consultation</h3>
-          <p>Book a consultation to get personalized advice about your company's needs.</p>
-          <a class="link" href="#">Book a consultation</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="subscribe container">
-      <h2>Get updates</h2>
-      <p class="muted">Subscribe to receive news and offers.</p>
-      <form id="subscribe-form" class="form-inline">
-        <label for="subscribe-email" class="sr-only">Email</label>
-        <input id="subscribe-email" name="email" type="email" placeholder="Your email" required>
-        <button class="btn primary" type="submit">Subscribe</button>
-        <div id="subscribe-msg" class="muted" aria-live="polite"></div>
-      </form>
-    </section>
-
-    <section id="process" class="process container">
-      <h2>A streamlined process we’ve perfected</h2>
-      <div class="row">
-        <div class="col step">
-          <div class="step-num">1</div>
-          <h4>Purchase a package</h4>
-          <p>Choose the package that fits your needs, or book a consultation.</p>
-        </div>
-        <div class="col step">
-          <div class="step-num">2</div>
-          <h4>Benefit from expert guidance</h4>
-          <p>We guide you through the next steps with clarity and confidence.</p>
-        </div>
-        <div class="col step">
-          <div class="step-num">3</div>
-          <h4>Relax as we handle the rest</h4>
-          <p>We file, monitor compliance, and keep you in the loop year-round.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="testimonials container">
-      <h2>Entrepreneurs trust Entity Inc.</h2>
-      <div class="row">
-        <div class="col testimonial card">
-          <blockquote>They use their common sense to make sure my information is correct... I recommend it to anyone who needs help with their taxes.</blockquote>
-          <cite>— Danny L.</cite>
-        </div>
-        <div class="col testimonial card">
-          <blockquote>They have been handling the taxes for my foreign owned LLC and have gone above and beyond.</blockquote>
-          <cite>— Mahendra S.</cite>
-        </div>
-      </div>
-    </section>
-
-    <section class="contact container">
-      <h2>Contact us</h2>
-      <form id="contact-form">
-        <div class="row">
-          <div class="col"><label for="name">Name</label><input id="name" name="name" required></div>
-          <div class="col"><label for="email">Email</label><input id="email" name="email" type="email" required></div>
-        </div>
-        <label for="message">Message</label>
-        <textarea id="message" name="message" rows="5" required></textarea>
-        <div style="display:flex;gap:0.75rem;margin-top:0.75rem">
-          <button class="btn primary" type="submit">Send message</button>
-          <div id="contact-msg" class="muted" aria-live="polite"></div>
-        </div>
-      </form>
-    </section>
-
-    <footer id="contact" class="site-footer">
-      <div class="container footer-inner">
-        <div>
-          <h3>Entity-like</h3>
-          <p>347 5th Avenue Suite 1402-171 New York, NY 10016, U.S.A.</p>
-        </div>
-        <div>
-          <h4>Services</h4>
-          <ul>
-            <li><a href="#">Incorporation</a></li>
-            <li><a href="#">Tax & Compliance</a></li>
-            <li><a href="#">Bookkeeping</a></li>
+  <!-- Sidebar Navigation -->
+  <div class="sidebar-overlay"></div>
+  <aside class="sidebar-menu">
+    <div class="sidebar-header-row">
+      <span class="sidebar-title">Menu</span>
+      <button class="sidebar-close" aria-label="Close Menu"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div class="sidebar-content">
+      <ul class="sidebar-nav-list">
+        
+        <!-- Services Section -->
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">Services & Pricing</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="pages/consultation.html">Consultation</a></li>
+             <li><a href="pages/incorporation.html">Incorporation</a></li>
+             <li><a href="pages/tax-compliance.html">Tax & Compliance</a></li>
+             <li><a href="pages/bookkeeping.html">Bookkeeping</a></li>
           </ul>
+        </li>
+
+        <!-- About Section -->
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">About Us</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="#">Who We Are</a></li>
+             <li><a href="#">FAQs</a></li>
+             <li><a href="#">Contact Us</a></li>
+          </ul>
+        </li>
+
+        <!-- Blog Section -->
+        <li class="sidebar-group">
+          <a href="#" class="sidebar-group-title" style="display:block; cursor:pointer;">Blog</a>
+        </li>
+
+        <li class="sidebar-divider"></li>
+
+        <!-- User Actions -->
+        <li><a href="pages/account.html" class="sidebar-link-item"><i class="fa-regular fa-user"></i> My Account</a></li>
+        <li><a href="#" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+      </ul>
+    </div>
+  </aside>
+<main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container hero-content">
+        <h1>Global Ambition, <br>American Foundation</h1>
+        <p>Your complete partner for US incorporation, tax strategy, and ongoing compliance.</p>
+        <div class="hero-actions">
+           <a href="#services" class="btn btn-primary">See All Services</a>
         </div>
       </div>
-      <div class="site-copyright container">© Entity Inc.</div>
-    </footer>
+    </section>
+
+    <!-- Value Proposition / Intro Section -->
+        <!-- Value Proposition / Intro Section -->
+        <!-- Value Proposition / Intro Section -->
+    <section class="intro-section container">
+        
+        <!-- Row 1: Formation -->
+        <div class="feature-row">
+            <div class="feature-text">
+                <h3>US Company Formation Made Simple for Global Founders</h3>
+                <p class="feature-paragraph">
+                    Launch your US business from anywhere in the globe with a seamless setup process designed specifically for international entrepreneurs. We provide expert guidance on choosing the perfect entity structure for your goals, handle the preparation and filing of all necessary state documents, and even assist with your business banking needs to get you operational without the headache.
+                </p>
+            </div>
+            <div class="feature-image">
+                <!-- 
+                   INSTRUCTIONS FOR ADDING GRAPHICS:
+                   1. Save your image file (e.g., formation.png) into the 'assets' folder.
+                   2. Replace the entire <div class="img-placeholder">...</div> block below with:
+                      <img src="assets/formation.png" alt="Company Formation Graphic" class="feature-img">
+                -->
+                <img src="assets/formation.png" alt="Company Formation Graphic" class="feature-img">
+            </div>
+        </div>
+
+        <!-- Row 2: Taxes (Reversed) -->
+        <div class="feature-row reverse">
+            <div class="feature-text">
+                <h3>Comprehensive Tax Preparation & Filing</h3>
+                <p class="feature-paragraph">
+                    Navigate the complex US tax system with confidence. Our team offers personalized tax strategy and expert advice on cross-border treaties to optimize your position. We handle your full-service tax preparation and filing while providing year-round support, ensuring your obligations are met accurately and on time so you can focus on revenue.
+                </p>
+            </div>
+            <div class="feature-image">
+                <!-- 
+                   INSTRUCTIONS:
+                   Replace the placeholder below with:
+                   <img src="assets/taxes.png" alt="Tax Services Graphic" class="feature-img">
+                -->
+                <img src="assets/taxes.png" alt="Tax Services Graphic" class="feature-img">
+            </div>
+        </div>
+
+        <!-- Row 3: Compliance -->
+        <div class="feature-row">
+            <div class="feature-text">
+                <h3>Total Compliance Assurance, All Year Round</h3>
+                <p class="feature-paragraph">
+                    Stay ahead of regulatory changes with our proactive compliance monitoring. We assist with all mandatory annual state filings, provide essential guidance on maintaining accurate books and records, and send automated alerts for every important deadline. Rest easy knowing your company's good standing is protected 100% of the time.
+                </p>
+            </div>
+            <div class="feature-image">
+                <img src="assets/compliance.png" alt="Compliance Graphic" class="feature-img">
+            </div>
+        </div>
+        <div class="intro-tagline">
+            <h2>We handle the paperwork, you build the future.</h2>
+        </div>
+
+        <!-- Quick Links Grid -->
+        <div class="quick-links-grid">
+            <!-- Card 1: Incorporation -->
+            <div class="quick-card">
+                <div class="quick-icon"><i class="fa-regular fa-building"></i></div>
+                <h3>US Incorporation</h3>
+                <p>Start your US business easily — EIN, bank account, registered agent, and everything else you need.</p>
+                <a href="#incorporation-card" class="btn-quick">Start your US business &rarr;</a>
+            </div>
+
+            <!-- Card 2: Tax & Compliance -->
+            <div class="quick-card">
+                <div class="quick-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                <h3>Tax & Compliance</h3>
+                <p>Ensure your US entity stays fully compliant and tax-efficient — no missed deadlines or overpaid taxes.</p>
+                <a href="#tax-compliance-card" class="btn-quick">See tax packages &rarr;</a>
+            </div>
+
+            <!-- Card 3: Consultation -->
+            <div class="quick-card">
+                <div class="quick-icon"><i class="fa-regular fa-lightbulb"></i></div>
+                <h3>Consultation</h3>
+                <p>Not sure yet which package is right for you? Book a consultation to get personalized advice.</p>
+                <a href="#consultation-card" class="btn-quick">Book a consultation &rarr;</a>
+            </div>
+
+            <!-- Card 4: Bookkeeping -->
+            <div class="quick-card">
+                <div class="quick-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <h3>Bookkeeping</h3>
+                <p>Messy books slowing you down? We clean them up, keep them tax-ready, and deliver everything on time.</p>
+                <a href="#bookkeeping-card" class="btn-quick">See bookkeeping packages &rarr;</a>
+            </div>
+        </div>
+    </section>
+
+
+
+
+    <!-- Services Grid Section with Tabs -->
+    <section id="services" class="services-section container">
+      <h2 class="section-title">All Services</h2>
+      <p class="section-subtitle">Comprehensive solutions for every stage of your journey. Scroll down to explore.</p>
+      <div class="services-grid">
+        
+        <!-- Consultation Service Card -->
+        <article class="service-card" id="consultation-card">
+          <div class="card-icon"><i class="fa-regular fa-lightbulb"></i></div>
+          <div class="card-content">
+            <h3>CONSULTATION</h3>
+            <h4 class="sub-headline">Meet with an expert</h4>
+            
+            <!-- Tabs -->
+            <div class="tabs-container">
+               <div class="tabs-header">
+                  <button class="tab-btn active" data-target="consult-inc">Incorporation</button>
+                  <button class="tab-btn" data-target="consult-tax">Tax</button>
+               </div>
+               
+               <!-- Consultation: Incorporation Tab -->
+               <div class="tab-content active" id="consult-inc">
+                 <h5 class="feature-title">Key Features</h5>
+                 <ul class="feature-list">
+                    <li><i class="fa-solid fa-circle"></i> Consultation with an incorporation specialist</li>
+                    <li><i class="fa-solid fa-circle"></i> Guidance on formation of any entity type (incorporation process, not tax planning)</li>
+                    <li><i class="fa-solid fa-circle"></i> Guidance on US tax &amp; compliance for foreign-owned Single-Member LLCs</li>
+                 </ul>
+                 <p class="feature-summary">Get personalized advice about the specific needs of your company so that you can move forward with confidence.</p>
+                 
+                 <div class="pricing-block">
+                    <span class="currency">$</span><span class="amount">39</span>
+                    <span class="period">(one-time fee)</span>
+                 </div>
+                 <button class="btn btn-primary btn-block">Book</button>
+                 <a href="pages/consultation.html" class="btn btn-outline btn-block">Learn more</a>
+               </div>
+
+               <!-- Consultation: Tax Tab -->
+               <div class="tab-content" id="consult-tax">
+                 <h5 class="feature-title">Key Features</h5>
+                 <ul class="feature-list">
+                    <li><i class="fa-solid fa-circle"></i> Consultation with a tax accountant</li>
+                    <li><i class="fa-solid fa-circle"></i> Guidance on US tax &amp; compliance for Multi-Member LLCs, C Corporations, S Corporations (for foreign-owned Single-Member LLCs, please schedule a consultation with an incorporation specialist)</li>
+                    <li><i class="fa-solid fa-circle"></i> Guidance on US tax planning and preparation for American citizens and green card holders</li>
+                 </ul>
+                 <p class="feature-summary">Get personalized advice about the specific needs of your company so that you can move forward with confidence.</p>
+                 
+                 <div class="pricing-block">
+                    <span class="currency">$</span><span class="amount">39</span>
+                    <span class="period">(one-time fee)</span>
+                 </div>
+                 <button class="btn btn-primary btn-block">Book</button>
+                 <a href="pages/consultation.html" class="btn btn-outline btn-block">Learn more</a>
+               </div>
+            </div>
+
+          </div>
+        </article>
+
+
+        <!-- Incorporation Service Card -->
+        <article class="service-card" id="incorporation-card">
+          <div class="card-icon"><i class="fa-regular fa-building"></i></div>
+          <div class="card-content">
+            <h3>INCORPORATION</h3>
+            <h4 class="sub-headline">Start your US-based business</h4>
+            
+            <!-- Tabs -->
+            <div class="tabs-container">
+               <div class="tabs-header">
+                  <button class="tab-btn active" data-target="inc-single">Single-Member LLC</button>
+                  <button class="tab-btn" data-target="inc-multi">Multi-Member LLC</button>
+                  <button class="tab-btn" data-target="inc-c">C Corp</button>
+                  <button class="tab-btn" data-target="inc-s">S Corp</button>
+               </div>
+
+               <!-- Tab 1: Single-Member LLC -->
+               <div class="tab-content active" id="inc-single">
+                 <p class="tab-intro">Incorporate your Single-Member LLC</p>
+                 <h5 class="feature-title">Key Features</h5>
+                 <ul class="feature-list">
+                    <li><i class="fa-solid fa-circle"></i> Company registration in Wyoming</li>
+                    <li><i class="fa-solid fa-circle"></i> Consultation with an incorporation specialist</li>
+                    <li><i class="fa-solid fa-circle"></i> Employer Identification Number (EIN) registration</li>
+                    <li><i class="fa-solid fa-circle"></i> Articles of Organization</li>
+                    <li><i class="fa-solid fa-circle"></i> Operating Agreement</li>
+                    <li><i class="fa-solid fa-circle"></i> 1st year registered agent service (Wyoming)</li>
+                    <li><i class="fa-solid fa-circle"></i> Support with bank account opening (subject to bank approval)</li>
+                    <li><i class="fa-solid fa-circle"></i> All fees included</li>
+                    <li><i class="fa-solid fa-circle"></i> Electronic delivery</li>
+                    <li><i class="fa-solid fa-circle"></i> Year-round email support: on related business formation issues</li>
+                 </ul>
+                 <p class="feature-summary">Get your US Single-Member LLC up and running with zero tax and paperwork worries.</p>
+                 <div class="pricing-block">
+                    <div class="price-val">
+                      <span class="currency">$</span><span class="amount">899</span>
+                    </div>
+                    <span class="period">(one-time fee)</span>
+                 </div>
+                 
+                 <div class="tax-bundle-promo">
+                    Get a discount on tax with our <a href="#">Incorporation & Tax Bundle</a>
+                 </div>
+
+                 <div class="action-buttons">
+                    <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                    <a href="pages/incorporation.html" class="btn btn-outline btn-block">Learn more</a>
+                 </div>
+               </div>
+
+               <!-- Tab 2: Multi-Member LLC -->
+               <div class="tab-content" id="inc-multi">
+                 <p class="tab-intro">Incorporate your Multi-Member LLC</p>
+                 <h5 class="feature-title">Key Features</h5>
+                 <ul class="feature-list">
+                    <li><i class="fa-solid fa-circle"></i> Company registration in Wyoming</li>
+                    <li><i class="fa-solid fa-circle"></i> Consultation with an incorporation specialist</li>
+                    <li><i class="fa-solid fa-circle"></i> Employer Identification Number (EIN) registration</li>
+                    <li><i class="fa-solid fa-circle"></i> Articles of Organization</li>
+                    <li><i class="fa-solid fa-circle"></i> Operating Agreement</li>
+                    <li><i class="fa-solid fa-circle"></i> 1st year registered agent service (Wyoming)</li>
+                    <li><i class="fa-solid fa-circle"></i> Support with bank account opening (subject to bank approval)</li>
+                    <li><i class="fa-solid fa-circle"></i> All fees included</li>
+                    <li><i class="fa-solid fa-circle"></i> Electronic delivery</li>
+                    <li><i class="fa-solid fa-circle"></i> Year-round email support: on related business formation issues</li>
+                 </ul>
+                 <p class="feature-summary">Get your US Multi-Member LLC up and running with zero tax and paperwork worries.</p>
+                 <div class="pricing-block">
+                    <div class="price-val">
+                      <span class="currency">$</span><span class="amount">899</span>
+                    </div>
+                    <span class="period">(one-time fee)</span>
+                 </div>
+                 <div class="action-buttons">
+                    <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                    <a href="pages/incorporation.html" class="btn btn-outline btn-block">Learn more</a>
+                 </div>
+               </div>
+
+               <!-- Tab 3: C Corp -->
+               <div class="tab-content" id="inc-c">
+                 <p class="tab-intro">Incorporate your C Corp</p>
+                 <h5 class="feature-title">Key Features</h5>
+                 <ul class="feature-list">
+                    <li><i class="fa-solid fa-circle"></i> Company registration in Wyoming</li>
+                    <li><i class="fa-solid fa-circle"></i> Consultation with an incorporation specialist</li>
+                    <li><i class="fa-solid fa-circle"></i> Employer Identification Number (EIN) registration</li>
+                    <li><i class="fa-solid fa-circle"></i> Articles of Incorporation</li>
+                    <li><i class="fa-solid fa-circle"></i> Bylaws</li>
+                    <li><i class="fa-solid fa-circle"></i> 1st year registered agent service (Wyoming)</li>
+                    <li><i class="fa-solid fa-circle"></i> Support with bank account opening (subject to bank approval)</li>
+                    <li><i class="fa-solid fa-circle"></i> All fees included</li>
+                    <li><i class="fa-solid fa-circle"></i> Electronic delivery</li>
+                    <li><i class="fa-solid fa-circle"></i> Year-round email support: on related business formation issues</li>
+                 </ul>
+                 <p class="feature-summary">Get your US C Corp up and running with zero tax and paperwork worries.</p>
+                 <div class="pricing-block">
+                    <div class="price-val">
+                      <span class="currency">$</span><span class="amount">899</span>
+                    </div>
+                    <span class="period">(one-time fee)</span>
+                 </div>
+                 <div class="action-buttons">
+                    <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                    <a href="pages/incorporation.html" class="btn btn-outline btn-block">Learn more</a>
+                 </div>
+               </div>
+
+               <!-- Tab 4: S Corp -->
+               <div class="tab-content" id="inc-s">
+                 <p class="tab-intro">Incorporate your S Corp</p>
+                 <h5 class="feature-title">Key Features</h5>
+                 <ul class="feature-list">
+                    <li><i class="fa-solid fa-circle"></i> Company registration in Wyoming</li>
+                    <li><i class="fa-solid fa-circle"></i> Consultation with an incorporation specialist</li>
+                    <li><i class="fa-solid fa-circle"></i> Employer Identification Number (EIN) registration</li>
+                    <li><i class="fa-solid fa-circle"></i> S Corp election filing (Form 2553)</li>
+                    <li><i class="fa-solid fa-circle"></i> Articles of Incorporation</li>
+                    <li><i class="fa-solid fa-circle"></i> Bylaws</li>
+                    <li><i class="fa-solid fa-circle"></i> 1st year registered agent service (Wyoming)</li>
+                    <li><i class="fa-solid fa-circle"></i> Support with bank account opening (subject to bank approval)</li>
+                    <li><i class="fa-solid fa-circle"></i> All fees included</li>
+                    <li><i class="fa-solid fa-circle"></i> Electronic delivery</li>
+                    <li><i class="fa-solid fa-circle"></i> Year-round email support: on related business formation issues</li>
+                 </ul>
+                 <p class="feature-summary">Get your US S Corp up and running with zero tax and paperwork worries.</p>
+                 <div class="pricing-block">
+                    <div class="price-val">
+                      <span class="currency">$</span><span class="amount">899</span>
+                    </div>
+                    <span class="period">(one-time fee)</span>
+                 </div>
+                 <div class="action-buttons">
+                    <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                    <a href="pages/incorporation.html" class="btn btn-outline btn-block">Learn more</a>
+                 </div>
+               </div>
+            </div>
+            
+          </div>
+        </article>
+
+        <!-- Tax and Compliance -->
+        <article class="service-card" id="tax-compliance-card">
+          <div class="card-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+          <h3>TAX & COMPLIANCE</h3>
+          <h2 class="sub-headline">All-in-one US business tax and compliance solution</h2>
+          
+          <div class="tabs-container">
+            <div class="tabs-header">
+              <button class="tab-btn active" data-target="tax-single">Single-Member LLC</button>
+              <button class="tab-btn" data-target="tax-multi">Multi-Member LLC</button>
+              <button class="tab-btn" data-target="tax-c">C Corp</button>
+              <button class="tab-btn" data-target="tax-s">S Corp</button>
+            </div>
+
+            <!-- Tab 1: Single-Member LLC -->
+            <div class="tab-content active" id="tax-single">
+               <h5 class="feature-title">Key Features</h5>
+               <ul class="feature-list">
+                  <li><i class="fa-solid fa-circle"></i> Consultation with a tax accountant</li>
+                  <li><i class="fa-solid fa-circle"></i> Business tax forms: 5472, 1120 pro forma</li>
+                  <li><i class="fa-solid fa-circle"></i> FBAR (FinCEN Form 114)</li>
+                  <li><i class="fa-solid fa-circle"></i> Registered agent renewal (Wyoming)</li>
+                  <li><i class="fa-solid fa-circle"></i> Compliance reminder / calendar</li>
+                  <li><i class="fa-solid fa-circle"></i> Year-round email support: on related tax and compliance issues</li>
+                  <li><i class="fa-solid fa-circle"></i> Annual report (Wyoming)</li>
+               </ul>
+               <p style="margin-top:1rem; font-size:0.9rem; color:#666;">Need personal tax returns? They’re available as a separate service.</p>
+               
+               <div class="pricing-block">
+                  <div class="price-val">
+                    <span class="currency">$</span><span class="amount">799</span>
+                  </div>
+                  <span class="period">/year</span>
+               </div>
+               
+               <div class="action-buttons">
+                  <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                  <a href="pages/tax-compliance.html" class="btn btn-outline btn-block">Learn more</a>
+               </div>
+            </div>
+
+            <!-- Tab 2: Multi-Member LLC -->
+            <div class="tab-content" id="tax-multi">
+               <h5 class="feature-title">Key Features</h5>
+               <ul class="feature-list">
+                  <li><i class="fa-solid fa-circle"></i> Consultation with a tax accountant</li>
+                  <li><i class="fa-solid fa-circle"></i> Business tax forms: 1065</li>
+                  <li><i class="fa-solid fa-circle"></i> FBAR (FinCEN Form 114)</li>
+                  <li><i class="fa-solid fa-circle"></i> Registered agent renewal (Wyoming)</li>
+                  <li><i class="fa-solid fa-circle"></i> Compliance reminder / calendar</li>
+                  <li><i class="fa-solid fa-circle"></i> Year-round email support: on related tax and compliance issues</li>
+                  <li><i class="fa-solid fa-circle"></i> Annual report (Wyoming)</li>
+               </ul>
+               <p style="margin-top:1rem; font-size:0.9rem; color:#666;">Need personal tax returns? They’re available as a separate service.</p>
+
+               <div class="pricing-block">
+                  <div class="price-val">
+                    <span class="currency">$</span><span class="amount">1,249</span>
+                  </div>
+                  <span class="period">/year</span>
+               </div>
+               
+               <div class="action-buttons">
+                  <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                  <a href="pages/tax-compliance.html" class="btn btn-outline btn-block">Learn more</a>
+               </div>
+            </div>
+
+            <!-- Tab 3: C Corp -->
+            <div class="tab-content" id="tax-c">
+               <h5 class="feature-title">Key Features</h5>
+               <ul class="feature-list">
+                  <li><i class="fa-solid fa-circle"></i> Consultation with a tax accountant</li>
+                  <li><i class="fa-solid fa-circle"></i> Business tax forms: 1120, 5472 (if needed)</li>
+                  <li><i class="fa-solid fa-circle"></i> FBAR (FinCEN Form 114)</li>
+                  <li><i class="fa-solid fa-circle"></i> Registered agent renewal (Wyoming)</li>
+                  <li><i class="fa-solid fa-circle"></i> Compliance reminder / calendar</li>
+                  <li><i class="fa-solid fa-circle"></i> Year-round email support: on related tax and compliance issues</li>
+                  <li><i class="fa-solid fa-circle"></i> Annual report (Wyoming)</li>
+               </ul>
+               <p style="margin-top:1rem; font-size:0.9rem; color:#666;">Need personal tax returns? They’re available as a separate service.</p>
+
+               <div class="pricing-block">
+                  <div class="price-val">
+                    <span class="currency">$</span><span class="amount">1,249</span>
+                  </div>
+                  <span class="period">/year</span>
+               </div>
+               
+               <div class="action-buttons">
+                  <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                  <a href="pages/tax-compliance.html" class="btn btn-outline btn-block">Learn more</a>
+               </div>
+            </div>
+
+            <!-- Tab 4: S Corp -->
+            <div class="tab-content" id="tax-s">
+               <h5 class="feature-title">Key Features</h5>
+               <ul class="feature-list">
+                  <li><i class="fa-solid fa-circle"></i> Consultation with a tax accountant</li>
+                  <li><i class="fa-solid fa-circle"></i> Business tax forms: 1120S</li>
+                  <li><i class="fa-solid fa-circle"></i> Registered agent renewal (Wyoming)</li>
+                  <li><i class="fa-solid fa-circle"></i> Compliance reminder / calendar</li>
+                  <li><i class="fa-solid fa-circle"></i> Year-round email support: on related tax and compliance issues</li>
+                  <li><i class="fa-solid fa-circle"></i> Annual report (Wyoming)</li>
+               </ul>
+               <p style="margin-top:1rem; font-size:0.9rem; color:#666;">Need personal tax returns? They’re available as a separate service.</p>
+
+               <div class="pricing-block">
+                  <div class="price-val">
+                    <span class="currency">$</span><span class="amount">1,249</span>
+                  </div>
+                  <span class="period">/year</span>
+               </div>
+               
+               <div class="action-buttons">
+                  <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                  <a href="pages/tax-compliance.html" class="btn btn-outline btn-block">Learn more</a>
+               </div>
+            </div>
+          </div>
+        </article>
+
+                <!-- Bookkeeping -->
+        <article class="service-card" id="bookkeeping-card">
+          <div class="card-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <h3>BOOKKEEPING</h3>
+          <h2 class="sub-headline">Keep your books organized and clear</h2>
+
+          <!-- Billing Toggle -->
+          <div class="billing-toggle-container">
+            <div class="billing-toggle">
+               <button class="toggle-btn" data-period="monthly">Monthly</button>
+               <button class="toggle-btn active" data-period="yearly">Yearly</button>
+            </div>
+          </div>
+
+          <div class="tabs-container">
+            <div class="tabs-header">
+              <button class="tab-btn active" data-target="bk-mini">Mini</button>
+              <button class="tab-btn" data-target="bk-starter">Starter</button>
+              <button class="tab-btn" data-target="bk-pro">Pro</button>
+            </div>
+
+            <!-- Tab 1: Mini -->
+            <div class="tab-content active" id="bk-mini">
+               <h5 class="feature-title">Key Features</h5>
+               <ul class="feature-list">
+                  <li><i class="fa-solid fa-circle"></i> Accounting: Cash basis</li>
+                  <li><i class="fa-solid fa-circle"></i> Accounts: Up to 2</li>
+                  <li><i class="fa-solid fa-circle"></i> Transactions: 600 per quarter</li>
+                  <li><i class="fa-solid fa-circle"></i> Reports: Quarterly</li>
+                  <li><i class="fa-solid fa-circle"></i> CA/CPA-reviewed annual financial statements</li>
+                  <li><i class="fa-solid fa-circle"></i> No costly extras</li>
+                  <li><i class="fa-solid fa-circle"></i> QuickBooks: fees included</li>
+               </ul>
+
+               <!-- Monthly Price -->
+               <div class="pricing-block price-monthly" style="display:none;">
+                  <div class="price-val">
+                    <span class="currency">$</span><span class="amount">179</span>
+                  </div>
+                  <span class="period">/month</span>
+               </div>
+               
+               <!-- Yearly Price -->
+               <div class="pricing-block price-yearly">
+                  <div style="text-decoration: line-through; color: #999; font-size: 1.5rem; font-weight:600; margin-bottom: -10px;">$2,148</div>
+                  <div class="price-val">
+                    <span class="currency">$</span><span class="amount">1,969</span>
+                  </div>
+                  <span class="period">/year</span>
+               </div>
+               
+               <div class="action-buttons">
+                  <button class="btn btn-primary btn-block">Get started &rarr;</button>
+                  <a href="pages/bookkeeping.html" class="btn btn-outline btn-block">Learn more</a>
+               </div>
+            </div>
+
+            <!-- Tab 2: Starter -->
+            <div class="tab-content" id="bk-starter">
+               <h5 class="feature-title">Key Features</h5>
+               <ul class="feature-list">
+                  <li><i class="fa-solid fa-circle"></i> Accounting: Cash basis</li>
+                  <li><i class="fa-solid fa-circle"></i> Accounts: Up to 4</li>
+                  <li><i class="fa-solid fa-circle"></i> Transactions: 250 per month</li>
+                  <li><i class="fa-solid fa-circle"></i> Reports: Monthly</li>
+                  <li><i class="fa-solid fa-circle"></i> CA/CPA-reviewed annual financial statements</li>
+                  <li><i class="fa-solid fa-circle"></i> Multi-Currency Accounting</li>
+                  <li><i class="fa-solid fa-circle"></i> QuickBooks: Simple Start included</li>
+               </ul>
+
+               <!-- Monthly Price -->
+               <div class="pricing-block price-monthly" style="display:none;">
+                  <div class="price-val">
+                    <span class="currency">$</span><span class="amount">249</span>
+                  </div>
+                  <span class="period">/month</span>
+               </div>
+
+               <!-- Yearly Price -->
+               <div class="pricing-block price-yearly">
+                  <div style="text-decoration: line-through; color: #999; font-size: 1.5rem; font-weight:600; margin-bottom: -10px;">$2,988</div>
+                  <div class="price-val">
+                    <span class="currency">$</span><span class="amount">2,739</span>
+                  </div>
+                  <span class="period">/year</span>
+               </div>
+               
+               <div class="action-buttons">
+                  <button class="btn btn-primary btn-block">Get started &rarr;</button>
+                  <a href="pages/bookkeeping.html" class="btn btn-outline btn-block">Learn more</a>
+               </div>
+            </div>
+
+            <!-- Tab 3: Pro -->
+            <div class="tab-content" id="bk-pro">
+               <h5 class="feature-title">Key Features</h5>
+               <ul class="feature-list">
+                  <li><i class="fa-solid fa-circle"></i> Everything in the Starter package, plus:</li>
+                  <li><i class="fa-solid fa-circle"></i> Accounting: Cash or accrual basis</li>
+                  <li><i class="fa-solid fa-circle"></i> Accounts: 2 additional</li>
+                  <li><i class="fa-solid fa-circle"></i> Transactions: 500 per month</li>
+                  <li><i class="fa-solid fa-circle"></i> Invoicing and billing: Up to 15 per month</li>
+                  <li><i class="fa-solid fa-circle"></i> 1099-NEC forms: 5</li>
+                  <li><i class="fa-solid fa-circle"></i> Budgeting and review</li>
+                  <li><i class="fa-solid fa-circle"></i> QuickBooks: Essentials included</li>
+               </ul>
+
+               <!-- Monthly Price -->
+               <div class="pricing-block price-monthly" style="display:none;">
+                  <div class="price-val">
+                    <span class="currency">$</span><span class="amount">499</span>
+                  </div>
+                  <span class="period">/month</span>
+               </div>
+
+               <!-- Yearly Price -->
+               <div class="pricing-block price-yearly">
+                  <div style="text-decoration: line-through; color: #999; font-size: 1.5rem; font-weight:600; margin-bottom: -10px;">$5,988</div>
+                  <div class="price-val">
+                    <span class="currency">$</span><span class="amount">5,489</span>
+                  </div>
+                  <span class="period">/year</span>
+               </div>
+               
+               <div class="action-buttons">
+                  <button class="btn btn-primary btn-block">Get started &rarr;</button>
+                  <a href="pages/bookkeeping.html" class="btn btn-outline btn-block">Learn more</a>
+               </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Add-ons -->
+        <article class="service-card">
+          <div class="card-icon"><i class="fa-solid fa-puzzle-piece"></i></div>
+          <h3>ADD-ONS</h3>
+          <h2 class="sub-headline">Incozi add-ons</h2>
+          <p style="margin-bottom: 2rem; color: var(--text-200); font-size: 1.1rem;">Everything extra you need, from ITIN application to entity changes, and more.</p>
+
+          <div style="text-align: left; max-width: 600px; margin: 0 auto;">
+            <ul class="feature-list">
+                <li><i class="fa-solid fa-circle"></i> Entities name / address change</li>
+                <li><i class="fa-solid fa-circle"></i> Entities existing member contact info change</li>
+                <li><i class="fa-solid fa-circle"></i> Entities adding / removing member / manager</li>
+                <li><i class="fa-solid fa-circle"></i> Entities reinstate</li>
+                <li><i class="fa-solid fa-circle"></i> Entities dissolving</li>
+                <li><i class="fa-solid fa-circle"></i> Certificate of Good Standing</li>
+                <li><i class="fa-solid fa-circle"></i> Mail forwarding service</li>
+                <li><i class="fa-solid fa-circle"></i> Mail scanning</li>
+                <li><i class="fa-solid fa-circle"></i> ITIN application</li>
+            </ul>
+          </div>
+          
+          <div class="action-buttons" style="margin-top: 3rem;">
+              <button class="btn" style="background-color: var(--success); color: #064e3b; box-shadow: 0 4px 6px -1px rgba(74, 222, 128, 0.4);">Get a custom quote &rarr;</button>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Process / How it Works Section -->
+    <section class="process-section container">
+        <h2 class="section-title">Simple Steps to Follow</h2>
+        <div class="process-steps">
+            
+            <!-- Step 1 -->
+            <div class="process-step">
+                <div class="step-icon-num">1</div>
+                <h3>Pick your package</h3>
+                <p>Choose the service that suits your stage—incorporation, tax, or bookkeeping.</p>
+            </div>
+
+            <!-- Arrow -->
+            <div class="process-arrow">
+                <i class="fa-solid fa-arrow-right-long"></i>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="process-step">
+                <div class="step-icon-num">2</div>
+                <h3>We handle the details</h3>
+                <p>Our experts prepare and file everything, ensuring complete accuracy and compliance.</p>
+            </div>
+
+            <!-- Arrow -->
+            <div class="process-arrow">
+                <i class="fa-solid fa-arrow-right-long"></i>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="process-step">
+                <div class="step-icon-num">3</div>
+                <h3>You focus on growth</h3>
+                <p>Launch your business with confidence, knowing your back-office is in safe hands.</p>
+            </div>
+
+        </div>
+        
+        <div style="margin-top: 3rem; font-size: 1.1rem; color: var(--text-200);">
+            Still confused about what to follow? <a href="pages/consultation.html" style="color: var(--accent-200); font-weight: 700; text-decoration: underline;">book a consulting session</a> with our experts to guide you.
+        </div>
+    </section>
 
   </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      
+      <!-- Brand & Address -->
+      <div class="footer-col brand-col">
+        <a href="#" class="footer-logo">incozi.</a>
+        <p class="tagline">Dream Worldwide, <br>Launch Stateside</p>
+        
+        <div class="address-block">
+          <h4>Address</h4>
+          <p>347 5th Avenue</p>
+          <p>Suite 1402-171</p>
+          <p>New York, NY 10016, U.S.A.</p>
+        </div>
+
+        <div class="social-links">
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+        </div>
+      </div>
+
+      <!-- Services Links -->
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#">Services & Pricing</a></li>
+          <li><a href="pages/incorporation.html">Incorporation</a></li>
+          <li><a href="pages/tax-compliance.html">Tax & Compliance</a></li>
+          <li><a href="pages/bookkeeping.html">Bookkeeping</a></li>
+          <li><a href="#">Payroll</a></li>
+          <li><a href="pages/consultation.html">Consultation</a></li>
+        </ul>
+      </div>
+
+      <!-- About Links -->
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Our Process</a></li>
+          <li><a href="#">In the Media</a></li>
+        </ul>
+      </div>
+
+      <!-- Useful Links -->
+      <div class="footer-col">
+        <h4>Useful Links</h4>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Login/Register</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+         <!-- Badge Placeholder -->
+        <div class="badge-placeholder">
+           <!-- Placeholder for the award badge in screenshot -->
+           <div style="background:#222; color:#fff; padding:10px; font-size:12px; text-align:center; border-radius:4px; margin-top:20px; font-family: sans-serif;">
+             THE AMERICAS<br>EMMAS<br>2025<br>HIGHLY COMMENDED
+           </div>
+        </div>
+      </div>
+
+    </div>
+  </footer>
 
   <script src="script.js"></script>
 </body>

@@ -1,98 +1,107 @@
 document.addEventListener('DOMContentLoaded', function () {
-	const btn = document.querySelector('.nav-toggle');
-	const nav = document.getElementById('site-nav');
-	if (!btn || !nav) return;
 
-	btn.addEventListener('click', function () {
-		const expanded = btn.getAttribute('aria-expanded') === 'true';
-		btn.setAttribute('aria-expanded', String(!expanded));
-		nav.classList.toggle('open');
-	});
+  /* --- Sidebar Navigation Logic --- */
+  const menuToggle = document.querySelector('.menu-toggle');
+  const sidebar = document.querySelector('.sidebar-menu');
+  const overlay = document.querySelector('.sidebar-overlay');
+  const closeBtn = document.querySelector('.sidebar-close');
 
-	// Subscribe form handler
-	const subscribeForm = document.getElementById('subscribe-form');
-	const subscribeMsg = document.getElementById('subscribe-msg');
-	if (subscribeForm) {
-		subscribeForm.addEventListener('submit', async function (e) {
-			e.preventDefault();
-			subscribeMsg.textContent = '';
-			const email = document.getElementById('subscribe-email').value.trim();
-			try {
-				const res = await fetch('/api/subscribe', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ email })
-				});
-				const data = await res.json();
-				if (res.ok) subscribeMsg.textContent = data.message || 'Subscribed!';
-				else subscribeMsg.textContent = data.error || 'Unable to subscribe';
-			} catch (err) {
-				subscribeMsg.textContent = 'Network error. Try again later.';
-			}
-		});
-	}
+  function toggleMenu() {
+    if (sidebar && overlay) {
+      const isOpen = sidebar.classList.contains('open');
+      if (isOpen) {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      } else {
+        sidebar.classList.add('open');
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+  }
 
-	// Account page: tabs and simple handlers
-	const tabs = document.querySelectorAll('.auth-tabs .tab');
-	if (tabs && tabs.length) {
-		tabs.forEach(tab => {
-			tab.addEventListener('click', function () {
-				// toggle active
-				tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
-				this.classList.add('active');
-				this.setAttribute('aria-selected', 'true');
-				const target = this.getAttribute('data-target');
-				if (!target) return;
-				document.querySelectorAll('.auth-panel').forEach(p => p.classList.add('hidden'));
-				const panel = document.getElementById(target);
-				if (panel) panel.classList.remove('hidden');
-			});
-		});
-	}
+  if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
+  if (closeBtn) closeBtn.addEventListener('click', toggleMenu);
+  if (overlay) overlay.addEventListener('click', toggleMenu);
 
-	// Simple auth form handlers (placeholder behaviour)
-	const signinForm = document.getElementById('signin');
-	if (signinForm) {
-		signinForm.addEventListener('submit', function (e) {
-			e.preventDefault();
-			document.getElementById('signin-msg').textContent = 'Signing in... (demo)';
-			setTimeout(() => { document.getElementById('signin-msg').textContent = 'Signed in (demo).'; }, 800);
-		});
-	}
 
-	const signupForm = document.getElementById('signup');
-	if (signupForm) {
-		signupForm.addEventListener('submit', function (e) {
-			e.preventDefault();
-			document.getElementById('signup-msg').textContent = 'Creating account... (demo)';
-			setTimeout(() => { document.getElementById('signup-msg').textContent = 'Account created (demo).'; }, 1000);
-		});
-	}
+  /* --- Scroll Animation --- */
+  // The service cards start with opacity:0 (in CSS). 
+  // This observer adds 'visible' (opacity:1) when they scroll into view.
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1
+  };
 
-	// Contact form handler
-	const contactForm = document.getElementById('contact-form');
-	const contactMsg = document.getElementById('contact-msg');
-	if (contactForm) {
-		contactForm.addEventListener('submit', async function (e) {
-			e.preventDefault();
-			contactMsg.textContent = '';
-			const name = document.getElementById('name').value.trim();
-			const email = document.getElementById('email').value.trim();
-			const message = document.getElementById('message').value.trim();
-			try {
-				const res = await fetch('/api/contact', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ name, email, message })
-				});
-				const data = await res.json();
-				if (res.ok) {
-					contactMsg.textContent = data.message || 'Message sent!';
-					contactForm.reset();
-				} else contactMsg.textContent = data.error || 'Unable to send message';
-			} catch (err) {
-				contactMsg.textContent = 'Network error. Try again later.';
-			}
-		});
-	}
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  const cards = document.querySelectorAll('.service-card');
+  cards.forEach(card => {
+    observer.observe(card);
+  });
+
+
+  /* --- Tabs Logic --- */
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const container = button.closest('.tabs-container');
+      const targetId = button.getAttribute('data-target');
+      
+      if (!container) return; // Guard clause
+
+      // Remove active class from neighbors
+      container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      container.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      
+      // Activate clicked
+      button.classList.add('active');
+      const targetContent = document.getElementById(targetId);
+      if (targetContent) {
+        targetContent.classList.add('active');
+      }
+    });
+  });
+
+
+  /* --- Billing Toggle Logic (Bookkeeping) --- */
+  const toggleButtons = document.querySelectorAll('.toggle-btn');
+  
+  toggleButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const container = btn.closest('.billing-toggle');
+      if (!container) return;
+
+      // Update toggle UI
+      container.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // Update Price Visibility
+      const period = btn.getAttribute('data-period'); // 'monthly' or 'yearly'
+      const serviceCard = btn.closest('.service-card');
+      
+      if (serviceCard) {
+        if (period === 'monthly') {
+          // Hide yearly, show monthly
+          serviceCard.querySelectorAll('.price-yearly').forEach(el => el.style.display = 'none');
+          serviceCard.querySelectorAll('.price-monthly').forEach(el => el.style.display = 'block');
+        } else {
+          // Hide monthly, show yearly
+          serviceCard.querySelectorAll('.price-monthly').forEach(el => el.style.display = 'none');
+          serviceCard.querySelectorAll('.price-yearly').forEach(el => el.style.display = 'block');
+        }
+      }
+    });
+  });
+
 });

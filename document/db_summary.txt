@@ -1,0 +1,304 @@
+
+
+# 📌 PROJECT CONTEXT SUMMARY (FOR VS CODE COPILOT)
+
+## 1. Website Purpose (High-Level)
+
+This is a **SaaS web platform** that helps **foreign (non-US) clients**:
+
+* Incorporate a company in the United States
+* Handle US tax & compliance requirements
+* Book consultations
+* Manage bookkeeping
+
+Users can **browse services freely**, but must **create an account and purchase a service** to access dashboards, documents, and updates.
+
+The system supports **three roles**:
+
+1. **Visitor / Registered User (no purchase yet)**
+2. **Client (purchased at least one service)**
+3. **Admin (manages users, services, documents, bookings)**
+
+---
+
+## 2. User Flow (End-to-End)
+
+### Visitor
+
+* Browses homepage, services, pricing
+* Can submit:
+
+  * Email subscription
+  * Contact form
+* Can register an account
+
+### Registered User (No Purchase)
+
+* Can log in
+* Can view services & plans
+* Can purchase a service
+
+### Client (After Purchase)
+
+* Gets access to **Client Dashboard**
+* Can:
+
+  * View active subscriptions
+  * Download/upload documents
+  * See service status updates
+  * Manage profile & password
+  * Book consultations
+
+### Admin
+
+* Accesses **Admin Dashboard**
+* Can:
+
+  * View all users
+  * View subscriptions & payments
+  * Upload documents for clients
+  * Manage consultations
+  * Track service usage
+
+---
+
+## 3. Core Database Design Principles
+
+* **Single `users` table** (role-based access)
+* Services are **modular**
+* Users can buy **multiple services**
+* Payments & subscriptions are tracked separately
+* Documents are linked to users & services
+* Backend logic is implemented using **Express (Node.js)**
+* Database is **MySQL**
+
+---
+
+# 🗄️ DATABASE TABLES (MySQL)
+
+## 1️⃣ users
+
+Stores all users: visitors, clients, admins.
+
+```sql
+users
+-----
+id (PK)
+email (UNIQUE)
+password_hash
+full_name
+role ENUM('user', 'client', 'admin')
+is_verified BOOLEAN
+created_at
+updated_at
+```
+
+---
+
+## 2️⃣ services
+
+Static list of services offered.
+
+```sql
+services
+--------
+id (PK)
+name
+description
+is_active BOOLEAN
+```
+
+Examples:
+
+* US Incorporation
+* Tax & Compliance
+* Consultation
+* Bookkeeping
+
+---
+
+## 3️⃣ plans
+
+Each service can have multiple pricing plans.
+
+```sql
+plans
+-----
+id (PK)
+service_id (FK → services.id)
+name
+price
+billing_cycle ENUM('monthly', 'yearly', 'one_time')
+features TEXT / JSON
+is_active BOOLEAN
+```
+
+---
+
+## 4️⃣ subscriptions
+
+Tracks which user bought which plan.
+
+```sql
+subscriptions
+-------------
+id (PK)
+user_id (FK → users.id)
+plan_id (FK → plans.id)
+status ENUM('active', 'cancelled', 'pending')
+start_date
+end_date
+```
+
+---
+
+## 5️⃣ payments
+
+Stores payment transactions.
+
+```sql
+payments
+--------
+id (PK)
+user_id (FK → users.id)
+subscription_id (FK → subscriptions.id)
+amount
+currency
+payment_provider
+transaction_id
+payment_status ENUM('success', 'failed', 'pending')
+created_at
+```
+
+---
+
+## 6️⃣ documents
+
+Client-specific files uploaded by admin or client.
+
+```sql
+documents
+---------
+id (PK)
+user_id (FK → users.id)
+service_id (FK → services.id)
+file_path
+document_type
+uploaded_by ENUM('admin', 'client')
+uploaded_at
+```
+
+---
+
+## 7️⃣ consultations
+
+Tracks booked consultation sessions.
+
+```sql
+consultations
+-------------
+id (PK)
+user_id (FK → users.id)
+scheduled_at
+status ENUM('booked', 'completed', 'cancelled')
+notes
+created_at
+```
+
+---
+
+## 8️⃣ contacts
+
+Contact form submissions.
+
+```sql
+contacts
+--------
+id (PK)
+name
+email
+message
+created_at
+```
+
+---
+
+## 9️⃣ email_subscribers
+
+Email-only subscriptions (marketing/newsletter).
+
+```sql
+email_subscribers
+-----------------
+id (PK)
+email (UNIQUE)
+created_at
+```
+
+---
+
+## 🔟 notifications (optional but recommended)
+
+```sql
+notifications
+-------------
+id (PK)
+user_id (FK → users.id)
+message
+is_read BOOLEAN
+created_at
+```
+
+---
+
+# 🔁 Backend Logic Flow (Express)
+
+* Authentication:
+
+  * Register → Hash password → Insert into users
+  * Login → Verify hash → Create session / JWT
+* Role-based routing:
+
+  * user → services page
+  * client → client dashboard
+  * admin → admin dashboard
+* Payments:
+
+  * Create subscription
+  * Store payment transaction
+* Admin actions:
+
+  * Upload documents
+  * View users & subscriptions
+  * Manage consultations
+
+---
+
+# 🎨 Frontend Responsibilities
+
+* Display services & plans
+* Collect user input (signup, login, purchase)
+* Dashboard UI for:
+
+  * Clients
+  * Admins
+* Fetch data via REST APIs
+
+---
+
+## ✅ FINAL GOAL
+
+Implementation order:
+
+1. **Database tables (MySQL)**
+2. **Backend APIs (Express.js)**
+3. **Frontend integration (HTML/CSS/JS)**
+
+---
+
+If you want next, I can:
+
+* Convert this into **ER diagram**
+* Generate **Express API skeleton**
+* Write **MySQL CREATE TABLE scripts**
+* Map **API endpoints → DB tables**

@@ -4,6 +4,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mysql = require('mysql2');
+const emailService = require('./backend/emailService');
+const authRoutes = require('./backend/auth'); // Import auth routes
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -64,6 +66,9 @@ pool.getConnection((err, connection) => {
   connection.release();
 });
 
+// Mount Auth Routes
+app.use('/api/auth', authRoutes(pool));
+
 // API endpoints
 app.post('/api/subscribe', (req, res) => {
   const { email } = req.body || {};
@@ -72,9 +77,13 @@ app.post('/api/subscribe', (req, res) => {
   const cleaned = email.trim().toLowerCase();
   const query = 'INSERT IGNORE INTO subscribers (email) VALUES (?)';
   
-  pool.execute(query, [cleaned], (err, results) => {
+  pool.execute(query, [cleaned], async (err, results) => {
     if (err) return res.status(500).json({ error: 'Database error' });
     if (results.affectedRows === 0) return res.status(200).json({ message: 'Already subscribed' });
+    
+    // Send welcome email
+    await emailService.sendNewsletterWelcome(cleaned);
+    
     return res.status(201).json({ message: 'Subscribed' });
   });
 });
@@ -84,8 +93,14 @@ app.post('/api/contact', (req, res) => {
   if (!email || !message) return res.status(400).json({ error: 'Email and message required' });
   
   const query = 'INSERT INTO contacts (name, email, message) VALUES (?, ?, ?)';
-  pool.execute(query, [name || null, email.trim().toLowerCase(), message], (err, results) => {
+  pool.execute(query, [name || null, email.trim().toLowerCase(), message], async (err, results) => {
     if (err) return res.status(500).json({ error: 'Database error' });
+
+    // Send acknowledgement to user
+    await emailService.sendContactFormAcknowledgement(email, name);
+    // Send notification to admin
+    await emailService.sendContactFormNotificationToAdmin({ name, email, message });
+
     return res.status(201).json({ message: 'Message received' });
   });
 });

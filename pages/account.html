@@ -167,6 +167,69 @@
          document.getElementById(tab.getAttribute('data-target')).classList.add('active');
       });
     });
+
+    // Signup Logic
+    const signupForm = document.querySelector('#signup form');
+    if (signupForm) {
+      signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const name = document.getElementById('su-name').value;
+        const email = document.getElementById('su-email').value;
+        const password = document.getElementById('su-password').value;
+        const btn = signupForm.querySelector('button[type="submit"]');
+        const originalText = btn.innerHTML;
+
+        // UI Loading State
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating Account...';
+
+        try {
+          const response = await fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ full_name: name, email, password })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            // Success: Show verification message
+            const signupContainer = document.getElementById('signup');
+            signupContainer.innerHTML = `
+              <div style="text-align: center; padding: 2rem 0;">
+                <div style="font-size: 3rem; color: #4338ca; margin-bottom: 1rem;">
+                  <i class="fa-regular fa-paper-plane"></i>
+                </div>
+                <h3 style="color: #1a1a1a; margin-bottom: 0.5rem;">Verification Email Sent!</h3>
+                <p style="color: #666; line-height: 1.5;">
+                  We've sent a verification link to <strong>${email}</strong>.<br>
+                  Please check your inbox (and spam folder) to activate your account.
+                </p>
+                <div style="margin-top: 1.5rem; padding: 1rem; background: #f3f4f6; border-radius: 8px; font-size: 0.9rem;">
+                  <p style="margin-bottom: 0.5rem;"><strong>Didn't receive it?</strong></p>
+                  <p>Check your spam folder or wait a few minutes.</p>
+                </div>
+              </div>
+            `;
+            // Also hide tabs to prevent switching back immediately
+            document.querySelector('.auth-tabs').style.display = 'none';
+          } else {
+            // Error from server
+            alert(data.error || 'Registration failed. Please try again.');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Something went wrong. Please check your connection.');
+        } finally {
+          // Reset button if we didn't succeed (if we succeeded, the form is gone)
+          if (document.getElementById('su-name')) { 
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+          }
+        }
+      });
+    }
   </script>
 </body>
 </html>

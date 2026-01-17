@@ -78,7 +78,7 @@
                     <i class="fa-solid fa-lock input-icon"></i>
                     <input type="password" id="si-password" placeholder="••••••••" required>
                  </div>
-                 <a href="#" class="forgot-link">Forgot password?</a>
+                 <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
                </div>
 
                <button type="submit" class="btn btn-primary btn-block">Log In</button>
@@ -168,6 +168,52 @@
       });
     });
 
+    // Login Logic
+    const signinForm = document.querySelector('#signin form');
+    if (signinForm) {
+      signinForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('si-email').value;
+        const password = document.getElementById('si-password').value;
+        const btn = signinForm.querySelector('button[type="submit"]');
+        const originalText = btn.innerHTML;
+
+        // UI Loading State
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Logging In...';
+
+        try {
+          const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            // Success
+            localStorage.setItem('incozi_token', data.token);
+            localStorage.setItem('incozi_user', JSON.stringify(data.user)); // Store user info
+            
+            // Redirect to dashboard (using account.html for now, but in "logged in" state)
+            // Ideally we'd validte this token on page load and show different UI
+            window.location.reload(); 
+          } else {
+            // Error
+            alert(data.error || 'Login failed. Please checks your credentials.');
+          }
+        } catch (error) {
+          console.error('Login Error:', error);
+          alert('Network error. Please try again.');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+        }
+      });
+    }
+
     // Signup Logic
     const signupForm = document.querySelector('#signup form');
     if (signupForm) {
@@ -230,6 +276,21 @@
         }
       });
     }
+    // Check Auth State
+    function checkAuth() {
+        const token = localStorage.getItem('incozi_token');
+        const userStr = localStorage.getItem('incozi_user');
+        
+        if (token && userStr) {
+            // Check if token is valid (basic expiration check could go here)
+            // For now, just redirect to dashboard
+            window.location.href = 'dashboard.html';
+        }
+    }
+    
+    // Run on load
+    checkAuth();
+
   </script>
 </body>
 </html>

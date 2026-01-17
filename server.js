@@ -6,8 +6,12 @@ const cors = require('cors');
 const mysql = require('mysql2');
 const emailService = require('./backend/emailService');
 const authRoutes = require('./backend/auth'); // Import auth routes
+const paymentRoutes = require('./backend/payments'); // Import payment routes
+const serviceRoutes = require('./backend/services'); // Import service routes
 
 const app = express();
+
+
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
@@ -69,8 +73,16 @@ pool.getConnection((err, connection) => {
 // Mount Auth Routes
 app.use('/api/auth', authRoutes(pool));
 
+// Mount Payment Routes
+app.use('/api/payments', paymentRoutes(pool));
+
+// Mount Service Routes
+app.use('/api/services', serviceRoutes(pool));
+
 // API endpoints
+
 app.post('/api/subscribe', (req, res) => {
+
   const { email } = req.body || {};
   if (!email || typeof email !== 'string') return res.status(400).json({ error: 'Valid email required' });
   

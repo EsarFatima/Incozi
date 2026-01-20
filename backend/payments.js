@@ -3,10 +3,8 @@ const router = express.Router();
 const paymentService = require('./paymentService');
 const emailService = require('./emailService');
 
-// Middleware to ensure user is authenticated (Optional but recommended)
-// const { authenticateToken } = require('./auth'); 
-
-module.exports = (pool) => {
+// Supabase-backed payments routes
+module.exports = (supabase) => {
 
   // PROCESS PAYMENT ROUTE
   // Endpoint: POST /api/payments/checkout
@@ -21,29 +19,38 @@ module.exports = (pool) => {
       return res.status(400).json({ error: 'Missing required checkout details.' });
     }
 
-    let connection;
     try {
-      // Get a connection for transaction support
-      connection = await pool.promise().getConnection();
-      await connection.beginTransaction();
-
       // 2. Fetch User & Plan Details (to ensure validity)
-      const [users] = await connection.query('SELECT full_name, email FROM users WHERE id = ?', [userId]);
-      const [plans] = await connection.query('SELECT name FROM plans WHERE id = ?', [planId]);
+      const { data: user, error: userError } = await supabase
+        .from('users')
+        .select('full_name,email')
+        .eq('id', userId)
+        .maybeSingle();
 
-      if (users.length === 0 || plans.length === 0) {
+      const { data: plan, error: planError } = await supabase
+        .from('plans')
+        .select('name')
+        .eq('id', planId)
+        .maybeSingle();
+
+      if (userError || planError) {
+        throw userError || planError;
+      }
+
+      if (!user || !plan) {
         throw new Error('Invalid User or Plan ID');
       }
-      const user = users[0];
-      const plan = plans[0];
 
       // 3. Create 'Pending' Subscription/Order in DB
-      const [subResult] = await connection.query(`
-        INSERT INTO subscriptions (user_id, plan_id, status, start_date)
-        VALUES (?, ?, 'pending', CURDATE())
-      `, [userId, planId]);
-      
-      const subscriptionId = subResult.insertId;
+      const { data: subInsert, error: subError } = await supabase
+        .from('subscriptions')
+        .insert([{ user_id: userId, plan_id: planId, status: 'pending', start_date: new Date().toISOString() }])
+        .select('id')
+        .maybeSingle();
+
+      if (subError) throw subError;
+
+      const subscriptionId = subInsert.id;
 
       // 4. Call Payment Gateway (The Adapter)
       const paymentResult = await paymentService.processPayment(
@@ -56,19 +63,27 @@ module.exports = (pool) => {
       // 5. Handle Result
       if (paymentResult.success) {
         // A) Update Subscription to Active
-        await connection.query(
-          'UPDATE subscriptions SET status = ? WHERE id = ?', 
-          ['active', subscriptionId]
-        );
+        const { error: subUpdateError } = await supabase
+          .from('subscriptions')
+          .update({ status: 'active' })
+          .eq('id', subscriptionId);
+
+        if (subUpdateError) throw subUpdateError;
 
         // B) Record Payment
-        await connection.query(`
-          INSERT INTO payments 
-          (user_id, subscription_id, amount, currency, payment_provider, transaction_id, payment_status)
-          VALUES (?, ?, ?, ?, ?, ?, 'success')
-        `, [userId, subscriptionId, amount, currency || 'USD', paymentService.PROVIDER_NAME, paymentResult.transactionId]);
+        const { error: payError } = await supabase
+          .from('payments')
+          .insert([{ 
+            user_id: userId,
+            subscription_id: subscriptionId,
+            amount,
+            currency: currency || 'USD',
+            payment_provider: paymentService.PROVIDER_NAME,
+            transaction_id: paymentResult.transactionId,
+            payment_status: 'success'
+          }]);
 
-        await connection.commit();
+        if (payError) throw payError;
 
         // C) Send Confirmation Email (Async, don't block response)
         const orderDetails = {
@@ -90,18 +105,25 @@ module.exports = (pool) => {
 
       } else {
         // Payment Failed
-        await connection.query(
-            'UPDATE subscriptions SET status = ? WHERE id = ?', 
-            ['cancelled', subscriptionId]
-        );
-        
-        await connection.query(`
-            INSERT INTO payments 
-            (user_id, subscription_id, amount, currency, payment_provider, payment_status)
-            VALUES (?, ?, ?, ?, ?, 'failed')
-        `, [userId, subscriptionId, amount, currency || 'USD', paymentService.PROVIDER_NAME]);
+        const { error: cancelError } = await supabase
+          .from('subscriptions')
+          .update({ status: 'cancelled' })
+          .eq('id', subscriptionId);
 
-        await connection.commit(); // Commit the failed record request
+        if (cancelError) throw cancelError;
+
+        const { error: payError } = await supabase
+          .from('payments')
+          .insert([{ 
+            user_id: userId,
+            subscription_id: subscriptionId,
+            amount,
+            currency: currency || 'USD',
+            payment_provider: paymentService.PROVIDER_NAME,
+            payment_status: 'failed'
+          }]);
+
+        if (payError) throw payError;
 
         return res.status(402).json({ 
           success: false, 
@@ -111,11 +133,8 @@ module.exports = (pool) => {
       }
 
     } catch (error) {
-      if (connection) await connection.rollback();
       console.error('Checkout Error:', error);
       res.status(500).json({ error: 'Transaction failed' });
-    } finally {
-      if (connection) connection.release();
     }
   });
 

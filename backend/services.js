@@ -1,17 +1,28 @@
 const express = require('express');
 const router = express.Router();
 
-module.exports = (pool) => {
+// Supabase-backed services routes
+module.exports = (supabase) => {
 
   // GET /api/services
   // Returns all services with their plans
   router.get('/', async (req, res) => {
     try {
       // Fetch services
-      const [services] = await pool.promise().query('SELECT * FROM services WHERE is_active = 1');
-      
+      const { data: services, error: servicesError } = await supabase
+        .from('services')
+        .select('*')
+        .eq('is_active', true);
+
+      if (servicesError) throw servicesError;
+
       // Fetch plans
-      const [plans] = await pool.promise().query('SELECT * FROM plans WHERE is_active = 1');
+      const { data: plans, error: plansError } = await supabase
+        .from('plans')
+        .select('*')
+        .eq('is_active', true);
+
+      if (plansError) throw plansError;
 
       // Group plans by service
       const result = services.map(service => {
@@ -34,17 +45,34 @@ module.exports = (pool) => {
         const { userId } = req.query;
         if (!userId) return res.status(400).json({ error: 'User ID required' });
 
-        const query = `
-            SELECT s.id, p.name as plan_name, sv.name as service_name, s.status, s.end_date, s.start_date, p.price, p.billing_cycle
-            FROM subscriptions s
-            JOIN plans p ON s.plan_id = p.id
-            JOIN services sv ON p.service_id = sv.id
-            WHERE s.user_id = ? AND s.status != 'cancelled'
-            ORDER BY s.created_at DESC
-        `;
-        
-        const [subs] = await pool.promise().query(query, [userId]);
-        res.json(subs);
+        const { data: subs, error } = await supabase
+          .from('subscriptions')
+          .select(`
+            id,
+            status,
+            end_date,
+            start_date,
+            created_at,
+            plan:plans(id,name,price,billing_cycle,service:services(id,name))
+          `)
+          .eq('user_id', userId)
+          .neq('status', 'cancelled')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const shaped = (subs || []).map((s) => ({
+          id: s.id,
+          plan_name: s.plan?.name,
+          service_name: s.plan?.service?.name,
+          status: s.status,
+          end_date: s.end_date,
+          start_date: s.start_date,
+          price: s.plan?.price,
+          billing_cycle: s.plan?.billing_cycle
+        }));
+
+        res.json(shaped);
     } catch (error) {
         console.error('Error fetching subscriptions:', error);
         res.status(500).json({ error: 'Server error' });

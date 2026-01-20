@@ -2,18 +2,13 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-const jwt = require('jsonwebtoken'); // Import JWT
+const jwt = require('jsonwebtoken');
 const emailService = require('./emailService');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_in_production';
 
-
-// We need the pool to execute queries. 
-// Ideally, the pool should be exported from a central DB config file.
-// For now, receiving it as a parameter or creating a new connection instance if we want to keep it isolated.
-// To keep it clean and use the same pool, let's wrap this in a function that accepts the pool.
-
-module.exports = (pool) => {
+// Supabase-driven auth routes
+module.exports = (supabase) => {
 
   // LOGIN ROUTE
   router.post('/login', async (req, res) => {
@@ -22,10 +17,18 @@ module.exports = (pool) => {
       if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
 
       // 1. Find User
-      const [users] = await pool.promise().query('SELECT * FROM users WHERE email = ?', [email]);
-      if (users.length === 0) return res.status(401).json({ error: 'Invalid email or password' });
+      const { data: user, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .maybeSingle();
 
-      const user = users[0];
+      if (error) {
+        console.error('Login fetch error:', error);
+        return res.status(500).json({ error: 'Server error' });
+      }
+
+      if (!user) return res.status(401).json({ error: 'Invalid email or password' });
 
       // 2. Compare Password
       const isMatch = await bcrypt.compare(password, user.password_hash);
@@ -66,10 +69,18 @@ module.exports = (pool) => {
       }
 
       // 1. Check if user exists
-      const checkQuery = 'SELECT id FROM users WHERE email = ?';
-      const [existing] = await pool.promise().query(checkQuery, [email]);
-      
-      if (existing.length > 0) {
+      const { data: existing, error: existingError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle();
+
+      if (existingError) {
+        console.error('Signup check error:', existingError);
+        return res.status(500).json({ error: 'Server error' });
+      }
+
+      if (existing) {
         return res.status(400).json({ error: 'Email already registered' });
       }
 
@@ -81,12 +92,21 @@ module.exports = (pool) => {
       const token = crypto.randomBytes(32).toString('hex');
 
       // 4. Insert User
-      const insertQuery = `
-        INSERT INTO users (email, password_hash, full_name, verification_token, is_verified)
-        VALUES (?, ?, ?, ?, 0)
-      `;
-      
-      await pool.promise().query(insertQuery, [email, hashedPassword, full_name || null, token]);
+      const { error: insertError } = await supabase
+        .from('users')
+        .insert([{ 
+          email, 
+          password_hash: hashedPassword, 
+          full_name: full_name || null, 
+          verification_token: token, 
+          is_verified: false,
+          role: 'user'
+        }]);
+
+      if (insertError) {
+        console.error('Signup insert error:', insertError);
+        return res.status(500).json({ error: insertError.message || 'Internal server error' });
+      }
 
       // 5. Send Email
       // Construct verification link. 
@@ -116,18 +136,33 @@ module.exports = (pool) => {
       }
 
       // 1. Find user with token
-      const findQuery = 'SELECT id FROM users WHERE verification_token = ?';
-      const [users] = await pool.promise().query(findQuery, [token]);
+      const { data: user, error } = await supabase
+        .from('users')
+        .select('id')
+        .eq('verification_token', token)
+        .maybeSingle();
 
-      if (users.length === 0) {
+      if (error) {
+        console.error('Verify lookup error:', error);
+        return res.status(500).send('<h1>Server Error during verification</h1>');
+      }
+
+      if (!user) {
         return res.status(400).send('<h1>Invalid or Expired Verification Link</h1>');
       }
 
-      const userId = users[0].id;
+      const userId = user.id;
 
       // 2. Update user status
-      const updateQuery = 'UPDATE users SET is_verified = 1, verification_token = NULL WHERE id = ?';
-      await pool.promise().query(updateQuery, [userId]);
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ is_verified: true, verification_token: null })
+        .eq('id', userId);
+
+      if (updateError) {
+        console.error('Verify update error:', updateError);
+        return res.status(500).send('<h1>Server Error during verification</h1>');
+      }
 
       // 3. Response
       // You can redirect to a frontend login page here: res.redirect('/login.html?verified=true');
@@ -153,23 +188,37 @@ module.exports = (pool) => {
       if (!email) return res.status(400).json({ error: 'Email is required' });
 
       // 1. Check if user exists
-      const [users] = await pool.promise().query('SELECT id FROM users WHERE email = ?', [email]);
-      if (users.length === 0) {
+      const { data: user, error } = await supabase
+        .from('users')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Forgot lookup error:', error);
+        return res.status(500).json({ error: 'Server error' });
+      }
+
+      if (!user) {
         // For security, don't reveal if user exists.
         return res.status(200).json({ message: 'If that email exists, we have sent a reset link.' });
       }
-      
-      const user = users[0];
+
 
       // 2. Generate Token
       const token = crypto.randomBytes(32).toString('hex');
       const expires = new Date(Date.now() + 3600000); // 1 hour
 
       // 3. Save to DB
-      await pool.promise().query(
-        'UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?',
-        [token, expires, user.id]
-      );
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ reset_token: token, reset_token_expires: expires.toISOString() })
+        .eq('id', user.id);
+
+      if (updateError) {
+        console.error('Forgot update error:', updateError);
+        return res.status(500).json({ error: 'Server error' });
+      }
 
       // 4. Send Email
       // Ideally move base URL to env, but using same logic as signup
@@ -193,26 +242,37 @@ module.exports = (pool) => {
       if (!token || !password) return res.status(400).json({ error: 'Token and password required' });
 
       // 1. Validate Token
-      const [users] = await pool.promise().query(
-        'SELECT id FROM users WHERE reset_token = ? AND reset_token_expires > NOW()',
-        [token]
-      );
+      const nowIso = new Date().toISOString();
+      const { data: user, error } = await supabase
+        .from('users')
+        .select('id')
+        .eq('reset_token', token)
+        .gt('reset_token_expires', nowIso)
+        .maybeSingle();
 
-      if (users.length === 0) {
-        return res.status(400).json({ error: 'Invalid or expired token' });
+      if (error) {
+        console.error('Reset lookup error:', error);
+        return res.status(500).json({ error: 'Server error' });
       }
 
-      const user = users[0];
+      if (!user) {
+        return res.status(400).json({ error: 'Invalid or expired token' });
+      }
 
       // 2. Hash New Password
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
       // 3. Update User
-      await pool.promise().query(
-        'UPDATE users SET password_hash = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?',
-        [hashedPassword, user.id]
-      );
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ password_hash: hashedPassword, reset_token: null, reset_token_expires: null })
+        .eq('id', user.id);
+
+      if (updateError) {
+        console.error('Reset update error:', updateError);
+        return res.status(500).json({ error: 'Server error' });
+      }
 
       res.json({ message: 'Password has been reset successfully.' });
 

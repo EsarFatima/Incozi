@@ -17,10 +17,10 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname)));
 
-// Mount Routes (Pool argument removed)
-app.use('/api/auth', authRoutes);
-app.use('/api/payments', paymentRoutes);
-app.use('/api/services', serviceRoutes);
+// Mount Routes with Supabase client
+app.use('/api/auth', authRoutes(supabase));
+app.use('/api/payments', paymentRoutes(supabase));
+app.use('/api/services', serviceRoutes(supabase));
 
 // --- Standalone Endpoints converted to Supabase ---
 

@@ -15,9 +15,52 @@
   <header class="site-header">
     <div class="container header-inner">
       <a href="index.html" class="logo">incozi.</a>
-      <button class="menu-toggle" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
+      
+      <!-- Navbar Links (Desktop) -->
+      <nav class="main-nav" style="display: none;">
+          <ul class="nav-list" style="display: flex; gap: 1.5rem; list-style: none; align-items: center; margin: 0;">
+              <li class="nav-item">
+                  <a href="#" class="nav-link">Services & Pricing <i class="fa-solid fa-chevron-down"></i></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="pages/incorporation.html">Incorporation</a></li>
+                      <li><a href="pages/tax-compliance.html">Tax & Compliance</a></li>
+                      <li><a href="pages/bookkeeping.html">Bookkeeping</a></li>
+                      <li><a href="pages/consultation.html">Consultation</a></li>
+                  </ul>
+              </li>
+              <li><a href="pages/blog.html" class="nav-link">Blog</a></li>
+              <li><a href="pages/my-services.html" class="nav-link">My Services</a></li>
+              <li><a href="pages/account.html" class="nav-link" aria-label="My Account"><i class="fa-regular fa-user"></i></a></li>
+              <li><a href="pages/cart.html" class="nav-link" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+          </ul>
+      </nav>
+
+      <!-- Menu Toggle (Hamburger) -->
+      <!-- Added explicit class for styling locally to ensure visibility -->
+      <button class="menu-toggle custom-toggle" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
     </div>
   </header>
+  
+  <style>
+      /* Toggle Button Style (Mimic style.css .mobile-menu-toggle but visible) */
+      .custom-toggle {
+          background: none; 
+          border: none; 
+          font-size: 1.5rem; 
+          cursor: pointer; 
+          color: var(--text-100);
+          display: block; /* Always visible as per user preference (need sidebar) */
+          margin-left: 1.5rem;
+      }
+
+      /* Responsiveness */
+      @media (min-width: 769px) {
+          .main-nav { display: block !important; }
+      }
+      @media (max-width: 768px) {
+           .main-nav { display: none !important; }
+      }
+  </style>
 
   <!-- Sidebar Navigation -->
   <div class="sidebar-overlay"></div>
@@ -38,6 +81,7 @@
              <li><a href="pages/incorporation.html">Incorporation</a></li>
              <li><a href="pages/tax-compliance.html">Tax & Compliance</a></li>
              <li><a href="pages/bookkeeping.html">Bookkeeping</a></li>
+             <li><a href="pages/my-services.html">My Services</a></li>
           </ul>
         </li>
 
@@ -53,14 +97,14 @@
 
         <!-- Blog Section -->
         <li class="sidebar-group">
-          <a href="#" class="sidebar-group-title" style="display:block; cursor:pointer;">Blog</a>
+          <a href="pages/blog.html" class="sidebar-group-title" style="display:block; cursor:pointer;">Blog</a>
         </li>
 
         <li class="sidebar-divider"></li>
 
         <!-- User Actions -->
         <li><a href="pages/account.html" class="sidebar-link-item"><i class="fa-regular fa-user"></i> My Account</a></li>
-        <li><a href="#" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+        <li><a href="pages/cart.html" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
       </ul>
     </div>
   </aside>
@@ -207,7 +251,7 @@
                     <span class="currency">$</span><span class="amount">39</span>
                     <span class="period">(one-time fee)</span>
                  </div>
-                 <button class="btn btn-primary btn-block">Book</button>
+                 <button class="btn btn-primary btn-block" onclick="addToCart('Consultation - Incorporation', 39)">Book</button>
                  <a href="pages/consultation.html" class="btn btn-outline btn-block">Learn more</a>
                </div>
 
@@ -225,7 +269,7 @@
                     <span class="currency">$</span><span class="amount">39</span>
                     <span class="period">(one-time fee)</span>
                  </div>
-                 <button class="btn btn-primary btn-block">Book</button>
+                 <button class="btn btn-primary btn-block" onclick="addToCart('Consultation - Tax', 39)">Book</button>
                  <a href="pages/consultation.html" class="btn btn-outline btn-block">Learn more</a>
                </div>
             </div>
@@ -279,7 +323,7 @@
                  </div>
 
                  <div class="action-buttons">
-                    <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                    <button class="btn btn-primary btn-block" onclick="addToCart('Incorporation - Single-Member LLC', 899)">Buy &rarr;</button>
                     <a href="pages/incorporation.html" class="btn btn-outline btn-block">Learn more</a>
                  </div>
                </div>
@@ -308,7 +352,7 @@
                     <span class="period">(one-time fee)</span>
                  </div>
                  <div class="action-buttons">
-                    <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                    <button class="btn btn-primary btn-block" onclick="addToCart('Incorporation - Multi-Member LLC', 899)">Buy &rarr;</button>
                     <a href="pages/incorporation.html" class="btn btn-outline btn-block">Learn more</a>
                  </div>
                </div>
@@ -337,7 +381,7 @@
                     <span class="period">(one-time fee)</span>
                  </div>
                  <div class="action-buttons">
-                    <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                    <button class="btn btn-primary btn-block" onclick="addToCart('Incorporation - C Corp', 899)">Buy &rarr;</button>
                     <a href="pages/incorporation.html" class="btn btn-outline btn-block">Learn more</a>
                  </div>
                </div>
@@ -367,7 +411,7 @@
                     <span class="period">(one-time fee)</span>
                  </div>
                  <div class="action-buttons">
-                    <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                    <button class="btn btn-primary btn-block" onclick="addToCart('Incorporation - S Corp', 899)">Buy &rarr;</button>
                     <a href="pages/incorporation.html" class="btn btn-outline btn-block">Learn more</a>
                  </div>
                </div>
@@ -412,7 +456,7 @@
                </div>
                
                <div class="action-buttons">
-                  <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                  <button class="btn btn-primary btn-block" onclick="addToCart('Tax & Compliance - Single-Member LLC', 799)">Buy &rarr;</button>
                   <a href="pages/tax-compliance.html" class="btn btn-outline btn-block">Learn more</a>
                </div>
             </div>
@@ -439,7 +483,7 @@
                </div>
                
                <div class="action-buttons">
-                  <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                  <button class="btn btn-primary btn-block" onclick="addToCart('Tax & Compliance - Multi-Member LLC', 1249)">Buy &rarr;</button>
                   <a href="pages/tax-compliance.html" class="btn btn-outline btn-block">Learn more</a>
                </div>
             </div>
@@ -466,7 +510,7 @@
                </div>
                
                <div class="action-buttons">
-                  <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                  <button class="btn btn-primary btn-block" onclick="addToCart('Tax & Compliance - C Corp', 1249)">Buy &rarr;</button>
                   <a href="pages/tax-compliance.html" class="btn btn-outline btn-block">Learn more</a>
                </div>
             </div>
@@ -492,7 +536,7 @@
                </div>
                
                <div class="action-buttons">
-                  <button class="btn btn-primary btn-block">Buy &rarr;</button>
+                  <button class="btn btn-primary btn-block" onclick="addToCart('Tax & Compliance - S Corp', 1249)">Buy &rarr;</button>
                   <a href="pages/tax-compliance.html" class="btn btn-outline btn-block">Learn more</a>
                </div>
             </div>
@@ -551,7 +595,7 @@
                </div>
                
                <div class="action-buttons">
-                  <button class="btn btn-primary btn-block">Get started &rarr;</button>
+                  <button class="btn btn-primary btn-block" onclick="addBookkeepingToCart('Mini')">Get started &rarr;</button>
                   <a href="pages/bookkeeping.html" class="btn btn-outline btn-block">Learn more</a>
                </div>
             </div>
@@ -587,7 +631,7 @@
                </div>
                
                <div class="action-buttons">
-                  <button class="btn btn-primary btn-block">Get started &rarr;</button>
+                  <button class="btn btn-primary btn-block" onclick="addBookkeepingToCart('Starter')">Get started &rarr;</button>
                   <a href="pages/bookkeeping.html" class="btn btn-outline btn-block">Learn more</a>
                </div>
             </div>
@@ -624,7 +668,7 @@
                </div>
                
                <div class="action-buttons">
-                  <button class="btn btn-primary btn-block">Get started &rarr;</button>
+                  <button class="btn btn-primary btn-block" onclick="addBookkeepingToCart('Pro')">Get started &rarr;</button>
                   <a href="pages/bookkeeping.html" class="btn btn-outline btn-block">Learn more</a>
                </div>
             </div>

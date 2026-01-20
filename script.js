@@ -105,3 +105,72 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 });
+
+/* --- Cart Logic --- */
+function addToCart(itemName, itemPrice) {
+    const cart = JSON.parse(localStorage.getItem('incoziCart')) || [];
+    cart.push({ item: itemName, price: itemPrice });
+    localStorage.setItem('incoziCart', JSON.stringify(cart));
+    
+    // Redirect
+    if (window.location.pathname.includes('/pages/')) {
+        window.location.href = 'cart.html';
+    } else {
+        window.location.href = 'pages/cart.html';
+    }
+}
+window.addToCart = addToCart;
+
+function addBookkeepingToCart(tier) {
+    // Find the bookkeeping card
+    const card = document.getElementById('bookkeeping-card');
+    if (!card) return;
+
+    // Check which period is active
+    const activeToggle = card.querySelector('.toggle-btn.active');
+    const period = activeToggle ? activeToggle.getAttribute('data-period') : 'yearly'; // Default to yearly
+
+    let price = 0;
+    let name = `Bookkeeping - ${tier} (${period})`;
+
+    if (tier === 'Mini') {
+        price = (period === 'monthly') ? 179 : 1969; 
+    } else if (tier === 'Starter') {
+        price = (period === 'monthly') ? 249 : 2739;
+    } else if (tier === 'Pro') {
+        price = (period === 'monthly') ? 499 : 5489;
+    }
+
+    addToCart(name, price);
+}
+window.addBookkeepingToCart = addBookkeepingToCart;
+
+/* --- Badge Logic --- */
+function updateCartBadge() {
+    const cart = JSON.parse(localStorage.getItem('incoziCart')) || [];
+    const count = cart.length;
+    
+    // Target all cart links (desktop + mobile sidebar)
+    // We look for href ending in cart.html or containing /cart.html
+    const cartLinks = document.querySelectorAll('a[href*="cart.html"]');
+    
+    cartLinks.forEach(link => {
+        let badge = link.querySelector('.cart-badge');
+        
+        if (count > 0) {
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'cart-badge';
+                link.appendChild(badge);
+            }
+            badge.textContent = count;
+            badge.style.display = 'flex';
+        } else {
+            if (badge) badge.style.display = 'none';
+        }
+    });
+}
+window.updateCartBadge = updateCartBadge;
+
+// Initialize badge on load
+document.addEventListener('DOMContentLoaded', updateCartBadge);

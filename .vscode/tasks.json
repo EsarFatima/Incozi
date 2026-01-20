@@ -36,6 +36,39 @@
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "none"
+		},
+		{
+			"label": "append_badge_css",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-Command",
+				"Add-Content -Path 'd:\\IncoziProject\\Incozi\\style.css' -Value '\n\n/* Cart Badge Styling */\n.cart-badge {\n    position: absolute;\n    top: -5px;\n    right: -8px;\n    background-color: var(--badge-bg, #ef4444);\n    color: #fff;\n    font-size: 0.7rem;\n    font-weight: 700;\n    min-width: 18px;\n    height: 18px;\n    border-radius: 9px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 0 4px;\n    border: 2px solid #fff;\n    z-index: 10;\n}\n\n/* Ensure cart links can position the badge */\na[href*=\"cart.html\"] {\n    position: relative;\n    /* Ensure no overflow hidden clips the badge */\n    overflow: visible; \n}\n\n/* Adjustments for specific contexts if needed */\n.sidebar-link-item .cart-badge {\n    top: 50%;\n    right: 1.5rem;\n    transform: translateY(-50%);\n    border: none; /* No white border needed on gray background usually, but kept consistent */\n}\n'"
+			],
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "append_responsive_css",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-Command",
+				"Add-Content -Path 'd:\\IncoziProject\\Incozi\\style.css' -Value '\n\n/* Responsive Navigation Rules */\n@media (max-width: 768px) {\n    .main-nav { display: none !important; }\n    .mobile-menu-toggle { display: block !important; }\n}\n\n@media (min-width: 769px) {\n    .mobile-menu-toggle { display: none !important; }\n}\n'"
+			],
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "append_header_css",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-Command",
+				"Add-Content -Path 'd:\\IncoziProject\\Incozi\\style.css' -Value '\n\n/* Unified Header Styles (Persistent Hamburger) */\n.persistent-toggle {\n    background: none; \n    border: none; \n    font-size: 1.5rem; \n    cursor: pointer; \n    color: var(--text-100);\n    display: block !important; /* Force visible on all screens */\n    margin-left: 1.5rem;\n}\n\n/* Ensure Nav is visible on desktop */\n@media (min-width: 769px) {\n    .main-nav { display: block !important; }\n}\n\n/* On mobile, nav list is hidden, handled by sidebar */\n@media (max-width: 768px) {\n    .main-nav { display: none !important; }\n}\n'"
+			],
+			"isBackground": false,
+			"group": "none"
 		}
 	]
 }

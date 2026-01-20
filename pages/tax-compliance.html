@@ -3,16 +3,407 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Incozi - Tax & Compliance</title>
+  <title>Tax & Compliance | Incozi</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../style.css">
+  <style>
+    /* Service Pages Shared Styles */
+    .hero-service { padding: 5rem 0 3rem; text-align: left; background: var(--bg-100); }
+    .hero-service h1 { font-size: 2.5rem; color: var(--text-100); margin-bottom: 1.5rem; line-height: 1.2; }
+    .hero-service p { font-size: 1.125rem; color: var(--text-200); line-height: 1.7; max-width: 700px; margin-bottom: 2rem; }
+    .hero-row { display: flex; align-items: center; gap: 3rem; }
+    .hero-text { flex: 1; }
+    .hero-img { flex: 1; text-align: center; }
+
+    /* New Sections Styles */
+    .section-spacing { padding: 5rem 0; }
+    
+    /* Tax Hero */
+    .tax-hero { padding: 4rem 0; background: #fff; text-align: center; }
+    .main-title { font-size: 2.5rem; color: #312e81; margin-bottom: 3rem; font-weight: 700; }
+    .hero-layout { display: flex; align-items: center; gap: 2rem; text-align: left; position: relative; }
+    .tax-info-card { 
+        background: #fff; 
+        padding: 2.5rem; 
+        border-radius: 20px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+        width: 50%; 
+        z-index: 2; 
+        position: relative;
+    }
+    .tax-info-card h3 { color: #312e81; font-size: 1.5rem; margin-bottom: 1rem; line-height: 1.3; }
+    .tax-info-card p { color: #4b5563; line-height: 1.6; font-size: 1rem; }
+    .hero-image-placeholder { 
+        width: 50%; 
+        height: 500px; 
+        border-radius: 20px; 
+        overflow: hidden; 
+        background: url('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=1000') center/cover no-repeat;
+        /* Fallback if image doesn't load */
+        background-color: #f3f4f6;
+    }
+
+    /* Requirements Section */
+    .req-grid { display: flex; align-items: center; gap: 4rem; }
+    .req-image { flex: 1; }
+    .req-content { flex: 1; }
+    .req-content h2 { color: #312e81; font-size: 2rem; margin-bottom: 1rem; }
+    .req-content p { color: #4b5563; margin-bottom: 1.5rem; line-height: 1.6; }
+    .check-list { list-style: none; margin: 0; padding: 0; }
+    .check-list li { display: flex; gap: 0.75rem; margin-bottom: 0.75rem; color: #4b5563; font-size: 1rem; }
+    .check-list li i { color: #9f7aea; /* Purple check */ margin-top: 4px; }
+    .highlight-text { font-weight: 600; color: #374151; margin-top: 1.5rem; }
+
+    /* Why Us */
+    .why-us { background: #fff; }
+    .why-us h2 { font-size: 2.5rem; color: #312e81; margin-bottom: 2rem; }
+    .why-grid { display: flex; gap: 2rem; margin-bottom: 2rem; }
+    .why-card { flex: 1; background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #f3f4f6; }
+    .icon-box { width: 50px; height: 50px; background: #e0f2fe; color: #0ea5e9; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.5rem; }
+    .why-card h3 { color: #312e81; margin-bottom: 1rem; font-size: 1.25rem; }
+    .why-card p { color: #6b7280; line-height: 1.6; margin-bottom: 1.5rem; }
+    .quote { border-left: 3px solid #ddd; padding-left: 1rem; font-style: italic; color: #312e81; font-weight: 500; }
+    .quote span { display: block; margin-top: 0.5rem; font-size: 0.9rem; color: #6b7280; font-style: normal; }
+    
+    .big-testimonial { background: #f0fdf4; padding: 2rem; border-radius: 12px; display: flex; gap: 1rem; align-items: flex-start; }
+    .big-testimonial i { font-size: 2rem; color: #312e81; opacity: 0.3; }
+    .big-testimonial p { color: #312e81; font-size: 1.1rem; line-height: 1.6; font-weight: 500; }
+
+    .package-includes { background: #f9fafb; padding: 4rem 1.5rem; }
+    .package-includes h2 { text-align: center; margin-bottom: 1rem; color: var(--text-100); }
+    .package-subtitle { text-align: center; max-width: 700px; margin: 0 auto 3rem; color: var(--text-200); }
+
+    .pkg-tabs { display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; background: #e5e7eb; padding: 0.5rem; border-radius: 99px; width: fit-content; margin-left: auto; margin-right: auto; flex-wrap: wrap; }
+    .pkg-tab-btn { background: none; border: none; padding: 0.75rem 1.5rem; border-radius: 99px; cursor: pointer; font-weight: 600; color: var(--text-200); transition: all 0.2s; }
+    .pkg-tab-btn.active { background: var(--accent-200); color: #fff; }
+
+    .pkg-content { display: none; }
+    .pkg-content.active { display: block; }
+    
+    .pricing-card-lg { background: #fff; border-radius: 12px; padding: 3rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); max-width: 800px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+    .features-col { flex: 2; }
+    .price-col { flex: 1; text-align: center; border-left: 1px solid #e5e7eb; padding-left: 2rem; }
+    .feature-item { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1rem; font-size: 1rem; }
+    .feature-item i { color: var(--accent-200); margin-top: 4px; }
+    .big-price { font-size: 3rem; font-weight: 800; color: var(--accent-200); display: block; line-height: 1; margin-bottom: 0.5rem; }
+
+    @media (max-width: 768px) {
+        .hero-row { flex-direction: column; }
+        .hero-service { text-align: center; }
+        .hero-service p { margin: 0 auto 2rem; }
+        .pricing-card-lg { flex-direction: column; text-align: center; }
+        .price-col { border-left: none; border-top: 1px solid #e5e7eb; padding-left: 0; padding-top: 2rem; }
+        
+        /* New section mobile */
+        .hero-layout, .req-grid, .why-grid { flex-direction: column; }
+        .tax-info-card, .hero-image-placeholder, .req-image, .req-content, .why-card { width: 100%; }
+        .hero-image-placeholder { height: 300px; order: -1; margin-bottom: -40px; } /* Pull image up */
+        .tax-info-card { width: 90%; margin: 0 auto; box-shadow: 0 10px 20px rgba(0,0,0,0.1); padding: 1.5rem; }
+    }
+  </style>
 </head>
 <body>
-  <div class="container" style="padding: 4rem 1.5rem; text-align: center;">
-      <a href="../index.html" style="font-weight: 700; margin-bottom: 2rem; display: block;">&larr; Back to Home</a>
-      <h1>Tax & Compliance Services</h1>
-      <p style="margin-top: 1rem; color: #555;">This is a placeholder page for Tax & Compliance services detailed information.</p>
-  </div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">incozi.</a>
+      
+      <!-- Navbar Links (Desktop) -->
+      <nav class="main-nav" style="display: none;">
+          <ul class="nav-list" style="display: flex; gap: 1.5rem; list-style: none; align-items: center; margin: 0;">
+              <li class="nav-item">
+                  <a href="#" class="nav-link">Services & Pricing <i class="fa-solid fa-chevron-down"></i></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="incorporation.html">Incorporation</a></li>
+                      <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+                      <li><a href="bookkeeping.html">Bookkeeping</a></li>
+                      <li><a href="consultation.html">Consultation</a></li>
+                  </ul>
+              </li>
+              <li><a href="blog.html" class="nav-link">Blog</a></li>
+              <li><a href="my-services.html" class="nav-link">My Services</a></li>
+              <li><a href="account.html" class="nav-link" aria-label="My Account"><i class="fa-regular fa-user"></i></a></li>
+              <li><a href="cart.html" class="nav-link" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+          </ul>
+      </nav>
+
+      <!-- Menu Toggle (Hamburger) -->
+      <button class="menu-toggle custom-toggle" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </header>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar-overlay"></div>
+  <aside class="sidebar-menu">
+    <div class="sidebar-header-row">
+      <span class="sidebar-title">Menu</span>
+      <button class="sidebar-close" aria-label="Close Menu"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div class="sidebar-content">
+      <ul class="sidebar-nav-list">
+        
+        <!-- Services Section -->
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">Services & Pricing</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="consultation.html">Consultation</a></li>
+             <li><a href="incorporation.html">Incorporation</a></li>
+             <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+             <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          </ul>
+        </li>
+
+        <!-- About Section -->
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">About Us</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="#">Who We Are</a></li>
+             <li><a href="#">FAQs</a></li>
+             <li><a href="#">Contact Us</a></li>
+          </ul>
+        </li>
+
+        <!-- Blog Section -->
+        <li class="sidebar-group">
+          <a href="blog.html" class="sidebar-group-title" style="display:block; cursor:pointer;">Blog</a>
+        </li>
+
+        <li class="sidebar-divider"></li>
+
+        <!-- User Actions -->
+        <li><a href="account.html" class="sidebar-link-item"><i class="fa-regular fa-user"></i> My Account</a></li>
+        <li><a href="cart.html" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <!-- 1. Hero Section -->
+    <section class="tax-hero">
+        <div class="container">
+             <h1 class="main-title">US Corporate Tax, Demystified.</h1>
+             <div class="hero-layout">
+                 <div class="tax-info-card">
+                     <h3>Navigating US tax law shouldn't be a guessing game</h3>
+                     <p>With a tax code spanning millions of words and regulations that shift constantly, staying compliant is no small feat. From new BOI reporting standards to evolving state requirements, the landscape is complex. Mistakes can be costly—penalties for non-compliance can reach up to $25,000. We transform this complexity into a clear, manageable process for you.</p>
+                 </div>
+                 <div class="hero-image-placeholder">
+                      <!-- You can replace this inline style with a real <img> tag when you have one -->
+                      <!-- If you want a vector space placeholder as requested: -->
+                      <div style="width:100%; height:100%; background:rgba(0,0,0,0.05); display:flex; flex-direction:column; align-items:center; justify-content:center; color:#6b7280;">
+                         <i class="fa-regular fa-image" style="font-size:3rem; margin-bottom:1rem;"></i>
+                         <span style="font-weight:600;">Hero Image / Vector Space</span>
+                      </div>
+                 </div>
+             </div>
+        </div>
+    </section>
+
+    <!-- 2. Requirements Section -->
+    <section class="tax-requirements section-spacing">
+        <div class="container req-grid">
+             <div class="req-image">
+                 <!-- Vector Image Space -->
+                 <div style="width:100%; height:400px; background:#f0f9ff; display:flex; flex-direction:column; align-items:center; justify-content:center; border:2px dashed #bae6fd; color:#0284c7; border-radius: 12px;">
+                      <i class="fa-solid fa-clipboard-check" style="font-size:3rem; margin-bottom:1rem;"></i>
+                      <span style="font-weight:600;">Compliance Checklist Illustration</span>
+                 </div>
+             </div>
+             <div class="req-content">
+                 <h2>Annual Tax Filing is Mandatory</h2>
+                 <p>The IRS requires an informational return even if your US company had zero profit. However, for many international founders, the system offers distinct advantages:</p>
+                 <ul class="check-list">
+                     <li><i class="fa-solid fa-check"></i> Single Annual Deadline — Say goodbye to monthly paperwork.</li>
+                     <li><i class="fa-solid fa-check"></i> 100% Remote Filing — No US physical presence needed.</li>
+                     <li><i class="fa-solid fa-check"></i> Potential Tax Exemptions — Depending on your structure and activity.</li>
+                 </ul>
+                 <p class="highlight-text">Whether you owe taxes or not, correct filing is the key to protecting your business and maximizing legitimate refunds.</p>
+             </div>
+        </div>
+    </section>
+
+    <!-- 3. Why Us Section -->
+    <section class="why-us section-spacing">
+        <div class="container">
+            <h2>The Incozi Difference.</h2>
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="icon-box"><i class="fa-solid fa-chart-simple"></i></div>
+                    <h3>Unified Incorporation & Tax Strategy</h3>
+                    <p>We don't just file forms; we understand your entire business structure. This integrated approach ensures your compliance strategy perfectly matches your entity type.</p>
+                    <div class="quote">“Incozi turned a nightmare of tax forms into a simple checklist.” <br><span>— Global E-com Founder</span></div>
+                </div>
+                <div class="why-card">
+                    <div class="icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3>Bank-Grade Security & Digital Filing</h3>
+                    <p>Your data is encrypted with 256-bit security. Our platform makes uploading documents and reviewing returns as easy as sending an email, but far more secure.</p>
+                </div>
+            </div>
+            <div class="big-testimonial">
+                 <i class="fa-solid fa-quote-left"></i>
+                 <p>Their attention to detail effectively saved me from a costly error I made on my input sheet. They caught it, corrected it, and optimized my return. I wouldn't trust anyone else. — Digital Nomad LLC</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Existing Pricing Section -->
+    <section class="package-includes">
+        <div class="container">
+            <h2>Select Your Tax Package</h2>
+            <p class="package-subtitle">Choose the plan that matches your entity type. Annual billing simplified.</p>
+
+            <div class="pkg-tabs">
+                <button class="pkg-tab-btn active" onclick="openPkgTab(event, 'tax-single')">Single-Member LLC</button>
+                <button class="pkg-tab-btn" onclick="openPkgTab(event, 'tax-multi')">Multi-Member LLC</button>
+                <button class="pkg-tab-btn" onclick="openPkgTab(event, 'tax-corp')">C Corp / S Corp</button>
+            </div>
+
+            <div id="tax-single" class="pkg-content active">
+                <div class="pricing-card-lg">
+                    <div class="features-col">
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Form 5472 & 1120 Pro Forma Preparation</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> FBAR (FinCEN 114) Filing</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Registered Agent Service Renewal</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Annual State Report Filing</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Year-round Compliance Alerts</div>
+                    </div>
+                    <div class="price-col">
+                        <span class="big-price">$799</span>
+                        <p>/ year</p>
+                        <button class="btn btn-primary btn-block" onclick="addToCart('Tax Compliance - Single Member LLC', 799)">Subscribe &rarr;</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tax-multi" class="pkg-content">
+                <div class="pricing-card-lg">
+                    <div class="features-col">
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Form 1065 (Partnership Return)</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Schedule K-1s for Partners</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> FBAR (FinCEN 114) Filing</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Registered Agent Service Renewal</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Annual State Report Filing</div>
+                    </div>
+                    <div class="price-col">
+                        <span class="big-price">$1,249</span>
+                        <p>/ year</p>
+                        <button class="btn btn-primary btn-block" onclick="addToCart('Tax Compliance - Multi Member LLC', 1249)">Subscribe &rarr;</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tax-corp" class="pkg-content">
+                <div class="pricing-card-lg">
+                    <div class="features-col">
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Form 1120 (C Corp) or 1120S (S Corp)</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Form 5472 (if foreign owned)</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> FBAR (FinCEN 114) Filing</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Registered Agent Service Renewal</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Annual State Report Filing</div>
+                    </div>
+                    <div class="price-col">
+                        <span class="big-price">$1,249</span>
+                        <p>/ year</p>
+                        <button class="btn btn-primary btn-block" onclick="addToCart('Tax Compliance - Corp', 1249)">Subscribe &rarr;</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      
+      <!-- Brand & Address -->
+      <div class="footer-col brand-col">
+        <a href="../index.html" class="footer-logo">incozi.</a>
+        <p class="tagline">Dream Worldwide, <br>Launch Stateside</p>
+        
+        <div class="address-block">
+          <h4>Address</h4>
+          <p>347 5th Avenue</p>
+          <p>Suite 1402-171</p>
+          <p>New York, NY 10016, U.S.A.</p>
+        </div>
+
+        <div class="social-links">
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+        </div>
+      </div>
+
+      <!-- Services Links -->
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../index.html#services">Services & Pricing</a></li>
+          <li><a href="incorporation.html">Incorporation</a></li>
+          <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+          <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          <li><a href="#">Payroll</a></li>
+          <li><a href="consultation.html">Consultation</a></li>
+        </ul>
+      </div>
+
+      <!-- About Links -->
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Our Process</a></li>
+          <li><a href="#">In the Media</a></li>
+        </ul>
+      </div>
+
+      <!-- Useful Links -->
+      <div class="footer-col">
+        <h4>Useful Links</h4>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Login/Register</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+         <!-- Badge Placeholder -->
+        <div class="badge-placeholder">
+           <div style="background:#222; color:#fff; padding:10px; font-size:12px; text-align:center; border-radius:4px; margin-top:20px; font-family: sans-serif;">
+             THE AMERICAS<br>EMMAS<br>2025<br>HIGHLY COMMENDED
+           </div>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+  
+  <script src="../script.js"></script>
+  <script>
+      function openPkgTab(evt, pkgName) {
+          var i, tabcontent, tablinks;
+          tabcontent = document.getElementsByClassName("pkg-content");
+          for (i = 0; i < tabcontent.length; i++) {
+              tabcontent[i].classList.remove("active");
+          }
+          tablinks = document.getElementsByClassName("pkg-tab-btn");
+          for (i = 0; i < tablinks.length; i++) {
+              tablinks[i].classList.remove("active");
+          }
+          document.getElementById(pkgName).classList.add("active");
+          evt.currentTarget.classList.add("active");
+      }
+
+      function addToCart(itemName, price) {
+            let cart = JSON.parse(localStorage.getItem('incoziCart')) || [];
+            cart.push({ item: itemName, price: price, id: Date.now() });
+            localStorage.setItem('incoziCart', JSON.stringify(cart));
+            alert(itemName + " added to cart!");
+      }
+  </script>
 </body>
 </html>

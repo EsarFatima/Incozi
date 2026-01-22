@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkout | Incozi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .checkout-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 3rem;
+        align-items: start;
+    }
+    .form-section h3 {
+        margin-bottom: 1.5rem;
+        color: var(--text-100);
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--text-100);
+    }
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+    .form-control:focus {
+        border-color: var(--primary-200);
+        outline: none;
+    }
+    
+    .checkout-summary {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 1.5rem;
+        position: sticky;
+        top: 100px;
+    }
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+        color: var(--text-200);
+    }
+    .summary-total {
+        border-top: 2px solid #e5e7eb;
+        padding-top: 1rem;
+        margin-top: 1rem;
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-100);
+    }
+
+    @media (max-width: 768px) {
+        .checkout-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">incozi.</a>
+      
+      <!-- Navbar Links (Desktop) -->
+      <nav class="main-nav" style="display: none;">
+          <ul class="nav-list" style="display: flex; gap: 1.5rem; list-style: none; align-items: center; margin: 0;">
+              <li class="nav-item">
+                  <a href="#" class="nav-link">Services & Pricing <i class="fa-solid fa-chevron-down"></i></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="incorporation.html">Incorporation</a></li>
+                      <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+                      <li><a href="bookkeeping.html">Bookkeeping</a></li>
+                      <li><a href="consultation.html">Consultation</a></li>
+                  </ul>
+              </li>
+              <li><a href="blog.html" class="nav-link">Blog</a></li>
+              <li><a href="my-services.html" class="nav-link">My Services</a></li>
+              <li><a href="account.html" class="nav-link" aria-label="My Account"><i class="fa-regular fa-user"></i></a></li>
+              <li><a href="cart.html" class="nav-link" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+          </ul>
+      </nav>
+
+      <!-- Menu Toggle (Hamburger) -->
+      <button class="menu-toggle custom-toggle" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </header>
+
+   <!-- Sidebar Navigation -->
+  <div class="sidebar-overlay"></div>
+  <aside class="sidebar-menu">
+     <!-- Sidebar copied from other pages -->
+    <div class="sidebar-header-row">
+      <span class="sidebar-title">Menu</span>
+      <button class="sidebar-close" aria-label="Close Menu"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="sidebar-content">
+      <ul class="sidebar-nav-list">
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">Services & Pricing</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="consultation.html">Consultation</a></li>
+             <li><a href="incorporation.html">Incorporation</a></li>
+             <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+             <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          </ul>
+        </li>
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">About Us</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="#">Who We Are</a></li>
+             <li><a href="#">FAQs</a></li>
+             <li><a href="#">Contact Us</a></li>
+          </ul>
+        </li>
+        <li class="sidebar-group"><a href="#" class="sidebar-group-title" style="display:block; cursor:pointer;">Blog</a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="account.html" class="sidebar-link-item"><i class="fa-regular fa-user"></i> My Account</a></li>
+        <li><a href="cart.html" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="container" style="padding: 5rem 0; min-height: 80vh;">
+    <h1 style="margin-bottom: 2rem;">Secure Checkout</h1>
+    
+    <div class="checkout-grid">
+        
+        <!-- Left: Forms -->
+        <div class="checkout-forms">
+            
+            <form id="payment-form"> <!-- Start of form -->
+            
+            <div class="form-section">
+                <h3>Contact Information</h3>
+                <div class="form-group">
+                     <label>Email Address</label>
+                     <input type="email" id="email" required class="form-control" placeholder="you@company.com">
+                </div>
+            </div>
+
+            <div class="form-section" style="margin-top: 2rem;">
+                <h3>Billing Address</h3>
+                <div class="form-group">
+                    <label>Full Name (as on card)</label>
+                    <input type="text" id="name" required class="form-control" placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Street Address</label>
+                    <input type="text" id="address" required class="form-control" placeholder="123 Business St">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" id="city" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Zip Code</label>
+                        <input type="text" id="zip" required class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section" style="margin-top: 2rem;">
+                <h3>Payment Method</h3>
+                <div style="background: #f3f4f6; padding: 1.5rem; border-radius: 8px;">
+                    <div class="form-group">
+                        <label><i class="fa-regular fa-credit-card"></i> Card Number</label>
+                        <input type="text" id="card-element" required class="form-control" placeholder="0000 0000 0000 0000" maxlength="19">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Expiration</label>
+                            <input type="text" id="expiry" required class="form-control" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        <div class="form-group">
+                            <label>CVC</label>
+                            <input type="text" id="cvc" required class="form-control" placeholder="123" maxlength="3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </form>
+        </div>
+
+        <!-- Right: Order Summary -->
+        <div class="checkout-summary">
+           <h3>Order Summary</h3>
+           <div id="summary-items">
+               <!-- Items injected here -->
+           </div>
+           
+           <div class="summary-total">
+               <span>Total</span>
+               <span id="summary-total">$0.00</span>
+           </div>
+           
+           <button class="btn btn-primary btn-block" style="margin-top: 1.5rem;" id="confirm-payment-btn">
+               Confirm & Pay <span id="pay-btn-amount"></span>
+           </button>
+           
+           <div style="margin-top: 1rem; font-size: 0.8rem; color: #666; text-align: center;">
+               <i class="fa-solid fa-lock"></i> Payments are secure and encrypted.
+           </div>
+        </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      
+      <!-- Brand & Address -->
+      <div class="footer-col brand-col">
+        <a href="../index.html" class="footer-logo">incozi.</a>
+        <p class="tagline">Dream Worldwide, <br>Launch Stateside</p>
+        
+        <div class="address-block">
+          <h4>Address</h4>
+          <p>347 5th Avenue</p>
+          <p>Suite 1402-171</p>
+          <p>New York, NY 10016, U.S.A.</p>
+        </div>
+
+        <div class="social-links">
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+        </div>
+      </div>
+
+      <!-- Services Links -->
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../index.html#services">Services & Pricing</a></li>
+          <li><a href="incorporation.html">Incorporation</a></li>
+          <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+          <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          <li><a href="#">Payroll</a></li>
+          <li><a href="consultation.html">Consultation</a></li>
+        </ul>
+      </div>
+
+      <!-- About Links -->
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Our Process</a></li>
+          <li><a href="#">In the Media</a></li>
+        </ul>
+      </div>
+
+      <!-- Useful Links -->
+      <div class="footer-col">
+        <h4>Useful Links</h4>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Login/Register</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+         <!-- Badge Placeholder -->
+        <div class="badge-placeholder">
+           <div style="background:#222; color:#fff; padding:10px; font-size:12px; text-align:center; border-radius:4px; margin-top:20px; font-family: sans-serif;">
+             THE AMERICAS<br>EMMAS<br>2025<br>HIGHLY COMMENDED
+           </div>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <script src="../script.js"></script>
+  <script>
+    const API_URL = 'http://localhost:3000'; // Or your deployed URL
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const cart = JSON.parse(localStorage.getItem('incoziCart')) || [];
+        const summaryContainer = document.getElementById('summary-items');
+        const summaryTotalEl = document.getElementById('summary-total');
+        const payBtnAmountEl = document.getElementById('pay-btn-amount');
+        const payBtn = document.getElementById('confirm-payment-btn');
+
+        if (cart.length === 0) {
+            window.location.href = 'cart.html';
+            return;
+        }
+
+        let total = 0;
+        summaryContainer.innerHTML = '';
+        
+        cart.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'summary-item';
+            div.innerHTML = `<span>${item.item}</span> <span>$${item.price}</span>`;
+            summaryContainer.appendChild(div);
+            total += parseFloat(item.price);
+        });
+
+        const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+        const totalStr = formatter.format(total);
+        
+        summaryTotalEl.innerText = totalStr;
+        payBtnAmountEl.innerText = totalStr;
+
+        // Payment Logic
+        payBtn.addEventListener('click', async (e) => {
+           e.preventDefault();
+           
+           // Simple Validation
+           const name = document.getElementById('name').value;
+           const email = document.getElementById('email').value;
+           const card = document.getElementById('card-element').value;
+           
+           if(!name || !email || !card) {
+               alert('Please fill in all fields');
+               return;
+           }
+
+            payBtn.disabled = true;
+            payBtn.innerText = 'Processing...';
+
+           // Simulate API Call to /api/payments/checkout
+           // Note: The existing backend is single-plan focused. 
+           // For this demo, we'll just simulate a success message.
+           
+           try {
+                // To actually use the backend:
+                // const res = await fetch(`${API_URL}/api/payments/checkout`, { ... });
+                
+                // MOCK DELAY
+                await new Promise(r => setTimeout(r, 1500));
+                
+                // Success
+                alert('Payment Successful! Thank you for your business.');
+                localStorage.removeItem('incoziCart');
+                window.location.href = '../index.html';
+
+           } catch (err) {
+               console.error(err);
+               alert('Payment failed. Please try again.');
+               payBtn.disabled = false;
+               payBtn.innerText = `Confirm & Pay ${totalStr}`;
+           }
+        });
+    });
+  </script>
+</body>
+</html>

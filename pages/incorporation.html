@@ -3,16 +3,557 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Incozi - Incorporation</title>
+  <title>US Incorporation Services | Incozi</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../style.css">
+  <style>
+    /* Specific overrides for service pages */
+    .hero-service {
+      padding: 5rem 0 3rem;
+      text-align: left;
+      background: var(--bg-100);
+    }
+    .hero-service h1 {
+      font-size: 2.5rem;
+      color: var(--text-100);
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+    .hero-service p {
+      font-size: 1.125rem;
+      color: var(--text-200);
+      line-height: 1.7;
+      max-width: 700px;
+      margin-bottom: 2rem;
+    }
+    .hero-row {
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+    }
+    .hero-text { flex: 1; }
+    .hero-img { flex: 1; text-align: center; }
+    .hero-img img { max-width: 100%; height: auto; }
+
+    .package-includes {
+      background: var(--bg-200);
+      padding: 4rem 1.5rem;
+    }
+    .package-includes h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: var(--text-100);
+    }
+    .package-subtitle {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto 3rem;
+        color: var(--text-200);
+    }
+
+    /* Tabbed Interface for Packages */
+    .pkg-tabs {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        background: #e5e7eb;
+        padding: 0.5rem;
+        border-radius: 99px;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .pkg-tab-btn {
+        background: none;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 99px;
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--text-200);
+        transition: all 0.2s;
+    }
+    .pkg-tab-btn.active {
+        background: var(--accent-200);
+        color: #fff;
+    }
+
+    .pkg-content { display: none; }
+    .pkg-content.active { display: block; }
+    
+    .pricing-card-lg {
+        background: #fff;
+        border-radius: 12px;
+        padding: 3rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+    }
+    .features-col { flex: 2; }
+    .price-col { 
+        flex: 1; 
+        text-align: center;
+        border-left: 1px solid #e5e7eb;
+        padding-left: 2rem;
+    }
+    .feature-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+    }
+    .feature-item i { color: var(--accent-200); margin-top: 4px; }
+    .big-price {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--accent-200);
+        display: block;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Entity Cards */
+    .entity-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 4rem;
+    }
+    .entity-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        transition: transform 0.2s;
+    }
+    .entity-card:hover { transform: translateY(-5px); }
+    .highlights-badge {
+        background: var(--primary-100);
+        color: var(--accent-200);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 600;
+        display: inline-block;
+        margin: 1.5rem 0;
+        width: 100%;
+    }
+    .tax-benefits .highlight-blue {
+        background: var(--primary-100); color: var(--accent-200); font-weight:700;
+        padding: 0.5rem 1rem; border-radius: 99px; display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .hero-row { flex-direction: column; }
+        .hero-service { text-align: center; }
+        .hero-service p { margin: 0 auto 2rem; }
+        .pricing-card-lg { flex-direction: column; text-align: center; }
+        .price-col { border-left: none; border-top: 1px solid #e5e7eb; padding-left: 0; padding-top: 2rem; }
+        .feature-item { justify-content: flex-start; text-align: left; }
+    }
+  </style>
 </head>
 <body>
-  <div class="container" style="padding: 4rem 1.5rem; text-align: center;">
-      <a href="../index.html" style="font-weight: 700; margin-bottom: 2rem; display: block;">&larr; Back to Home</a>
-      <h1>US Incorporation Services</h1>
-      <p style="margin-top: 1rem; color: #555;">This is a placeholder page for Incorporation services detailed information.</p>
-  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">incozi.</a>
+      
+      <!-- Navbar Links (Desktop) -->
+      <nav class="main-nav" style="display: none;">
+          <ul class="nav-list" style="display: flex; gap: 1.5rem; list-style: none; align-items: center; margin: 0;">
+              <li class="nav-item">
+                  <a href="#" class="nav-link">Services & Pricing <i class="fa-solid fa-chevron-down"></i></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="incorporation.html">Incorporation</a></li>
+                      <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+                      <li><a href="bookkeeping.html">Bookkeeping</a></li>
+                      <li><a href="consultation.html">Consultation</a></li>
+                  </ul>
+              </li>
+              <li><a href="blog.html" class="nav-link">Blog</a></li>
+              <li><a href="my-services.html" class="nav-link">My Services</a></li>
+              <li><a href="account.html" class="nav-link" aria-label="My Account"><i class="fa-regular fa-user"></i></a></li>
+              <li><a href="cart.html" class="nav-link" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+          </ul>
+      </nav>
+
+      <!-- Menu Toggle (Hamburger) -->
+      <button class="menu-toggle custom-toggle" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </header>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar-overlay"></div>
+  <aside class="sidebar-menu">
+    <div class="sidebar-header-row">
+      <span class="sidebar-title">Menu</span>
+      <button class="sidebar-close" aria-label="Close Menu"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div class="sidebar-content">
+      <ul class="sidebar-nav-list">
+        
+        <!-- Services Section -->
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">Services & Pricing</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="consultation.html">Consultation</a></li>
+             <li><a href="incorporation.html">Incorporation</a></li>
+             <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+             <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          </ul>
+        </li>
+
+        <!-- About Section -->
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">About Us</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="#">Who We Are</a></li>
+             <li><a href="#">FAQs</a></li>
+             <li><a href="#">Contact Us</a></li>
+          </ul>
+        </li>
+
+        <!-- Blog Section -->
+        <li class="sidebar-group">
+          <a href="blog.html" class="sidebar-group-title" style="display:block; cursor:pointer;">Blog</a>
+        </li>
+
+        <li class="sidebar-divider"></li>
+
+        <!-- User Actions -->
+        <li><a href="account.html" class="sidebar-link-item"><i class="fa-regular fa-user"></i> My Account</a></li>
+        <li><a href="cart.html" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <!-- Hero Service -->
+    <section class="hero-service container">
+        <div class="hero-row">
+            <div class="hero-text">
+                <h1>US company setup <br><span style="color:var(--accent-200);">easy and painless</span></h1>
+                <p>
+                    Starting a business in the US could be your smartest move yet. Whether you need flexibility, want to attract investors, or are looking for tax advantages, there’s an entity type that fits your needs — LLC, C Corp, or S Corp. Incozi makes the formation process simple, compliant, and fast.
+                </p>
+                <p>
+                    Incorrect filings or missed deadlines can lead to fines and legal issues. We ensure everything is done right the first time, from state filings to EIN acquisition.
+                </p>
+            </div>
+            <div class="hero-img">
+                 <!-- Placeholder for vector graphic -->
+                 <div style="background:#f0f9ff; height:300px; width:100%; border-radius:12px; display:flex; align-items:center; justify-content:center; border: 2px dashed #bae6fd;">
+                    <span style="color:var(--accent-200); font-weight:600;">Vector Image Space</span>
+                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Entity Types Grid -->
+    <section class="container" style="padding-bottom: 5rem;">
+        <h2 style="text-align: center; margin-bottom: 1rem;">Which US business entity is right for you?</h2>
+        <p style="text-align: center; color:var(--text-200); margin-bottom: 3rem;">Main features and benefits of each entity form.</p>
+
+        <div class="entity-grid">
+            <!-- LLC Card -->
+            <div class="entity-card">
+                <h3>Limited Liability Company (LLC)</h3>
+                <p style="font-size:0.9rem; margin-top:0.5rem; color:#666;">Single-member (one owner) or multi-member (2+ owners)</p>
+                
+                <div class="highlights-badge"><i class="fa-regular fa-file-lines"></i> Key highlights</div>
+                
+                <ul style="text-align:left; list-style:disc; padding-left:1.5rem; color:var(--text-200); line-height:1.8;">
+                    <li>Fast setup</li>
+                    <li>Low maintenance fees</li>
+                    <li>Different tax filings for single vs multi-member</li>
+                    <li>Can be tax-free for foreigners (under specific conditions)</li>
+                </ul>
+            </div>
+
+            <!-- C Corp Card -->
+            <div class="entity-card">
+                <h3>C Corporation (C Corp)</h3>
+                <p style="font-size:0.9rem; margin-top:0.5rem; color:#666;">One or more shareholders (owners)</p>
+                
+                <div class="highlights-badge"><i class="fa-regular fa-file-lines"></i> Key highlights</div>
+                
+                <ul style="text-align:left; list-style:disc; padding-left:1.5rem; color:var(--text-200); line-height:1.8;">
+                    <li>Fast setup</li>
+                    <li>Optimized for raising capital from investors</li>
+                    <li>More complex tax filing</li>
+                    <li>Double taxation (corporate + dividend), but can be optimized</li>
+                </ul>
+            </div>
+
+            <!-- S Corp Card -->
+            <div class="entity-card">
+                <h3>S Corporation Election (S Corp)</h3>
+                <p style="font-size:0.9rem; margin-top:0.5rem; color:#666;">One or more shareholders, must be US persons</p>
+                
+                <div class="highlights-badge"><i class="fa-regular fa-file-lines"></i> Key highlights</div>
+                
+                <ul style="text-align:left; list-style:disc; padding-left:1.5rem; color:var(--text-200); line-height:1.8;">
+                    <li>Requires an LLC or Corp to elect S Corp status</li>
+                    <li>Pass-through taxation (no corporate tax)</li>
+                    <li>Can save on self-employment taxes</li>
+                    <li>Requires payroll setup for owners</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Package Included Section -->
+    <section class="package-includes">
+        <div class="container">
+            <h2>What is included in the Incorporation package</h2>
+            <p class="package-subtitle">Everything you need to set up your US company correctly, including documents specific for the type of company.</p>
+
+            <!-- Tabs -->
+            <div class="pkg-tabs">
+                <button class="pkg-tab-btn active" onclick="openPkgTab(event, 'pkg-single')">Single-Member LLC</button>
+                <button class="pkg-tab-btn" onclick="openPkgTab(event, 'pkg-multi')">Multi-Member LLC</button>
+                <button class="pkg-tab-btn" onclick="openPkgTab(event, 'pkg-ccorp')">C Corp</button>
+                <button class="pkg-tab-btn" onclick="openPkgTab(event, 'pkg-scorp')">S Corp</button>
+            </div>
+
+            <!-- Single Member LLC Content -->
+            <div id="pkg-single" class="pkg-content active">
+                <div class="pricing-card-lg">
+                    <div class="features-col">
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Company registration in Wyoming</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Consultation with an incorporation specialist</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Employer Identification Number (EIN) registration</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Articles of Organization</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Operating Agreement</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> 1st year registered agent service (Wyoming)</div>
+                    </div>
+                    <div class="price-col">
+                        <span class="big-price">$899</span>
+                        <p>(one-time fee)</p>
+                        <button class="btn btn-primary btn-block" onclick="addToCart('Incorporation - Single Member LLC', 899)">Buy &rarr;</button>
+                    </div>
+                </div>
+            </div>
+
+             <!-- Multi Member LLC Content -->
+             <div id="pkg-multi" class="pkg-content">
+                <div class="pricing-card-lg">
+                    <div class="features-col">
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Company registration in Wyoming</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Consultation with an incorporation specialist</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> EIN registration (Multi-member partnership)</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Articles of Organization</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Multi-Member Operating Agreement</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> 1st year registered agent service (Wyoming)</div>
+                    </div>
+                    <div class="price-col">
+                        <span class="big-price">$899</span>
+                        <p>(one-time fee)</p>
+                        <button class="btn btn-primary btn-block" onclick="addToCart('Incorporation - Multi Member LLC', 899)">Buy &rarr;</button>
+                    </div>
+                </div>
+            </div>
+
+             <!-- C Corp Content -->
+             <div id="pkg-ccorp" class="pkg-content">
+                <div class="pricing-card-lg">
+                    <div class="features-col">
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Company registration in Wyoming</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Consultation with an incorporation specialist</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> EIN registration</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Articles of Incorporation</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Corporate Bylaws & Shareholder Agreement Templates</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> 1st year registered agent service (Wyoming)</div>
+                    </div>
+                    <div class="price-col">
+                        <span class="big-price">$899</span>
+                        <p>(one-time fee)</p>
+                        <button class="btn btn-primary btn-block" onclick="addToCart('Incorporation - C Corp', 899)">Buy &rarr;</button>
+                    </div>
+                </div>
+            </div>
+
+             <!-- S Corp Content -->
+             <div id="pkg-scorp" class="pkg-content">
+                <div class="pricing-card-lg">
+                    <div class="features-col">
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Company registration in Wyoming</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Consultation with an incorporation specialist</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> EIN registration</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> S Corp Election (Form 2553) Filing</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> Articles of Organization/Incorporation</div>
+                        <div class="feature-item"><i class="fa-solid fa-circle-check"></i> 1st year registered agent service (Wyoming)</div>
+                    </div>
+                    <div class="price-col">
+                        <span class="big-price">$899</span>
+                        <p>(one-time fee)</p>
+                        <button class="btn btn-primary btn-block" onclick="addToCart('Incorporation - S Corp', 899)">Buy &rarr;</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Tax Benefits Section -->
+    <section class="container tax-benefits" style="padding: 5rem 0;">
+        <div class="entity-grid">
+            <!-- LLC Tax -->
+            <div class="entity-card" style="text-align: left;">
+                <div class="highlight-blue"><i class="fa-solid fa-dollar-sign"></i> Tax benefits</div>
+                <ul style="list-style:disc; padding-left:1.5rem; color:var(--text-200); line-height:1.6;">
+                    <li>Foreign-owned LLCs can be tax-free in the US in certain situations (no ECI).</li>
+                    <li>No tax due on the company level (pass-through taxation).</li>
+                    <li>All profit is taxed as personal income of the member(s).</li>
+                    <li>US residents/citizens pay self-employment tax on entire net profit.</li>
+                </ul>
+                <div class="highlight-blue" style="margin-top:2rem;"><i class="fa-solid fa-user-group"></i> Who benefits</div>
+                <p>Foreign-owned small businesses without effectively connected income.</p>
+            </div>
+
+            <!-- C Corp Tax -->
+            <div class="entity-card" style="text-align: left;">
+                <div class="highlight-blue"><i class="fa-solid fa-dollar-sign"></i> Tax benefits</div>
+                <ul style="list-style:disc; padding-left:1.5rem; color:var(--text-200); line-height:1.6;">
+                    <li>Non-US online sellers (dropshippers, Amazon, Shopify) may achieve better tax optimization.</li>
+                    <li>Business profits are taxed at the corporate level (flat 21%).</li>
+                    <li>Investors only pay tax on dividends distributed.</li>
+                </ul>
+                <div class="highlight-blue" style="margin-top:2rem;"><i class="fa-solid fa-user-group"></i> Who benefits</div>
+                <p>Businesses that want to raise capital and scale significantly.</p>
+            </div>
+
+            <!-- S Corp Tax -->
+            <div class="entity-card" style="text-align: left;">
+                <div class="highlight-blue"><i class="fa-solid fa-dollar-sign"></i> Tax benefits</div>
+                <ul style="list-style:disc; padding-left:1.5rem; color:var(--text-200); line-height:1.6;">
+                    <li>S Corp shareholder must take a reasonable salary (paying payroll taxes).</li>
+                    <li>Pass-through profits (distributions) are exempt from self-employment taxes.</li>
+                    <li>Both salary and pass-through profits are subject to income taxes.</li>
+                </ul>
+                <div class="highlight-blue" style="margin-top:2rem;"><i class="fa-solid fa-user-group"></i> Who benefits</div>
+                <p>American business owners with annual profits >$45,000 looking to save on SE tax.</p>
+            </div>
+        </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      
+      <!-- Brand & Address -->
+      <div class="footer-col brand-col">
+        <a href="../index.html" class="footer-logo">incozi.</a>
+        <p class="tagline">Dream Worldwide, <br>Launch Stateside</p>
+        
+        <div class="address-block">
+          <h4>Address</h4>
+          <p>347 5th Avenue</p>
+          <p>Suite 1402-171</p>
+          <p>New York, NY 10016, U.S.A.</p>
+        </div>
+
+        <div class="social-links">
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+        </div>
+      </div>
+
+      <!-- Services Links -->
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../index.html#services">Services & Pricing</a></li>
+          <li><a href="incorporation.html">Incorporation</a></li>
+          <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+          <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          <li><a href="#">Payroll</a></li>
+          <li><a href="consultation.html">Consultation</a></li>
+        </ul>
+      </div>
+
+      <!-- About Links -->
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Our Process</a></li>
+          <li><a href="#">In the Media</a></li>
+        </ul>
+      </div>
+
+      <!-- Useful Links -->
+      <div class="footer-col">
+        <h4>Useful Links</h4>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Login/Register</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+         <!-- Badge Placeholder -->
+        <div class="badge-placeholder">
+           <div style="background:#222; color:#fff; padding:10px; font-size:12px; text-align:center; border-radius:4px; margin-top:20px; font-family: sans-serif;">
+             THE AMERICAS<br>EMMAS<br>2025<br>HIGHLY COMMENDED
+           </div>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <script src="../script.js"></script>
+  <script>
+      function openPkgTab(evt, pkgName) {
+          var i, tabcontent, tablinks;
+          tabcontent = document.getElementsByClassName("pkg-content");
+          for (i = 0; i < tabcontent.length; i++) {
+              tabcontent[i].style.display = "none";
+              tabcontent[i].classList.remove("active");
+          }
+          tablinks = document.getElementsByClassName("pkg-tab-btn");
+          for (i = 0; i < tablinks.length; i++) {
+              tablinks[i].className = tablinks[i].className.replace(" active", "");
+          }
+          document.getElementById(pkgName).style.display = "block";
+          document.getElementById(pkgName).classList.add("active");
+          evt.currentTarget.className += " active";
+      }
+
+      function addToCart(itemName, price) {
+            // Retrieve existing cart or init
+            let cart = JSON.parse(localStorage.getItem('incoziCart')) || [];
+            
+            // Add new item
+            cart.push({
+                item: itemName,
+                price: price,
+                id: Date.now() // Simple unique ID
+            });
+            
+            // Save back
+            localStorage.setItem('incoziCart', JSON.stringify(cart));
+            
+            // Redirect to cart page (currently dashboard or a dedicated cart page)
+            // For now, let's assume we go to a checkout or just alert
+            alert(itemName + " added to cart!");
+            // window.location.href = 'cart.html'; // Uncomment when cart page exists
+      }
+  </script>
 </body>
 </html>

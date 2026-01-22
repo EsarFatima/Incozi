@@ -3,16 +3,468 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Incozi - Bookkeeping</title>
+  <title>Bookkeeping Services | Incozi</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../style.css">
+  <style>
+    /* Service Pages Shared Styles */
+    .hero-service { padding: 5rem 0 3rem; text-align: left; background: var(--bg-100); }
+    .hero-service h1 { font-size: 2.5rem; color: var(--text-100); margin-bottom: 1.5rem; line-height: 1.2; }
+    .hero-service p { font-size: 1.125rem; color: var(--text-200); line-height: 1.7; max-width: 700px; margin-bottom: 2rem; }
+    
+    /* Global Section Spacing */
+    .section-spacing { padding: 5rem 0; }
+    
+    /* Bookkeeping Layout */
+    .bk-hero-title { text-align: center; margin-bottom: 4rem; padding-top: 2rem; }
+    .bk-hero-title h1 { color: #312e81; font-size: 2.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+    
+    .bk-split-section { display: flex; align-items: center; gap: 4rem; margin-bottom: 2rem; }
+    .bk-text { flex: 1; }
+    .bk-image { flex: 1; }
+    
+    .bk-text h3 { color: #312e81; font-size: 1.75rem; margin-bottom: 1.5rem; line-height: 1.3; font-weight: 600; }
+    .bk-text p { color: #4b5563; line-height: 1.7; margin-bottom: 1.5rem; font-size: 1.05rem; }
+    .bk-highlight { font-weight: 600; color: #312e81; font-style: italic; }
+
+    /* Vector Placeholder Styling */
+    .vector-placeholder {
+        width: 100%;
+        height: 400px;
+        background: #f0f9ff;
+        border: 2px dashed #bae6fd;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #0ea5e9;
+        transition: all 0.3s;
+    }
+    .vector-placeholder:hover { background: #e0f2fe; border-color: #0ea5e9; }
+    .vector-placeholder i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.7; }
+    .vector-placeholder span { font-weight: 600; letter-spacing: 0.5px; }
+
+    /* Why Us (Reused) */
+    .why-us { background: #fff; }
+    .why-us h2 { font-size: 2.5rem; color: #312e81; margin-bottom: 2rem; }
+    .why-grid { display: flex; gap: 2rem; margin-bottom: 2rem; }
+    .why-card { flex: 1; background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #f3f4f6; }
+    .icon-box { width: 50px; height: 50px; background: #e0f2fe; color: #0ea5e9; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.5rem; }
+    .why-card h3 { color: #312e81; margin-bottom: 1rem; font-size: 1.25rem; }
+    .why-card p { color: #6b7280; line-height: 1.6; margin-bottom: 1.5rem; }
+    .quote { border-left: 3px solid #ddd; padding-left: 1rem; font-style: italic; color: #312e81; font-weight: 500; }
+    .quote span { display: block; margin-top: 0.5rem; font-size: 0.9rem; color: #6b7280; font-style: normal; }
+    
+    .big-testimonial { background: #f0fdf4; padding: 2rem; border-radius: 12px; display: flex; gap: 1rem; align-items: flex-start; }
+    .big-testimonial i { font-size: 2rem; color: #312e81; opacity: 0.3; }
+    .big-testimonial p { color: #312e81; font-size: 1.1rem; line-height: 1.6; font-weight: 500; }
+
+    /* Pricing & Toggle */
+    .pricing-table-container { padding: 4rem 1.5rem; background: #f9fafb; text-align: center; }
+    .pricing-table-container h2 { color: #312e81; font-size: 2.5rem; margin-bottom: 1rem; }
+    
+    .pricing-toggle { display: flex; align-items: center; justify-content: center; margin-bottom: 3rem; gap: 1rem; margin-top: 2rem; }
+    .toggle-label { font-size: 1.1rem; font-weight: 600; color: var(--text-200); cursor: pointer; transition: 0.3s; }
+    .toggle-label.active { color: #312e81; }
+    .toggle-switch { 
+        width: 60px; height: 32px; background: #e5e7eb; border-radius: 32px; 
+        position: relative; cursor: pointer; transition: 0.3s; 
+    }
+    .toggle-switch::after { 
+        content: ''; width: 26px; height: 26px; background: #fff; border-radius: 50%; 
+        position: absolute; top: 3px; left: 3px; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .toggle-switch.year-mode { background: #312e81; }
+    .toggle-switch.year-mode::after { transform: translateX(28px); }
+
+    .pricing-grid { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+    .price-card { 
+        background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 2rem; 
+        width: 320px; text-align: left; display: flex; flex-direction: column; 
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: 0.3s;
+    }
+    .price-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+    .price-card.popular { border: 2px solid #312e81; position: relative; }
+    .pop-tag { 
+        position: absolute; top: -12px; right: 2rem; background: #312e81; color: #fff; 
+        padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; 
+    }
+    
+    .pc-header { margin-bottom: 1.5rem; }
+    .pc-title { font-size: 1.25rem; font-weight: 700; color: #312e81; }
+    .pc-price { display: flex; align-items: baseline; margin-top: 1rem; }
+    .currency { font-size: 1.5rem; font-weight: 600; color: #312e81; }
+    .amount { font-size: 2.5rem; font-weight: 800; color: #312e81; }
+    .period { color: #6b7280; margin-left: 0.5rem; }
+    
+    .pc-features { list-style: none; padding: 0; margin: 0 0 2rem 0; flex-grow: 1; }
+    .pc-features li { display: flex; gap: 0.75rem; margin-bottom: 0.75rem; color: #4b5563; font-size: 0.95rem; }
+    .pc-features i { color: #10b981; margin-top: 4px; }
+    
+    .save-badge { 
+        display: inline-block; background: #dcfce7; color: #166534; font-size: 0.8rem; 
+        font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-left: 0.5rem;
+        opacity: 0; transition: 0.3s;
+    }
+    .save-badge.visible { opacity: 1; }
+
+    @media (max-width: 900px) {
+        .bk-split-section { flex-direction: column; }
+        .bk-split-section.reverse { flex-direction: column-reverse; } /* Maintain image top on mobile if desired, or content top */
+        .bk-hero-title h1 { font-size: 2rem; }
+        .pricing-grid { flex-direction: column; align-items: center; }
+        .price-card { width: 100%; max-width: 350px; }
+        
+        /* Force flow top-to-bottom */
+        .bk-split-section { flex-direction: column !important; }
+        .bk-image { width: 100%; margin-bottom: 2rem; }
+        .bk-image.vector-placeholder { height: 300px; }
+    }
+  </style>
 </head>
 <body>
-  <div class="container" style="padding: 4rem 1.5rem; text-align: center;">
-      <a href="../index.html" style="font-weight: 700; margin-bottom: 2rem; display: block;">&larr; Back to Home</a>
-      <h1>Bookkeeping Services</h1>
-      <p style="margin-top: 1rem; color: #555;">This is a placeholder page for Bookkeeping services detailed information.</p>
-  </div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">incozi.</a>
+      
+      <!-- Navbar Links (Desktop) -->
+      <nav class="main-nav" style="display: none;">
+          <ul class="nav-list" style="display: flex; gap: 1.5rem; list-style: none; align-items: center; margin: 0;">
+              <li class="nav-item">
+                  <a href="#" class="nav-link">Services & Pricing <i class="fa-solid fa-chevron-down"></i></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="incorporation.html">Incorporation</a></li>
+                      <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+                      <li><a href="bookkeeping.html">Bookkeeping</a></li>
+                      <li><a href="consultation.html">Consultation</a></li>
+                  </ul>
+              </li>
+              <li><a href="blog.html" class="nav-link">Blog</a></li>
+              <li><a href="my-services.html" class="nav-link">My Services</a></li>
+              <li><a href="account.html" class="nav-link" aria-label="My Account"><i class="fa-regular fa-user"></i></a></li>
+              <li><a href="cart.html" class="nav-link" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+          </ul>
+      </nav>
+
+      <!-- Menu Toggle (Hamburger) -->
+      <button class="menu-toggle custom-toggle" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </header>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar-overlay"></div>
+  <aside class="sidebar-menu">
+    <div class="sidebar-header-row">
+      <span class="sidebar-title">Menu</span>
+      <button class="sidebar-close" aria-label="Close Menu"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div class="sidebar-content">
+      <ul class="sidebar-nav-list">
+        
+        <!-- Services Section -->
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">Services & Pricing</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="consultation.html">Consultation</a></li>
+             <li><a href="incorporation.html">Incorporation</a></li>
+             <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+             <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          </ul>
+        </li>
+
+        <!-- About Section -->
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">About Us</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="#">Who We Are</a></li>
+             <li><a href="#">FAQs</a></li>
+             <li><a href="#">Contact Us</a></li>
+          </ul>
+        </li>
+
+        <!-- Blog Section -->
+        <li class="sidebar-group">
+          <a href="blog.html" class="sidebar-group-title" style="display:block; cursor:pointer;">Blog</a>
+        </li>
+
+        <li class="sidebar-divider"></li>
+
+        <!-- User Actions -->
+        <li><a href="account.html" class="sidebar-link-item"><i class="fa-regular fa-user"></i> My Account</a></li>
+        <li><a href="cart.html" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+      </ul>
+    </div>
+  </aside>
+
+    <!-- 1. Centered Hero Section -->
+    <section class="section-spacing container" style="padding-bottom: 2rem;">
+        <div class="bk-hero-title">
+            <h1>Organized finances, smarter moves — No hidden shocks</h1>
+            <p style="max-width: 700px; margin: 1rem auto; color: var(--text-200); font-size: 1.15rem; line-height: 1.6;">
+                Bookkeeping isn't just about compliance; it's the heartbeat of your business growth. Without accurate records, you're navigating without a map. We ensure your financial data is pristine, tax-ready, and strategically useful — helping you avoid penalties and seize opportunities.
+            </p>
+        </div>
+        <div class="bk-split-section">
+            <div class="bk-image">
+                 <!-- Vector Image Space: Folder/Stack -->
+                 <div class="vector-placeholder">
+                      <i class="fa-solid fa-folder-open"></i>
+                      <span>Chart/Graph Illustration Space</span>
+                 </div>
+            </div>
+            <div class="bk-text">
+                <h3>Don't let messy books hold your business back</h3>
+                <p>Maintaining financial order is essential for operational stability. Disorganized records often lead to missed deductions, IRS complications, and blind decision-making. We take that burden off your shoulders.</p>
+                <p class="bk-highlight">Many founders only realize the value of professional bookkeeping when tax season panic sets in. We keep you prepared all year long.</p>
+                <p>Running a US business from overseas has its own set of challenges. Incozi bridges that gap, giving you the peace of mind to focus on your product.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Streamlined Section -->
+    <section class="section-spacing container" style="background: #fff;">
+         <div class="bk-split-section">
+             <div class="bk-text">
+                <h3>A unified approach to Tax & Bookkeeping</h3>
+                <p>Incozi provides a cohesive financial ecosystem where your bookkeeping and tax filing talk to each other. By housing both services under one roof, you eliminate the friction of coordinating multiple vendors and ensure nothing slips through the cracks.</p>
+                <ul class="feature-list-simple" style="margin-top:1rem;">
+                    <li><i class="fa-solid fa-check"></i> Real-time financial visibility</li>
+                    <li><i class="fa-solid fa-check"></i> Proactive compliance monitoring</li>
+                    <li><i class="fa-solid fa-check"></i> Meaningful monthly insights</li>
+                </ul>
+             </div>
+             <div class="bk-image">
+                 <!-- Vector Image Space: Checklist -->
+                 <div class="vector-placeholder" style="border-color: #a78bfa; background: #f5f3ff; color: #7c3aed;">
+                      <i class="fa-solid fa-list-check"></i>
+                      <span>Workflow Illustration Space</span>
+                 </div>
+             </div>
+         </div>
+    </section>
+
+    <!-- 3. Why Us Section -->
+    <section class="why-us section-spacing">
+        <div class="container">
+            <h2>The Incozi Advantage</h2>
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="icon-box"><i class="fa-solid fa-chart-simple"></i></div>
+                    <h3>Connected Financial Teams</h3>
+                    <p>Our incorporation and accounting experts collaborate to keep your entity compliant, removing the silos that often cause administrative headaches.</p>
+                    <div class="quote">“They helped me untangle a year's worth of transactions in days.” <br><span>— Sarah J., Tech Founder</span></div>
+                </div>
+                <div class="why-card">
+                    <div class="icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3>Digital-First Security</h3>
+                    <p>Access your documents anytime through our secure portal. We use bank-grade encryption to ensure your sensitive financial data remains private and protected.</p>
+                </div>
+            </div>
+            <div class="big-testimonial">
+                 <i class="fa-solid fa-quote-left"></i>
+                 <p>Incozi's bookkeeping team is incredibly professional. They don't just record numbers; they explain the 'why' behind complex US tax implications. Highly recommended! — Nexus Ventures LLC</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Pricing with Tabs -->
+    <section class="pricing-table-container">
+        <div class="container">
+            <h2>Bookkeeping Plans</h2>
+            
+            <!-- Tab Style Toggle -->
+            <div class="tabs-header" style="background: #e5e7eb; border-radius: 99px; display: inline-flex; margin: 2rem auto 3rem;">
+                <button class="tab-btn active" id="btn-monthly" onclick="setPricing('monthly')" style="border-radius: 99px;">Monthly</button>
+                <button class="tab-btn" id="btn-yearly" onclick="setPricing('yearly')" style="border-radius: 99px;">Yearly <span class="save-badge visible" style="margin-left:5px; font-size: 0.75rem;">1 Month Free</span></button>
+            </div>
+
+            <div class="pricing-grid">
+                <!-- Mini -->
+                <div class="price-card">
+                    <div class="pc-header">
+                        <div class="pc-title">Mini</div>
+                        <div class="pc-price">
+                             <span class="currency">$</span>
+                             <span class="amount" data-monthly="179" data-yearly="1,969">179</span>
+                             <span class="period">/mo</span>
+                        </div>
+                    </div>
+                    <ul class="pc-features">
+                         <li><i class="fa-solid fa-check"></i> Up to 2 Accounts</li>
+                         <li><i class="fa-solid fa-check"></i> Quarterly Reports</li>
+                         <li><i class="fa-solid fa-check"></i> 600 Trans. / quarter</li>
+                         <li><i class="fa-solid fa-check"></i> Cash Basis</li>
+                    </ul>
+                    <button class="btn btn-outline btn-block" onclick="addToCartCombined(this, 'Bookkeeping - Mini')">Select Mini</button>
+                </div>
+
+                <!-- Starter -->
+                <div class="price-card popular">
+                    <div class="pop-tag">MOST POPULAR</div>
+                    <div class="pc-header">
+                        <div class="pc-title">Starter</div>
+                        <div class="pc-price">
+                             <span class="currency">$</span>
+                             <span class="amount" data-monthly="249" data-yearly="2,739">249</span>
+                             <span class="period">/mo</span>
+                        </div>
+                    </div>
+                    <ul class="pc-features">
+                         <li><i class="fa-solid fa-check"></i> Up to 4 Accounts</li>
+                         <li><i class="fa-solid fa-check"></i> Monthly Reports</li>
+                         <li><i class="fa-solid fa-check"></i> 250 Trans. / month</li>
+                         <li><i class="fa-solid fa-check"></i> Multi-Currency</li>
+                    </ul>
+                    <button class="btn btn-primary btn-block" onclick="addToCartCombined(this, 'Bookkeeping - Starter')">Select Starter</button>
+                </div>
+
+                <!-- Pro -->
+                <div class="price-card">
+                    <div class="pc-header">
+                        <div class="pc-title">Pro</div>
+                        <div class="pc-price">
+                             <span class="currency">$</span>
+                             <span class="amount" data-monthly="499" data-yearly="5,489">499</span>
+                             <span class="period">/mo</span>
+                        </div>
+                    </div>
+                    <ul class="pc-features">
+                         <li><i class="fa-solid fa-check"></i> Cash or Accrual</li>
+                         <li><i class="fa-solid fa-check"></i> Up to 6 Accounts</li>
+                         <li><i class="fa-solid fa-check"></i> 500 Trans. / month</li>
+                         <li><i class="fa-solid fa-check"></i> Invoicing & Billing</li>
+                    </ul>
+                    <button class="btn btn-outline btn-block" onclick="addToCartCombined(this, 'Bookkeeping - Pro')">Select Pro</button>
+                </div>
+            </div>
+            
+            <p style="margin-top:2rem; color:var(--text-200); font-size:0.9rem;">
+                * All plans include QuickBooks subscription.
+            </p>
+        </div>
+    </section>
+
+    <!-- Pricing Toggle Script -->
+    <script>
+        let isYearly = false;
+
+        function setPricing(mode) {
+            isYearly = (mode === 'yearly');
+            
+            const btnMonthly = document.getElementById('btn-monthly');
+            const btnYearly = document.getElementById('btn-yearly');
+            const amounts = document.querySelectorAll('.amount');
+            const periods = document.querySelectorAll('.period');
+            
+            if(isYearly) {
+                btnMonthly.classList.remove('active');
+                btnYearly.classList.add('active');
+                
+                amounts.forEach(el => el.innerText = el.dataset.yearly);
+                periods.forEach(el => el.innerText = '/yr');
+            } else {
+                btnMonthly.classList.add('active');
+                btnYearly.classList.remove('active');
+                
+                amounts.forEach(el => el.innerText = el.dataset.monthly);
+                periods.forEach(el => el.innerText = '/mo');
+            }
+        }
+
+        function addToCartCombined(btn, title) {
+            const card = btn.closest('.price-card');
+            const priceText = card.querySelector('.amount').innerText;
+            const price = parseInt(priceText.replace(/,/g, ''));
+            const period = isYearly ? ' (Yearly)' : ' (Monthly)';
+            
+            if(window.addToCart) {
+                addToCart(title + period, price);
+            } else {
+                alert('Add to Cart system not available.');
+            }
+        }
+    </script>
+  </main>
+  
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      
+      <!-- Brand & Address -->
+      <div class="footer-col brand-col">
+        <a href="../index.html" class="footer-logo">incozi.</a>
+        <p class="tagline">Dream Worldwide, <br>Launch Stateside</p>
+        
+        <div class="address-block">
+          <h4>Address</h4>
+          <p>347 5th Avenue</p>
+          <p>Suite 1402-171</p>
+          <p>New York, NY 10016, U.S.A.</p>
+        </div>
+
+        <div class="social-links">
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+        </div>
+      </div>
+
+      <!-- Services Links -->
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../index.html#services">Services & Pricing</a></li>
+          <li><a href="incorporation.html">Incorporation</a></li>
+          <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+          <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          <li><a href="#">Payroll</a></li>
+          <li><a href="consultation.html">Consultation</a></li>
+        </ul>
+      </div>
+
+      <!-- About Links -->
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Our Process</a></li>
+          <li><a href="#">In the Media</a></li>
+        </ul>
+      </div>
+
+      <!-- Useful Links -->
+      <div class="footer-col">
+        <h4>Useful Links</h4>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Login/Register</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+         <!-- Badge Placeholder -->
+        <div class="badge-placeholder">
+           <div style="background:#222; color:#fff; padding:10px; font-size:12px; text-align:center; border-radius:4px; margin-top:20px; font-family: sans-serif;">
+             THE AMERICAS<br>EMMAS<br>2025<br>HIGHLY COMMENDED
+           </div>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+  
+  <script src="../script.js"></script>
+  <script>
+      function addToCart(itemName, price) {
+            let cart = JSON.parse(localStorage.getItem('incoziCart')) || [];
+            cart.push({ item: itemName, price: price, id: Date.now() });
+            localStorage.setItem('incoziCart', JSON.stringify(cart));
+            alert(itemName + " added to cart!");
+      }
+  </script>
 </body>
 </html>

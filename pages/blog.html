@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blog | Incozi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .blog-header {
+      padding: 4rem 1.5rem;
+      text-align: center;
+      background: var(--bg-100);
+    }
+    .blog-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .blog-header p {
+        color: var(--text-200);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 2rem 1.5rem 6rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .blog-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+    }
+    .blog-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+    
+    .blog-img {
+        height: 200px;
+        background-color: var(--primary-100);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent-200);
+        font-size: 3rem;
+    }
+    .blog-content {
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .blog-tag {
+        font-size: 0.8rem;
+        color: var(--accent-200);
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+    }
+    .blog-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: var(--text-100);
+        line-height: 1.4;
+    }
+    .blog-excerpt {
+        font-size: 0.95rem;
+        color: var(--text-200);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+        flex: 1;
+    }
+    .read-more {
+        color: var(--accent-200);
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">incozi.</a>
+      
+      <!-- Navbar Links (Desktop) -->
+      <nav class="main-nav" style="display: none;">
+          <ul class="nav-list" style="display: flex; gap: 1.5rem; list-style: none; align-items: center; margin: 0;">
+              <li class="nav-item">
+                  <a href="#" class="nav-link">Services & Pricing <i class="fa-solid fa-chevron-down"></i></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="incorporation.html">Incorporation</a></li>
+                      <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+                      <li><a href="bookkeeping.html">Bookkeeping</a></li>
+                      <li><a href="consultation.html">Consultation</a></li>
+                  </ul>
+              </li>
+              <li><a href="blog.html" class="nav-link">Blog</a></li>
+              <li><a href="my-services.html" class="nav-link">My Services</a></li>
+              <li><a href="account.html" class="nav-link" aria-label="My Account"><i class="fa-regular fa-user"></i></a></li>
+              <li><a href="cart.html" class="nav-link" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+          </ul>
+      </nav>
+
+      <!-- Menu Toggle (Hamburger) -->
+      <button class="menu-toggle custom-toggle" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </header>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar-overlay"></div>
+  <aside class="sidebar-menu">
+    <div class="sidebar-header-row">
+      <span class="sidebar-title">Menu</span>
+      <button class="sidebar-close" aria-label="Close Menu"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div class="sidebar-content">
+      <ul class="sidebar-nav-list">
+        <!-- Services Section -->
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">Services & Pricing</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="consultation.html">Consultation</a></li>
+             <li><a href="incorporation.html">Incorporation</a></li>
+             <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+             <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          </ul>
+        </li>
+
+        <!-- About Section -->
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">About Us</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="#">Who We Are</a></li>
+             <li><a href="#">FAQs</a></li>
+             <li><a href="#">Contact Us</a></li>
+          </ul>
+        </li>
+
+        <!-- Blog Section -->
+        <li class="sidebar-group">
+          <a href="blog.html" class="sidebar-group-title" style="display:block; cursor:pointer; color: var(--accent-200);">Blog</a>
+        </li>
+
+        <li class="sidebar-divider"></li>
+
+        <!-- User Actions -->
+        <li><a href="account.html" class="sidebar-link-item"><i class="fa-regular fa-user"></i> My Account</a></li>
+        <li><a href="cart.html" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <section class="blog-header">
+        <h1>Latest Insights</h1>
+        <p>Expert advice on US company formation, taxes, and business growth.</p>
+    </section>
+
+    <div class="blog-grid">
+        <!-- Article 1 -->
+        <article class="blog-card">
+            <div class="blog-img"><i class="fa-regular fa-building"></i></div>
+            <div class="blog-content">
+                <div class="blog-tag">Formation</div>
+                <h3 class="blog-title">LLC vs C-Corp: Which is Right for Your Startup?</h3>
+                <p class="blog-excerpt">Understanding the sophisticated differences between these two entity types is crucial for tax planning and fundraising.</p>
+                <a href="#" class="read-more">Read Article <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+
+        <!-- Article 2 -->
+        <article class="blog-card">
+            <div class="blog-img"><i class="fa-solid fa-calculator"></i></div>
+            <div class="blog-content">
+                <div class="blog-tag">Taxes</div>
+                <h3 class="blog-title">US Tax Deadlines for Foreign Founders 2026</h3>
+                <p class="blog-excerpt">Don't miss a date. A comprehensive calendar of all federal and state tax filing deadlines for international owners.</p>
+                <a href="#" class="read-more">Read Article <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+
+        <!-- Article 3 -->
+        <article class="blog-card">
+            <div class="blog-img"><i class="fa-solid fa-globe"></i></div>
+            <div class="blog-content">
+                <div class="blog-tag">Banking</div>
+                <h3 class="blog-title">Opening a US Business Bank Account Remotely</h3>
+                <p class="blog-excerpt">Yes, it is possible. Here is our step-by-step guide to navigating KYC requirements without flying to the US.</p>
+                <a href="#" class="read-more">Read Article <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </article>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-col brand-col">
+        <a href="../index.html" class="footer-logo">incozi.</a>
+        <p class="tagline">Dream Worldwide, <br>Launch Stateside</p>
+        <div class="address-block">
+          <h4>Address</h4>
+          <p>347 5th Avenue</p>
+          <p>Suite 1402-171</p>
+          <p>New York, NY 10016, U.S.A.</p>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../index.html#services">Services & Pricing</a></li>
+          <li><a href="incorporation.html">Incorporation</a></li>
+          <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+          <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          <li><a href="consultation.html">Consultation</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Our Process</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Useful Links</h4>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../script.js"></script>
+</body>
+</html>

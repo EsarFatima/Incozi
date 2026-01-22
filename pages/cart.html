@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your Cart | Incozi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body {
+        background-color: #f9fafb;
+    }
+    .main-wrapper {
+        padding: 4rem 0 6rem;
+        min-height: 70vh;
+    }
+    
+    .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-100);
+        margin-bottom: 2rem;
+    }
+
+    .cart-grid {
+        display: grid;
+        grid-template-columns: 2fr 1.2fr;
+        gap: 2.5rem;
+        align-items: start;
+    }
+    
+    /* Cart Items Styling */
+    .cart-items {
+        background: transparent;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .cart-item {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cart-item:hover {
+        box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+        transform: translateY(-2px);
+    }
+    .item-icon {
+        width: 60px;
+        height: 60px;
+        background: var(--bg-100);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--accent-200);
+        flex-shrink: 0;
+    }
+    .item-info {
+        flex: 1;
+    }
+    .item-info h4 { 
+        margin-bottom: 0.25rem; 
+        color: var(--text-100); 
+        font-size: 1.1rem;
+    }
+    .item-info p { 
+        margin: 0; 
+        color: var(--text-200); 
+        font-size: 0.9rem; 
+    }
+    
+    .item-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.5rem;
+    }
+    .item-price { 
+        font-weight: 700; 
+        color: var(--text-100); 
+        font-size: 1.2rem; 
+    }
+    .remove-btn {
+        background: none;
+        border: none;
+        color: #ef4444;
+        cursor: pointer;
+        font-size: 0.85rem;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    .remove-btn:hover { opacity: 1; text-decoration: underline; }
+
+    /* Summary Styling */
+    .cart-summary {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 2rem;
+        position: sticky;
+        top: 100px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .cart-summary h3 { margin-bottom: 1.5rem; color: var(--text-100); font-size: 1.25rem; }
+    
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        color: var(--text-200);
+        font-size: 0.95rem;
+    }
+    .summary-divider {
+        height: 1px;
+        background: #e5e7eb;
+        margin: 1.5rem 0;
+    }
+    .summary-row.total-row {
+        font-weight: 800;
+        color: var(--text-100);
+        font-size: 1.5rem;
+        align-items: center;
+    }
+    
+    .secure-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        color: var(--text-200);
+        font-size: 0.85rem;
+        background: #f9fafb;
+        padding: 0.75rem;
+        border-radius: 8px;
+    }
+
+    .promo-code-box {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .promo-code-box input {
+        flex: 1;
+        padding: 0.75rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        font-family: inherit;
+    }
+    
+    /* Empty State */
+    .empty-cart-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: #fff;
+        border-radius: 16px;
+        border: 1px dashed #e5e7eb;
+        max-width: 600px;
+        margin: 2rem auto;
+    }
+    .empty-icon {
+        width: 100px;
+        height: 100px;
+        background: var(--bg-100);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        color: var(--text-200);
+        font-size: 2.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .cart-grid { grid-template-columns: 1fr; }
+        .cart-item { flex-direction: column; align-items: flex-start; text-align: left; }
+        .item-actions { flex-direction: row; justify-content: space-between; width: 100%; margin-top: 1rem; align-items: center; }
+        .item-icon { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">incozi.</a>
+      
+      <!-- Navbar Links (Desktop) -->
+      <nav class="main-nav" style="display: none;">
+          <ul class="nav-list" style="display: flex; gap: 1.5rem; list-style: none; align-items: center; margin: 0;">
+              <li class="nav-item">
+                  <a href="#" class="nav-link">Services & Pricing <i class="fa-solid fa-chevron-down"></i></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="incorporation.html">Incorporation</a></li>
+                      <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+                      <li><a href="bookkeeping.html">Bookkeeping</a></li>
+                      <li><a href="consultation.html">Consultation</a></li>
+                  </ul>
+              </li>
+              <li><a href="blog.html" class="nav-link">Blog</a></li>
+              <li><a href="my-services.html" class="nav-link">My Services</a></li>
+              <li><a href="account.html" class="nav-link" aria-label="My Account"><i class="fa-regular fa-user"></i></a></li>
+              <li><a href="cart.html" class="nav-link" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+          </ul>
+      </nav>
+
+      <!-- Menu Toggle (Hamburger) -->
+      <button class="menu-toggle custom-toggle" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </header>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar-overlay"></div>
+  <aside class="sidebar-menu">
+    <div class="sidebar-header-row">
+      <span class="sidebar-title">Menu</span>
+      <button class="sidebar-close" aria-label="Close Menu"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div class="sidebar-content">
+      <ul class="sidebar-nav-list">
+        
+        <!-- Services Section -->
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">Services & Pricing</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="consultation.html">Consultation</a></li>
+             <li><a href="incorporation.html">Incorporation</a></li>
+             <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+             <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          </ul>
+        </li>
+
+        <!-- About Section -->
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">About Us</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="#">Who We Are</a></li>
+             <li><a href="#">FAQs</a></li>
+             <li><a href="#">Contact Us</a></li>
+          </ul>
+        </li>
+
+        <!-- Blog Section -->
+        <li class="sidebar-group">
+          <a href="blog.html" class="sidebar-group-title" style="display:block; cursor:pointer;">Blog</a>
+        </li>
+
+        <li class="sidebar-divider"></li>
+
+        <!-- User Actions -->
+        <li><a href="account.html" class="sidebar-link-item"><i class="fa-regular fa-user"></i> My Account</a></li>
+        <li><a href="cart.html" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="container main-wrapper">
+    <h1 class="page-title">Shopping Cart</h1>
+    
+    <div id="cart-empty-message" style="display:none;" class="empty-cart-state">
+        <div class="empty-icon"><i class="fa-solid fa-basket-shopping"></i></div>
+        <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--text-100);">Your cart is empty</h2>
+        <p style="color: var(--text-200); margin-bottom: 2rem;">Looks like you haven't added any services yet.</p>
+        <a href="../index.html#services" class="btn btn-primary">Browse Services</a>
+    </div>
+
+    <div id="cart-content-wrapper" style="display:none;">
+        <div class="cart-grid">
+            
+            <div class="cart-items">
+                <div id="cart-items-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <!-- Items injected here by JS -->
+                </div>
+                <div style="text-align: right; margin-top: 1rem;">
+                    <a href="../index.html#services" style="color: var(--accent-200); font-weight: 500; text-decoration: none;">&larr; Add more services</a>
+                </div>
+            </div>
+            
+            <div class="cart-summary">
+                <h3>Order Summary</h3>
+                
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="cart-subtotal">$0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Estimated Tax</span>
+                    <span>$0.00</span>
+                </div>
+                
+                <div class="summary-divider"></div>
+                
+                <div class="promo-code-box">
+                    <input type="text" placeholder="Promo code">
+                    <button class="btn btn-outline" style="padding: 0.5rem 1rem;">Apply</button>
+                </div>
+
+                <div class="summary-divider"></div>
+
+                <div class="summary-row total-row">
+                    <span>Total</span>
+                    <span id="cart-total">$0.00</span>
+                </div>
+                
+                <button class="btn btn-primary btn-block" onclick="window.location.href='checkout.html'" style="margin-top: 1.5rem; padding: 1rem;">Proceed to Checkout</button>
+                
+                <div class="secure-badge">
+                    <i class="fa-solid fa-lock"></i> Secure SSL Encrypted Checkout
+                </div>
+            </div>
+
+        </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      
+      <!-- Brand & Address -->
+      <div class="footer-col brand-col">
+        <a href="../index.html" class="footer-logo">incozi.</a>
+        <p class="tagline">Dream Worldwide, <br>Launch Stateside</p>
+        
+        <div class="address-block">
+          <h4>Address</h4>
+          <p>347 5th Avenue</p>
+          <p>Suite 1402-171</p>
+          <p>New York, NY 10016, U.S.A.</p>
+        </div>
+
+        <div class="social-links">
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+        </div>
+      </div>
+
+      <!-- Services Links -->
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../index.html#services">Services & Pricing</a></li>
+          <li><a href="incorporation.html">Incorporation</a></li>
+          <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+          <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          <li><a href="#">Payroll</a></li>
+          <li><a href="consultation.html">Consultation</a></li>
+        </ul>
+      </div>
+
+      <!-- About Links -->
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Our Process</a></li>
+          <li><a href="#">In the Media</a></li>
+        </ul>
+      </div>
+
+      <!-- Useful Links -->
+      <div class="footer-col">
+        <h4>Useful Links</h4>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Login/Register</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+         <!-- Badge Placeholder -->
+        <div class="badge-placeholder">
+           <div style="background:#222; color:#fff; padding:10px; font-size:12px; text-align:center; border-radius:4px; margin-top:20px; font-family: sans-serif;">
+             THE AMERICAS<br>EMMAS<br>2025<br>HIGHLY COMMENDED
+           </div>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <script src="../script.js"></script>
+  <script>
+    function loadCart() {
+        const cart = JSON.parse(localStorage.getItem('incoziCart')) || [];
+        const container = document.getElementById('cart-items-container');
+        const emptyMsg = document.getElementById('cart-empty-message');
+        const contentWrapper = document.getElementById('cart-content-wrapper');
+        const subtotalEl = document.getElementById('cart-subtotal');
+        const totalEl = document.getElementById('cart-total');
+
+        if (cart.length === 0) {
+            emptyMsg.style.display = 'block';
+            contentWrapper.style.display = 'none';
+            return;
+        }
+
+        emptyMsg.style.display = 'none';
+        contentWrapper.style.display = 'block';
+        container.innerHTML = '';
+
+        let subtotal = 0;
+
+        cart.forEach((item, index) => {
+            let iconClass = 'fa-box';
+            let subtitle = 'Standard Package';
+            
+            // Determine Icon based on keywords
+            const name = item.item.toLowerCase();
+            if (name.includes('incorporation') || name.includes('llc') || name.includes('corp')) {
+                iconClass = 'fa-building';
+                subtitle = 'Formation Service';
+            } else if (name.includes('bookkeeping')) {
+                iconClass = 'fa-calculator';
+                subtitle = 'Accounting Service';
+            } else if (name.includes('tax')) {
+                iconClass = 'fa-file-invoice-dollar';
+                subtitle = 'Compliance Service';
+            } else if (name.includes('consult')) {
+                iconClass = 'fa-comments';
+                subtitle = 'Expert Advice';
+            }
+
+            const div = document.createElement('div');
+            div.className = 'cart-item';
+            div.innerHTML = `
+                <div class="item-icon">
+                    <i class="fa-solid ${iconClass}"></i>
+                </div>
+                <div class="item-info">
+                    <h4>${item.item}</h4>
+                    <p>${subtitle}</p>
+                </div>
+                <div class="item-actions">
+                    <span class="item-price">$${item.price.toLocaleString()}</span>
+                    <button class="remove-btn" onclick="removeFromCart(${index})">
+                        <i class="fa-solid fa-trash-can"></i> Remove
+                    </button>
+                </div>
+            `;
+            container.appendChild(div);
+            subtotal += parseFloat(item.price); // Assumes price is clean number or we parse it
+        });
+
+        // Format Money
+        const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+        subtotalEl.innerText = formatter.format(subtotal);
+        totalEl.innerText = formatter.format(subtotal);
+    }
+
+    function removeFromCart(index) {
+        let cart = JSON.parse(localStorage.getItem('incoziCart')) || [];
+        cart.splice(index, 1);
+        localStorage.setItem('incoziCart', JSON.stringify(cart));
+        loadCart();
+        if (typeof updateCartBadge === 'function') {
+            updateCartBadge();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadCart);
+  </script>
+</body>
+</html>

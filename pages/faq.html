@@ -25,7 +25,7 @@
     }
     .faq-header h1 {
       font-size: 2.5rem;
-      color: #312e81;
+      color: var(--accent-200);
       margin-bottom: 1rem;
     }
     .faq-header p {
@@ -81,7 +81,7 @@
     }
     .faq-section h2 {
       font-size: 1.75rem;
-      color: #312e81;
+      color: var(--accent-200);
       margin-bottom: 2rem;
       padding-bottom: 1rem;
       border-bottom: 2px solid var(--accent-200);
@@ -115,7 +115,7 @@
     .faq-question-text {
       font-size: 1.1rem;
       font-weight: 600;
-      color: #312e81;
+      color: var(--accent-200);
       flex: 1;
       text-align: left;
     }
@@ -245,7 +245,7 @@
           <span class="sidebar-group-title">About Us</span>
           <ul class="sidebar-sub-list">
              <li><a href="#">Who We Are</a></li>
-             <li><a href="#">FAQs</a></li>
+             <li><a href="./faq.html" style="color: var(--accent-200); font-weight: 600;">FAQs</a></li>
              <li><a href="#">Contact Us</a></li>
           </ul>
         </li>
@@ -272,7 +272,6 @@
             <button class="faq-nav-btn" onclick="scrollToSection('bookkeeping')">Bookkeeping</button>
             <button class="faq-nav-btn" onclick="scrollToSection('services')">Services & Pricing</button>
             <button class="faq-nav-btn" onclick="scrollToSection('consultation')">Consultation</button>
-            <button class="faq-nav-btn" onclick="scrollToSection('account')">Account</button>
           </div>
         </div>
         <div class="faq-header-image">
@@ -407,34 +406,312 @@
         </div>
       </div>
 
-      <!-- Tax Section (Placeholder) -->
+      <!-- Tax & Compliance Section -->
       <div class="faq-section" id="tax">
         <h2>Tax & Compliance</h2>
-        <p style="color: var(--text-200); text-align: center; padding: 2rem;">Tax-related questions coming soon...</p>
+        
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">Do I need to pay taxes in the US as a foreigner?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>It depends on your specific situation. Your tax obligations are determined by the nature of your business activities and how they are connected to the US.</p>
+              <p>Generally, if your US company does not have US-connected income, you won't owe US taxes. However, certain factors, such as having a physical office, warehouse, or shipping products into the US (not just within the US), can create tax obligations. Simply selling to US customers does not automatically result in tax liability, as long as you do not live, employ staff, or conduct business activities within the US.</p>
+              <p>If you are providing solely digital products or services to US customers, with all work done fully remotely outside the US, you most likely won't owe any US taxes.</p>
+              <p>If you're unsure, it's best to consult a tax expert to assess your situation.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">Do I need to file a US tax return even if I don't owe any taxes in the US?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Yes, most foreign-owned US companies do need to file a tax return in the US even if they are not paying any taxes.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">How does the tax consultation work?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Here's how our tax consultation works:</p>
+              <ul>
+                <li><strong>Book a consultation:</strong> If you've purchased a service package, your consultation is included and helps us understand your situation and outline the next steps. If you're still deciding, you can book a paid consultation for $39.</li>
+                <li><strong>During the consultation:</strong> Whether part of the service package or purchased separately, each consultation offers the same personalized guidance. Our tax accountants will discuss your business, address your specific needs, and create a clear plan for the required paperwork and next steps. This is a personalized session with experienced professionals — not a sales or general support call.</li>
+                <li><strong>After the consultation:</strong> You'll have a clear understanding of the paperwork required for your business and how we'll handle the filing process for you. If you have not done so already, you can purchase your preferred service package directly on our website.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">In what cases would I need to pay more than the prices listed for my tax filing?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>The packages include the business tax forms required for your entity type. In certain situations, you may also have to file individual tax forms, in addition to the business tax forms. Those additional tax forms will incur an additional fee. We determine during the consultation what you need and provide you with a fixed quote for those additional forms.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">What information do I need to provide to get started on my Tax & Compliance service?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Here's an overview of the information our clients typically provide for Tax & Compliance packages:</p>
+              <ul>
+                <li><strong>Company Information:</strong> Legal name, EIN, and state of formation.</li>
+                <li><strong>Member Details:</strong> Legal name, address, and ownership percentage.</li>
+                <li><strong>Financial Records:</strong> Income, expenses, and any prior tax filings.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">What happens after I purchase a Tax & Compliance package?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Once you purchase a Tax & Compliance package, you'll receive a welcome email with all the details to get started, including a link to book your consultation (included in your package) and a short form to provide us with the necessary information. From there, we'll guide you every step of the way to ensure everything runs smoothly.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">Are my personal data and documents secure?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Yes, your data and documents are completely secure. At Incozi, your privacy and security always come first. Our client portal employs 256-bit encryption and advanced safety features to keep your personal information confidential. As a client, you'll create a free account in our secure portal to upload your documents safely. We avoid sharing sensitive information via email, ensuring your data remains protected at all times.</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Bookkeeping Section (Placeholder) -->
+      <!-- Bookkeeping Section -->
       <div class="faq-section" id="bookkeeping">
         <h2>Bookkeeping</h2>
-        <p style="color: var(--text-200); text-align: center; padding: 2rem;">Bookkeeping-related questions coming soon...</p>
+        
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">Why do I need bookkeeping?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Bookkeeping serves two essential purposes for your business:</p>
+              <ul>
+                <li><strong>Financial Visibility:</strong> It helps you monitor key financial indicators — profit & loss, balance sheet, and cash flow — allowing you to make informed business decisions backed by real data.</li>
+                <li><strong>Tax Compliance & Protection:</strong> Regular bookkeeping maintains your financial history throughout the year, simplifying and improving the accuracy of IRS tax reporting. It also provides comprehensive documentation that protects you in case of an IRS audit by making all required details readily available.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">How do bookkeeping and tax accounting work together?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Our bookkeeping and tax teams work closely together to provide a fully integrated financial solution. When you choose both services, you get a seamless experience where your bookkeeping is always aligned with your tax needs.</p>
+              <p>Our bookkeepers handle the day-to-day work — organizing financial records, processing daily transactions, reconciling accounts, and preparing everything for tax season. Meanwhile, our tax accountants focus on the bigger picture, using the organized data to ensure accurate and compliant IRS filings. This integration eliminates the hassle of managing separate services.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">What if I'm not sure which package is right for my business?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>We're here to help you find the perfect fit. Schedule a call with our bookkeeping team for a personalized consultation at $19. If you decide to move forward with us, we'll credit that consultation fee toward your package.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">I'm behind on my bookkeeping and taxes. Can you help catch me up?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Absolutely. We specialize in catchup bookkeeping and review services to get you back on track. We'll organize and update your financial records to ensure everything is accurate and compliant with regulations. Contact us to discuss your specific situation and we'll create a plan tailored to your needs.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">Do you offer flexible options for small businesses with limited transactions?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Yes, we understand that not all businesses fit into standard packages. We offer tailored solutions that help you prepare tax-ready financials, maintain compliance, and manage costs without straining your budget. As your business grows, you can scale up your bookkeeping service. Contact us to discuss options that fit your current situation.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">Do I need to switch accounting software to work with you?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>No, you don't have to change anything. We're flexible and experienced with various industry-leading accounting software platforms. We can work with your existing setup and transfer billing if needed. If you're migrating from another bookkeeper, the transition will be smooth — we can work directly with them to ensure minimal disruption to your business.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">What information do I need to provide to get started on my Bookkeeping service?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Here's an overview of the information our clients typically provide for Bookkeeping packages:</p>
+              <ul>
+                <li><strong>Financial Statements:</strong> Bank and card statements for your accounts.</li>
+                <li><strong>Accounting Access:</strong> Login access to any accounting software you're currently using.</li>
+                <li><strong>Company Information:</strong> Basic company details and member/ownership information.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">Are my personal data and documents secure?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Yes, your data and documents are completely secure. At Incozi, your privacy and security always come first. Our client portal employs 256-bit encryption and advanced safety features to keep your personal information confidential. As a client, you'll create a free account in our secure portal to upload your documents safely. We avoid sharing sensitive information via email, ensuring your data remains protected at all times.</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Services Section (Placeholder) -->
+      <!-- Services Section -->
       <div class="faq-section" id="services">
         <h2>Services & Pricing</h2>
-        <p style="color: var(--text-200); text-align: center; padding: 2rem;">Services and pricing questions coming soon...</p>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">Are there any extra fees or hidden costs I should know about?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Our pricing is designed to be <strong>simple, transparent, and predictable</strong>. We don't believe in hidden surprises—what you see is what you get, with no unexpected charges lurking in the fine print.</p>
+              <p><strong>Incorporation Packages:</strong> Include everything you need to establish your US company, such as entity formation, EIN registration, and registered agent services.</p>
+              <p><strong>Tax & Compliance Packages:</strong> Cover essential filings including business tax returns, FBAR filings, annual compliance reports, and ongoing support throughout the year. Individual tax filings are available as an optional add-on if needed.</p>
+              <p><strong>Bookkeeping Packages:</strong> Organized financial management with no surprises built in. Our bookkeeping packages keep your records clean and audit-ready.</p>
+              <p><strong>Payroll Setup:</strong> We provide comprehensive guidance on setting up your payroll system. The only additional cost is your Gusto subscription (which covers your actual payroll processing).</p>
+              <p>Everything else? It's all included in your package price.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">Can you provide a custom quote for businesses with unique needs?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Absolutely. We understand that every business is different, and some may have <strong>special requirements or complex situations</strong> that don't fit perfectly into our standard packages.</p>
+              <p>If you have unique needs—whether that's reinstating a previous entity, applying for an ITIN, setting up specialized services, or something else entirely—we're happy to create a <strong>custom quote tailored specifically to your situation</strong>. Just tell us what you need, and we'll work with you to develop a solution that makes sense for your business.</p>
+              <p>Contact our team to discuss your specific requirements, and we'll put together a personalized option that covers exactly what you're looking for.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">What's included in a consultation, and when should I schedule one?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Consultations are included free with our <strong>Incorporation, Tax & Compliance, and Incorporation & Tax Bundle packages</strong>. These consultations help you finalize your setup and ensure everything is aligned with your business goals.</p>
+              <p>If you'd prefer to explore your options and ask questions <strong>before purchasing a package</strong>, you can schedule a standalone consultation for <strong>$39</strong>. This pre-purchase consultation is designed to help you understand which services are right for your situation. You'll meet with a real expert (same as our package consultations), get personalized advice, and receive a follow-up email with our recommendation and a direct link to the best-fit package for you.</p>
+              <p>Whether pre-purchase or included with your package, you're always getting expert guidance from the same professional team.</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Consultation Section (Placeholder) -->
+      <!-- Consultation Section -->
       <div class="faq-section" id="consultation">
         <h2>Consultation</h2>
-        <p style="color: var(--text-200); text-align: center; padding: 2rem;">Consultation-related questions coming soon...</p>
-      </div>
+        
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">What's the difference between scheduling a consultation before or after purchasing a package?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Our Incorporation, Tax & Compliance, and Incorporation & Tax Bundle packages all include a free consultation with our experts.</p>
+              <p>If you'd like to explore your options and make an informed decision before committing to a package, you can schedule a paid consultation for $39. This session is designed to help you understand what services are best for your situation. After the consultation, you'll receive a summary email with our personalized recommendation and a link to the appropriate package.</p>
+              <p>Both consultations are conducted by the same real experts and are the same length, providing you with personalized advice to ensure you're making the right choice for your business.</p>
+            </div>
+          </div>
+        </div>
 
-      <!-- Account Section (Placeholder) -->
-      <div class="faq-section" id="account">
-        <h2>Account</h2>
-        <p style="color: var(--text-200); text-align: center; padding: 2rem;">Account-related questions coming soon...</p>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">Why do you charge for pre-purchase consultations?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>We used to offer free consultations, but we found that many were canceled at the last minute, which took time away from our other clients who were serious about moving forward.</p>
+              <p>By charging a small $39 fee, we ensure that our experts' time is spent helping people who are genuinely ready to take action. The good news? If you decide to purchase a package, that consultation fee is waived — your consultation is included free of charge with your package.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">Can a tax accountant help me with setting up my company?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Company formation is handled by our incorporation specialists, not by our tax accountants. However, our tax accountants can definitely help you decide which business structure is best for your situation and walk you through the tax implications of different entity types (LLC vs. C-Corp vs. S-Corp).</p>
+              <p>If you need help with formation, our incorporation specialists will guide you through the entire process, and they work closely with our tax team to ensure your new structure is optimized for your tax situation.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </main>

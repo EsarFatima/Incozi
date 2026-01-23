@@ -239,9 +239,8 @@
             localStorage.setItem('incozi_token', data.token);
             localStorage.setItem('incozi_user', JSON.stringify(data.user)); // Store user info
             
-            // Redirect to dashboard (using account.html for now, but in "logged in" state)
-            // Ideally we'd validte this token on page load and show different UI
-            window.location.reload(); 
+            // Redirect to My Services page
+            window.location.href = 'my-services.html'; 
           } else {
             // Error
             alert(data.error || 'Login failed. Please checks your credentials.');
@@ -325,8 +324,8 @@
         
         if (token && userStr) {
             // Check if token is valid (basic expiration check could go here)
-            // For now, just redirect to dashboard
-            window.location.href = 'dashboard.html';
+            // For now, just redirect to my-services
+            window.location.href = 'my-services.html';
         }
     }
     

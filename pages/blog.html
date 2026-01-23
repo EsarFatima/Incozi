@@ -13,14 +13,35 @@
       text-align: center;
       background: var(--bg-100);
     }
+    .blog-header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .blog-header-text {
+      flex: 1;
+      text-align: left;
+    }
     .blog-header h1 {
       font-size: 2.5rem;
       margin-bottom: 1rem;
+      color: var(--accent-200);
     }
     .blog-header p {
         color: var(--text-200);
         max-width: 600px;
-        margin: 0 auto;
+    }
+    .blog-header-image {
+      flex: 1;
+      min-height: 300px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
     }
     
     .blog-grid {
@@ -45,6 +66,13 @@
         transform: translateY(-5px);
         box-shadow: 0 10px 20px rgba(0,0,0,0.05);
     }
+    .blog-card-link {
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        cursor: pointer;
+    }
     
     .blog-img {
         height: 200px;
@@ -54,6 +82,12 @@
         justify-content: center;
         color: var(--accent-200);
         font-size: 3rem;
+        overflow: hidden;
+    }
+    .blog-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
     .blog-content {
         padding: 1.5rem;
@@ -88,6 +122,17 @@
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
+        padding: 0.75rem 1.25rem;
+        background: linear-gradient(135deg, rgba(0, 102, 140, 0.1), rgba(0, 102, 140, 0.05));
+        border: 1px solid rgba(0, 102, 140, 0.2);
+        border-radius: 6px;
+        width: fit-content;
+        transition: all 0.3s ease;
+    }
+    .read-more:hover {
+        background: linear-gradient(135deg, rgba(0, 102, 140, 0.2), rgba(0, 102, 140, 0.1));
+        border-color: var(--accent-200);
+        transform: translateX(4px);
     }
   </style>
 </head>
@@ -169,42 +214,55 @@
 
   <main>
     <section class="blog-header">
-        <h1>Latest Insights</h1>
-        <p>Expert advice on US company formation, taxes, and business growth.</p>
+        <div class="blog-header-content">
+          <div class="blog-header-text">
+            <h1>Latest Insights</h1>
+            <p>Expert advice on US company formation, taxes, and business growth.</p>
+          </div>
+          <div class="blog-header-image">
+            <img src="../assets/images/blog/blog-hero.svg" alt="Blog Insights Illustration" style="width: 100%; height: 100%; object-fit: contain; padding: 1rem;">
+          </div>
+        </div>
     </section>
 
     <div class="blog-grid">
         <!-- Article 1 -->
         <article class="blog-card">
-            <div class="blog-img"><i class="fa-regular fa-building"></i></div>
-            <div class="blog-content">
-                <div class="blog-tag">Formation</div>
-                <h3 class="blog-title">LLC vs C-Corp: Which is Right for Your Startup?</h3>
-                <p class="blog-excerpt">Understanding the sophisticated differences between these two entity types is crucial for tax planning and fundraising.</p>
-                <a href="#" class="read-more">Read Article <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
+            <a href="blog-article-1.html" class="blog-card-link">
+                <div class="blog-img"><img src="../assets/images/blog/blog-001.jpg" alt="LLC vs C-Corp article"></div>
+                <div class="blog-content">
+                    <div class="blog-tag">Formation</div>
+                    <h3 class="blog-title">LLC vs C-Corp: Which is Right for Your Startup?</h3>
+                    <p class="blog-excerpt">Understanding the sophisticated differences between these two entity types is crucial for tax planning and fundraising.</p>
+                    <span class="read-more">Read Article <i class="fa-solid fa-arrow-right"></i></span>
+                </div>
+            </a>
         </article>
 
         <!-- Article 2 -->
         <article class="blog-card">
-            <div class="blog-img"><i class="fa-solid fa-calculator"></i></div>
-            <div class="blog-content">
-                <div class="blog-tag">Taxes</div>
-                <h3 class="blog-title">US Tax Deadlines for Foreign Founders 2026</h3>
-                <p class="blog-excerpt">Don't miss a date. A comprehensive calendar of all federal and state tax filing deadlines for international owners.</p>
-                <a href="#" class="read-more">Read Article <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
+            <a href="blog-article-2.html" class="blog-card-link">
+                <div class="blog-img"><img src="../assets/images/blog/blog-002.jpg" alt="US Tax Deadlines article"></div>
+                <div class="blog-content">
+                    <div class="blog-tag">Taxes</div>
+                    <h3 class="blog-title">US Tax Deadlines for Foreign Founders 2026</h3>
+                    <p class="blog-excerpt">Don't miss a date. A comprehensive calendar of all federal and state tax filing deadlines for international owners.</p>
+                    <span class="read-more">Read Article <i class="fa-solid fa-arrow-right"></i></span>
+                </div>
+            </a>
         </article>
 
         <!-- Article 3 -->
         <article class="blog-card">
-            <div class="blog-img"><i class="fa-solid fa-globe"></i></div>
-            <div class="blog-content">
-                <div class="blog-tag">Banking</div>
-                <h3 class="blog-title">Opening a US Business Bank Account Remotely</h3>
-                <p class="blog-excerpt">Yes, it is possible. Here is our step-by-step guide to navigating KYC requirements without flying to the US.</p>
-                <a href="#" class="read-more">Read Article <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
+            <a href="blog-article-3.html" class="blog-card-link">
+                <div class="blog-img"><img src="../assets/images/blog/blog-003.jpg" alt="US Business Bank Account article"></div>
+                <div class="blog-content">
+                    <div class="blog-tag">Banking</div>
+                    <h3 class="blog-title">Opening a US Business Bank Account Remotely</h3>
+                    <p class="blog-excerpt">Yes, it is possible. Here is our step-by-step guide to navigating KYC requirements without flying to the US.</p>
+                    <span class="read-more">Read Article <i class="fa-solid fa-arrow-right"></i></span>
+                </div>
+            </a>
         </article>
     </div>
   </main>

@@ -50,13 +50,335 @@
   </header>
 
   <main class="container" style="padding: 4rem 1.5rem; min-height: 60vh;">
-      <h1>My Services</h1>
-      <p style="margin-top: 1rem; color: var(--text-200);">
-          Manage your subscriptions and services here. 
-          <br>
-          <a href="account.html" style="color: var(--accent-200); text-decoration: underline;">Log in</a> to view your active plans.
-      </p>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1 style="margin: 0;">My Services</h1>
+        <button id="logoutBtn" style="padding: 0.75rem 1.5rem; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">Logout</button>
+      </div>
+      
+      <div id="userGreeting" style="margin-bottom: 2rem; padding: 1rem; background: #f0f9ff; border-left: 4px solid var(--accent-200); border-radius: 8px;">
+        <p style="margin: 0; color: var(--text-100);"><strong>Welcome, <span id="userName">User</span>!</strong></p>
+      </div>
+
+      <!-- Tabs -->
+      <div style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid #e5e7eb;">
+        <button class="dashboard-tab active" data-tab="services" style="padding: 0.75rem 1.5rem; background: none; border: none; border-bottom: 3px solid var(--accent-200); color: var(--accent-200); font-weight: 600; cursor: pointer;">
+          <i class="fa-solid fa-briefcase" style="margin-right: 0.5rem;"></i> Services
+        </button>
+        <button class="dashboard-tab" data-tab="documents" style="padding: 0.75rem 1.5rem; background: none; border: none; border-bottom: 3px solid transparent; color: var(--text-200); font-weight: 600; cursor: pointer;">
+          <i class="fa-solid fa-file" style="margin-right: 0.5rem;"></i> Documents
+        </button>
+        <button class="dashboard-tab" data-tab="billing" style="padding: 0.75rem 1.5rem; background: none; border: none; border-bottom: 3px solid transparent; color: var(--text-200); font-weight: 600; cursor: pointer;">
+          <i class="fa-solid fa-receipt" style="margin-right: 0.5rem;"></i> Billing
+        </button>
+      </div>
+
+      <!-- Services Tab -->
+      <div id="services-content" class="tab-content active" style="display: block;">
+        <div id="servicesContainer" style="display: grid; gap: 1.5rem;">
+          <!-- Services will be loaded here -->
+          <div style="text-align: center; padding: 2rem; color: var(--text-200);">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+            <p>Loading your services...</p>
+          </div>
+        </div>
+
+        <div id="noServicesMessage" style="text-align: center; padding: 3rem 1.5rem; display: none;">
+          <i class="fa-solid fa-box-open" style="font-size: 3rem; color: var(--text-200); margin-bottom: 1rem;"></i>
+          <h3 style="color: var(--text-100); margin: 1rem 0;">No Active Services</h3>
+          <p style="color: var(--text-200); margin-bottom: 1.5rem;">You haven't purchased any services yet.</p>
+          <a href="bookkeeping.html" style="display: inline-block; padding: 0.75rem 1.5rem; background: var(--accent-200); color: white; text-decoration: none; border-radius: 8px; font-weight: 500;">Browse Services</a>
+        </div>
+      </div>
+
+      <!-- Documents Tab -->
+      <div id="documents-content" class="tab-content" style="display: none;">
+        <div id="documentsContainer" style="display: grid; gap: 1.5rem;">
+          <!-- Documents will be loaded here -->
+          <div style="text-align: center; padding: 2rem; color: var(--text-200);">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+            <p>Loading your documents...</p>
+          </div>
+        </div>
+
+        <div id="noDocumentsMessage" style="text-align: center; padding: 3rem 1.5rem; display: none;">
+          <i class="fa-solid fa-folder-open" style="font-size: 3rem; color: var(--text-200); margin-bottom: 1rem;"></i>
+          <h3 style="color: var(--text-100); margin: 1rem 0;">No Documents</h3>
+          <p style="color: var(--text-200);">Documents related to your services will appear here.</p>
+        </div>
+      </div>
+
+      <!-- Billing Tab -->
+      <div id="billing-content" class="tab-content" style="display: none;">
+        <div id="billingContainer" style="display: grid; gap: 1.5rem;">
+          <!-- Billing info will be loaded here -->
+          <div style="text-align: center; padding: 2rem; color: var(--text-200);">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+            <p>Loading billing information...</p>
+          </div>
+        </div>
+
+        <div id="noBillingMessage" style="text-align: center; padding: 3rem 1.5rem; display: none;">
+          <i class="fa-solid fa-credit-card" style="font-size: 3rem; color: var(--text-200); margin-bottom: 1rem;"></i>
+          <h3 style="color: var(--text-100); margin: 1rem 0;">No Billing History</h3>
+          <p style="color: var(--text-200);">Your payments and invoices will appear here.</p>
+        </div>
+      </div>
   </main>
+
+  <script>
+    // Check authentication
+    function checkAuth() {
+        const token = localStorage.getItem('incozi_token');
+        const userStr = localStorage.getItem('incozi_user');
+        
+        if (!token || !userStr) {
+            window.location.href = 'account.html';
+            return false;
+        }
+        return true;
+    }
+
+    // Tab switching
+    document.querySelectorAll('.dashboard-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabName = tab.getAttribute('data-tab');
+            
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            document.querySelectorAll('.dashboard-tab').forEach(t => {
+                t.style.borderBottomColor = 'transparent';
+                t.style.color = 'var(--text-200)';
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-content').style.display = 'block';
+            tab.style.borderBottomColor = 'var(--accent-200)';
+            tab.style.color = 'var(--accent-200)';
+            
+            // Load content for this tab
+            if (tabName === 'documents') loadDocuments();
+            if (tabName === 'billing') loadBilling();
+        });
+    });
+
+    // Load and display user services
+    async function loadServices() {
+        try {
+            const userStr = localStorage.getItem('incozi_user');
+            const user = JSON.parse(userStr);
+            document.getElementById('userName').textContent = user.full_name || user.email;
+
+            const token = localStorage.getItem('incozi_token');
+            const response = await fetch('/api/auth/user-services', {
+                method: 'GET',
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error('Failed to load services');
+
+            const data = await response.json();
+            const services = data.services || [];
+
+            const servicesContainer = document.getElementById('servicesContainer');
+            const noServicesMsg = document.getElementById('noServicesMessage');
+
+            if (services.length === 0) {
+                servicesContainer.style.display = 'none';
+                noServicesMsg.style.display = 'block';
+            } else {
+                servicesContainer.innerHTML = services.map(service => `
+                    <div style="padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <div style="flex: 1;">
+                                <h3 style="margin: 0; color: var(--text-100); font-size: 1.25rem;">${service.name}</h3>
+                                <p style="margin: 0.5rem 0 0; color: var(--text-200); font-size: 0.9rem;">
+                                    Status: <span style="font-weight: 600; color: #10b981;">${service.status || 'Active'}</span>
+                                </p>
+                                <p style="margin: 0.25rem 0 0; color: var(--text-200); font-size: 0.85rem;">
+                                    Since: ${new Date(service.start_date).toLocaleDateString()}
+                                </p>
+                            </div>
+                            <div style="text-align: right;">
+                                <p style="margin: 0; font-size: 1.5rem; font-weight: 700; color: var(--accent-200);">$${parseFloat(service.price).toFixed(2)}</p>
+                                <p style="margin: 0.5rem 0 0; color: var(--text-200); font-size: 0.9rem; text-transform: capitalize;">${service.billing_period || 'One-time'}</p>
+                            </div>
+                        </div>
+                        <p style="margin: 0 0 1rem; color: var(--text-200); line-height: 1.6;">${service.description || ''}</p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem;">
+                            <button onclick="contactSupport('${service.name}')" style="padding: 0.5rem; background: var(--accent-200); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">
+                                <i class="fa-solid fa-headset" style="margin-right: 0.5rem;"></i> Support
+                            </button>
+                            <button onclick="cancelService('${service.id}')" style="padding: 0.5rem; background: #fee2e2; color: #991b1b; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">
+                                <i class="fa-solid fa-times" style="margin-right: 0.5rem;"></i> Cancel
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        } catch (error) {
+            console.error('Error loading services:', error);
+            const servicesContainer = document.getElementById('servicesContainer');
+            const noServicesMsg = document.getElementById('noServicesMessage');
+            servicesContainer.style.display = 'none';
+            noServicesMsg.style.display = 'block';
+        }
+    }
+
+    // Load and display user documents
+    async function loadDocuments() {
+        try {
+            const token = localStorage.getItem('incozi_token');
+            const response = await fetch('/api/auth/user-documents', {
+                method: 'GET',
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error('Failed to load documents');
+
+            const data = await response.json();
+            const documents = data.documents || [];
+
+            const documentsContainer = document.getElementById('documentsContainer');
+            const noDocsMsg = document.getElementById('noDocumentsMessage');
+
+            if (documents.length === 0) {
+                documentsContainer.style.display = 'none';
+                noDocsMsg.style.display = 'block';
+            } else {
+                documentsContainer.innerHTML = documents.map(doc => `
+                    <div style="padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div style="flex: 1;">
+                                <h4 style="margin: 0; color: var(--text-100); display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                    ${doc.name || 'Document'}
+                                </h4>
+                                <p style="margin: 0.5rem 0 0; color: var(--text-200); font-size: 0.9rem;">
+                                    Type: <strong>${doc.type || 'Document'}</strong>
+                                </p>
+                                <p style="margin: 0.25rem 0 0; color: var(--text-200); font-size: 0.85rem;">
+                                    Uploaded: ${new Date(doc.uploaded_at).toLocaleDateString()}
+                                </p>
+                            </div>
+                            <a href="${doc.file_path}" download style="padding: 0.5rem 1rem; background: var(--accent-200); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-download"></i> Download
+                            </a>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        } catch (error) {
+            console.error('Error loading documents:', error);
+            const documentsContainer = document.getElementById('documentsContainer');
+            const noDocsMsg = document.getElementById('noDocumentsMessage');
+            documentsContainer.style.display = 'none';
+            noDocsMsg.style.display = 'block';
+        }
+    }
+
+    // Load billing history
+    async function loadBilling() {
+        try {
+            const token = localStorage.getItem('incozi_token');
+            const response = await fetch('/api/auth/user-billing', {
+                method: 'GET',
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error('Failed to load billing');
+
+            const data = await response.json();
+            const payments = data.payments || [];
+
+            const billingContainer = document.getElementById('billingContainer');
+            const noBillingMsg = document.getElementById('noBillingMessage');
+
+            if (payments.length === 0) {
+                billingContainer.style.display = 'none';
+                noBillingMsg.style.display = 'block';
+            } else {
+                billingContainer.innerHTML = payments.map(payment => `
+                    <div style="padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <div>
+                                <h4 style="margin: 0; color: var(--text-100);">${payment.description || 'Payment'}</h4>
+                                <p style="margin: 0.5rem 0 0; color: var(--text-200); font-size: 0.9rem;">
+                                    ${new Date(payment.created_at).toLocaleDateString()}
+                                </p>
+                            </div>
+                            <div style="text-align: right;">
+                                <p style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #10b981;">$${parseFloat(payment.amount).toFixed(2)}</p>
+                                <p style="margin: 0.5rem 0 0; color: var(--text-200); font-size: 0.9rem;">
+                                    <span style="padding: 0.25rem 0.75rem; background: #dcfce7; color: #166534; border-radius: 4px;">${payment.status || 'Success'}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        } catch (error) {
+            console.error('Error loading billing:', error);
+            const billingContainer = document.getElementById('billingContainer');
+            const noBillingMsg = document.getElementById('noBillingMessage');
+            billingContainer.style.display = 'none';
+            noBillingMsg.style.display = 'block';
+        }
+    }
+
+    // Cancel service
+    async function cancelService(serviceId) {
+        if (!confirm('Are you sure you want to cancel this service? This action cannot be undone.')) {
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('incozi_token');
+            const response = await fetch('/api/auth/cancel-service', {
+                method: 'POST',
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ subscriptionId: serviceId })
+            });
+
+            if (!response.ok) throw new Error('Failed to cancel service');
+
+            alert('Service cancelled successfully.');
+            loadServices(); // Reload services
+        } catch (error) {
+            console.error('Error cancelling service:', error);
+            alert('Failed to cancel service. Please try again.');
+        }
+    }
+
+    function contactSupport(serviceName) {
+        window.location.href = 'consultation.html?service=' + encodeURIComponent(serviceName);
+    }
+
+    // Logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('incozi_token');
+        localStorage.removeItem('incozi_user');
+        window.location.href = 'account.html';
+    });
+
+    // On page load
+    if (checkAuth()) {
+        loadServices();
+    }
+  </script>
 
   <!-- Footer (Simplified) -->
   <footer class="site-footer">

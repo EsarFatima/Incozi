@@ -109,8 +109,6 @@ module.exports = (supabase) => {
       }
 
       // 5. Send Email
-      // Construct verification link. 
-      // Assuming server runs on the host defined in .env or localhost:3000
       const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
       const verificationLink = `${baseUrl}/api/auth/verify?token=${token}`;
 
@@ -164,9 +162,6 @@ module.exports = (supabase) => {
         return res.status(500).send('<h1>Server Error during verification</h1>');
       }
 
-      // 3. Response
-      // You can redirect to a frontend login page here: res.redirect('/login.html?verified=true');
-      // For now, sending a simple success HTML page.
       res.send(`
         <div style="font-family: sans-serif; text-align: center; padding: 50px;">
           <h1 style="color: green;">Email Verified Successfully!</h1>
@@ -200,7 +195,6 @@ module.exports = (supabase) => {
       }
 
       if (!user) {
-        // For security, don't reveal if user exists.
         return res.status(200).json({ message: 'If that email exists, we have sent a reset link.' });
       }
 
@@ -221,7 +215,6 @@ module.exports = (supabase) => {
       }
 
       // 4. Send Email
-      // Ideally move base URL to env, but using same logic as signup
       const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
       const resetLink = `${baseUrl}/pages/reset-password.html?token=${token}`;
       
@@ -282,7 +275,10 @@ module.exports = (supabase) => {
     }
   });
 
-<<<<<<< HEAD
+  /* -------------------------------------------------------------------------- */
+  /*                             RESOLVED CONFLICTS                             */
+  /* -------------------------------------------------------------------------- */
+
   // GET USER PROFILE
   router.get('/profile/:userId', async (req, res) => {
     try {
@@ -300,8 +296,104 @@ module.exports = (supabase) => {
       res.json(user);
     } catch (error) {
       console.error('Get Profile Error:', error);
-=======
-  // GET USER SERVICES ROUTE
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // UPDATE USER PROFILE
+  router.put('/profile/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { full_name, phone, company_name, address, city, state, zip, country } = req.body;
+
+      const { error } = await supabase
+        .from('users')
+        .update({ 
+          full_name, 
+          phone, 
+          company_name, 
+          address, 
+          city, 
+          state, 
+          zip, 
+          country 
+        })
+        .eq('id', userId);
+
+      if (error) throw error;
+
+      res.json({ message: 'Profile updated successfully' });
+    } catch (error) {
+      console.error('Update Profile Error:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // CHANGE PASSWORD (Authenticated)
+  router.post('/change-password', async (req, res) => {
+    try {
+      const { userId, currentPassword, newPassword } = req.body;
+      
+      if (!userId || !currentPassword || !newPassword) {
+        return res.status(400).json({ error: 'All fields are required' });
+      }
+
+      // 1. Get current password hash
+      const { data: user, error } = await supabase
+        .from('users')
+        .select('password_hash')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!user) return res.status(404).json({ error: 'User not found' });
+
+      // 2. Verify current password
+      const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
+      if (!isMatch) {
+        return res.status(401).json({ error: 'Current password is incorrect' });
+      }
+
+      // 3. Hash new password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      // 4. Update password
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ password_hash: hashedPassword })
+        .eq('id', userId);
+
+      if (updateError) throw updateError;
+
+      res.json({ message: 'Password changed successfully' });
+    } catch (error) {
+      console.error('Change Password Error:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // UPDATE EMAIL PREFERENCES
+  router.put('/email-preferences/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { email_notifications } = req.body;
+
+      const { error } = await supabase
+        .from('users')
+        .update({ email_notifications })
+        .eq('id', userId);
+
+      if (error) throw error;
+
+      res.json({ message: 'Email preferences updated successfully' });
+    } catch (error) {
+      console.error('Update Email Preferences Error:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // GET USER SERVICES ROUTE (With JWT)
   router.get('/user-services', async (req, res) => {
     try {
       // Extract token from Authorization header
@@ -368,41 +460,11 @@ module.exports = (supabase) => {
 
     } catch (error) {
       console.error('User Services Error:', error);
->>>>>>> f34835c0d7d44ff1a6ed3f9740c2487068efdd9f
       res.status(500).json({ error: 'Server error' });
     }
   });
 
-<<<<<<< HEAD
-  // UPDATE USER PROFILE
-  router.put('/profile/:userId', async (req, res) => {
-    try {
-      const { userId } = req.params;
-      const { full_name, phone, company_name, address, city, state, zip, country } = req.body;
-
-      const { error } = await supabase
-        .from('users')
-        .update({ 
-          full_name, 
-          phone, 
-          company_name, 
-          address, 
-          city, 
-          state, 
-          zip, 
-          country 
-        })
-        .eq('id', userId);
-
-      if (error) throw error;
-
-      res.json({ message: 'Profile updated successfully' });
-    } catch (error) {
-      console.error('Update Profile Error:', error);
-=======
-  // TEST: Create test subscription (for testing My Services page)
-  // Endpoint: POST /api/auth/test-subscription
-  // Body: { userId, planId (optional) }
+  // TEST: Create test subscription
   router.post('/test-subscription', async (req, res) => {
     try {
       const { userId, planId } = req.body;
@@ -411,11 +473,9 @@ module.exports = (supabase) => {
         return res.status(400).json({ error: 'userId is required' });
       }
 
-      // If planId not provided, create a test plan or use default
       let plan_id = planId;
 
       if (!plan_id) {
-        // Create/get a test plan
         const { data: testPlan, error: planError } = await supabase
           .from('plans')
           .select('id')
@@ -423,7 +483,6 @@ module.exports = (supabase) => {
           .maybeSingle();
 
         if (planError || !testPlan) {
-          // Create a test service and plan if they don't exist
           const { data: service, error: serviceError } = await supabase
             .from('services')
             .insert([{ name: 'Test Service', description: 'Test service for development' }])
@@ -455,7 +514,6 @@ module.exports = (supabase) => {
         }
       }
 
-      // Create subscription
       const { data: subscription, error: subError } = await supabase
         .from('subscriptions')
         .insert([{
@@ -479,73 +537,10 @@ module.exports = (supabase) => {
 
     } catch (error) {
       console.error('Test Subscription Error:', error);
->>>>>>> f34835c0d7d44ff1a6ed3f9740c2487068efdd9f
       res.status(500).json({ error: 'Server error' });
     }
   });
 
-<<<<<<< HEAD
-  // CHANGE PASSWORD (Authenticated)
-  router.post('/change-password', async (req, res) => {
-    try {
-      const { userId, currentPassword, newPassword } = req.body;
-      
-      if (!userId || !currentPassword || !newPassword) {
-        return res.status(400).json({ error: 'All fields are required' });
-      }
-
-      // 1. Get current password hash
-      const { data: user, error } = await supabase
-        .from('users')
-        .select('password_hash')
-        .eq('id', userId)
-        .maybeSingle();
-
-      if (error) throw error;
-      if (!user) return res.status(404).json({ error: 'User not found' });
-
-      // 2. Verify current password
-      const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
-      if (!isMatch) {
-        return res.status(401).json({ error: 'Current password is incorrect' });
-      }
-
-      // 3. Hash new password
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(newPassword, salt);
-
-      // 4. Update password
-      const { error: updateError } = await supabase
-        .from('users')
-        .update({ password_hash: hashedPassword })
-        .eq('id', userId);
-
-      if (updateError) throw updateError;
-
-      res.json({ message: 'Password changed successfully' });
-    } catch (error) {
-      console.error('Change Password Error:', error);
-      res.status(500).json({ error: 'Server error' });
-    }
-  });
-
-  // UPDATE EMAIL PREFERENCES
-  router.put('/email-preferences/:userId', async (req, res) => {
-    try {
-      const { userId } = req.params;
-      const { email_notifications } = req.body;
-
-      const { error } = await supabase
-        .from('users')
-        .update({ email_notifications })
-        .eq('id', userId);
-
-      if (error) throw error;
-
-      res.json({ message: 'Email preferences updated successfully' });
-    } catch (error) {
-      console.error('Update Email Preferences Error:', error);
-=======
   // GET USER DOCUMENTS
   router.get('/user-documents', async (req, res) => {
     try {
@@ -564,7 +559,6 @@ module.exports = (supabase) => {
 
       const userId = decoded.id;
 
-      // Fetch user's documents
       const { data: documents, error } = await supabase
         .from('documents')
         .select('*')
@@ -610,7 +604,6 @@ module.exports = (supabase) => {
 
       const userId = decoded.id;
 
-      // Fetch user's payments
       const { data: payments, error } = await supabase
         .from('payments')
         .select('*')
@@ -639,7 +632,7 @@ module.exports = (supabase) => {
     }
   });
 
-  // CANCEL SERVICE (Subscription)
+  // CANCEL SERVICE
   router.post('/cancel-service', async (req, res) => {
     try {
       const authHeader = req.headers.authorization;
@@ -662,7 +655,6 @@ module.exports = (supabase) => {
         return res.status(400).json({ error: 'subscriptionId is required' });
       }
 
-      // Verify subscription belongs to user
       const { data: subscription, error: fetchError } = await supabase
         .from('subscriptions')
         .select('id, user_id')
@@ -677,7 +669,6 @@ module.exports = (supabase) => {
         return res.status(403).json({ error: 'Unauthorized' });
       }
 
-      // Cancel the subscription
       const { error: updateError } = await supabase
         .from('subscriptions')
         .update({ status: 'cancelled', end_date: new Date().toISOString().split('T')[0] })
@@ -692,7 +683,6 @@ module.exports = (supabase) => {
 
     } catch (error) {
       console.error('Cancel Service Error:', error);
->>>>>>> f34835c0d7d44ff1a6ed3f9740c2487068efdd9f
       res.status(500).json({ error: 'Server error' });
     }
   });

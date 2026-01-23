@@ -255,6 +255,52 @@ const sendSubscriptionRenewalFailure = async (email, subscription) => {
   return sendEmail(email, subject, wrapWithTemplate('Payment Failed', content));
 };
 
+const sendOrderStatusUpdate = async (email, customerName, orderStatus, trackingNotes) => {
+  const subject = `Order Status Update: ${orderStatus.replace('_', ' ').toUpperCase()} - Incozi`;
+  
+  let statusColor, statusEmoji, statusMessage;
+  
+  switch(orderStatus) {
+    case 'pending':
+      statusColor = '#f59e0b';
+      statusEmoji = '⏳';
+      statusMessage = 'We have received your order and will begin processing soon.';
+      break;
+    case 'in_progress':
+      statusColor = '#3b82f6';
+      statusEmoji = '🔄';
+      statusMessage = 'Your order is currently being processed by our team.';
+      break;
+    case 'completed':
+      statusColor = '#10b981';
+      statusEmoji = '✅';
+      statusMessage = 'Your order has been completed successfully!';
+      break;
+    case 'on_hold':
+      statusColor = '#ef4444';
+      statusEmoji = '⚠️';
+      statusMessage = 'Your order is currently on hold. Please check the details below.';
+      break;
+    default:
+      statusColor = '#6b7280';
+      statusEmoji = '📦';
+      statusMessage = 'Your order status has been updated.';
+  }
+  
+  const content = `
+    <h2>Order Status Update ${statusEmoji}</h2>
+    <p>Hi ${customerName},</p>
+    <p>${statusMessage}</p>
+    <div style="background: #ffffff; border-left: 4px solid ${statusColor}; border-radius: 8px; padding: 20px; margin: 20px 0;">
+      <p><strong>Status:</strong> <span style="color: ${statusColor}; font-weight: 600; text-transform: uppercase;">${orderStatus.replace('_', ' ')}</span></p>
+      ${trackingNotes ? `<p><strong>Notes:</strong></p><p style="color: #374151; white-space: pre-wrap;">${trackingNotes}</p>` : ''}
+    </div>
+    <p>You can view complete details of your order in your dashboard.</p>
+    <a href="${process.env.BASE_URL || 'http://localhost:3000'}/pages/dashboard.html" class="button">View Dashboard</a>
+  `;
+  return sendEmail(email, subject, wrapWithTemplate('Order Update', content));
+};
+
 module.exports = {
   sendNewsletterWelcome,
   sendContactFormAcknowledgement,
@@ -266,5 +312,6 @@ module.exports = {
   sendConsultationBookingConfirmation,
   sendDocumentUploadNotification,
   sendSubscriptionRenewalSuccess,
-  sendSubscriptionRenewalFailure
+  sendSubscriptionRenewalFailure,
+  sendOrderStatusUpdate
 };

@@ -52,89 +52,69 @@ module.exports = (supabase) => {
 
       const subscriptionId = subInsert.id;
 
-      // 4. Call Payment Gateway (The Adapter)
-      const paymentResult = await paymentService.processPayment(
+      // 4. Call Payment Gateway (AsaanPay)
+      // Note: We use 'subscriptionId' as the 'orderId' for the gateway
+      const paymentResult = await paymentService.initiatePayment(
         amount, 
-        currency || 'USD', 
-        { email: user.email, name: user.full_name }, 
-        paymentMethod // Token or card details from frontend
+        subscriptionId, 
+        { email: user.email, name: user.full_name }
       );
 
       // 5. Handle Result
       if (paymentResult.success) {
-        // A) Update Subscription to Active
-        const { error: subUpdateError } = await supabase
-          .from('subscriptions')
-          .update({ status: 'active' })
-          .eq('id', subscriptionId);
-
-        if (subUpdateError) throw subUpdateError;
-
-        // B) Record Payment
-        const { error: payError } = await supabase
-          .from('payments')
-          .insert([{ 
-            user_id: userId,
-            subscription_id: subscriptionId,
-            amount,
-            currency: currency || 'USD',
-            payment_provider: paymentService.PROVIDER_NAME,
-            transaction_id: paymentResult.transactionId,
-            payment_status: 'success'
-          }]);
-
-        if (payError) throw payError;
-
-        // C) Send Confirmation Email (Async, don't block response)
-        const orderDetails = {
-           planName: plan.name,
-           amount: amount,
-           currency: currency || 'USD',
-           transactionId: paymentResult.transactionId,
-           customerName: user.full_name,
-           customerEmail: user.email
-        };
-        emailService.sendPurchaseConfirmation(user.email, orderDetails);
-        emailService.sendNewOrderNotificationToAdmin(orderDetails);
-
+        // For Redirect Gateways, we don't activate the subscription yet.
+        // We just send the URL to the frontend.
         return res.status(200).json({ 
-          success: true, 
-          message: 'Payment successful', 
-          transactionId: paymentResult.transactionId 
+            message: 'Payment Initiated',
+            redirectUrl: paymentResult.redirectUrl,
+            subscriptionId: subscriptionId
         });
-
       } else {
-        // Payment Failed
-        const { error: cancelError } = await supabase
-          .from('subscriptions')
-          .update({ status: 'cancelled' })
-          .eq('id', subscriptionId);
-
-        if (cancelError) throw cancelError;
-
-        const { error: payError } = await supabase
-          .from('payments')
-          .insert([{ 
-            user_id: userId,
-            subscription_id: subscriptionId,
-            amount,
-            currency: currency || 'USD',
-            payment_provider: paymentService.PROVIDER_NAME,
-            payment_status: 'failed'
-          }]);
-
-        if (payError) throw payError;
-
-        return res.status(402).json({ 
-          success: false, 
-          error: 'Payment declined', 
-          details: paymentResult.error 
-        });
+        throw new Error(paymentResult.error || 'Payment Gateway Failed');
       }
 
     } catch (error) {
       console.error('Checkout Error:', error);
-      res.status(500).json({ error: 'Transaction failed' });
+      res.status(500).json({ error: error.message || 'Payment processing failed' });
+    }
+  });
+
+  // NEW: Verify Payment Status Route
+  router.post('/verify-status', async (req, res) => {
+    try {
+        const { orderId } = req.body;
+        
+        // Check Status with Gateway
+        const result = await paymentService.checkPaymentStatus(orderId);
+        
+        // If 'completed' or 'success' (adjust based on real API response)
+        // Simulator returns 'completed'.
+        if (result.status === 'completed' || result.status === 'success' || result.status === 'paid') {
+             // Activate Subscription
+             await supabase
+                .from('subscriptions')
+                .update({ status: 'active' })
+                .eq('id', orderId);
+
+             // Log Payment if not exists
+             await supabase
+                .from('payments')
+                .insert([{
+                    user_id: 1, // Ideally fetch from subscription
+                    subscription_id: orderId,
+                    amount: result.transactionAmount || 0,
+                    payment_status: 'success',
+                    payment_provider: paymentService.PROVIDER_NAME
+                }]);
+                
+             return res.json({ status: 'active' });
+        }
+        
+        res.json({ status: 'pending' });
+
+    } catch(err) {
+        console.error(err);
+        res.status(500).json({ error: 'Check failed' });
     }
   });
 

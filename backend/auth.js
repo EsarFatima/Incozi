@@ -282,5 +282,119 @@ module.exports = (supabase) => {
     }
   });
 
+  // GET USER PROFILE
+  router.get('/profile/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      
+      const { data: user, error } = await supabase
+        .from('users')
+        .select('id, full_name, email, phone, company_name, address, city, state, zip, country, email_notifications')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!user) return res.status(404).json({ error: 'User not found' });
+
+      res.json(user);
+    } catch (error) {
+      console.error('Get Profile Error:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // UPDATE USER PROFILE
+  router.put('/profile/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { full_name, phone, company_name, address, city, state, zip, country } = req.body;
+
+      const { error } = await supabase
+        .from('users')
+        .update({ 
+          full_name, 
+          phone, 
+          company_name, 
+          address, 
+          city, 
+          state, 
+          zip, 
+          country 
+        })
+        .eq('id', userId);
+
+      if (error) throw error;
+
+      res.json({ message: 'Profile updated successfully' });
+    } catch (error) {
+      console.error('Update Profile Error:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // CHANGE PASSWORD (Authenticated)
+  router.post('/change-password', async (req, res) => {
+    try {
+      const { userId, currentPassword, newPassword } = req.body;
+      
+      if (!userId || !currentPassword || !newPassword) {
+        return res.status(400).json({ error: 'All fields are required' });
+      }
+
+      // 1. Get current password hash
+      const { data: user, error } = await supabase
+        .from('users')
+        .select('password_hash')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!user) return res.status(404).json({ error: 'User not found' });
+
+      // 2. Verify current password
+      const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
+      if (!isMatch) {
+        return res.status(401).json({ error: 'Current password is incorrect' });
+      }
+
+      // 3. Hash new password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      // 4. Update password
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ password_hash: hashedPassword })
+        .eq('id', userId);
+
+      if (updateError) throw updateError;
+
+      res.json({ message: 'Password changed successfully' });
+    } catch (error) {
+      console.error('Change Password Error:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
+  // UPDATE EMAIL PREFERENCES
+  router.put('/email-preferences/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { email_notifications } = req.body;
+
+      const { error } = await supabase
+        .from('users')
+        .update({ email_notifications })
+        .eq('id', userId);
+
+      if (error) throw error;
+
+      res.json({ message: 'Email preferences updated successfully' });
+    } catch (error) {
+      console.error('Update Email Preferences Error:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
   return router;
 };

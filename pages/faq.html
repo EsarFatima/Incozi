@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FAQs | Incozi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .faq-header {
+      padding: 4rem 1.5rem;
+      background: var(--bg-100);
+    }
+    .faq-header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .faq-header-text {
+      flex: 1;
+    }
+    .faq-header h1 {
+      font-size: 2.5rem;
+      color: #312e81;
+      margin-bottom: 1rem;
+    }
+    .faq-header p {
+      color: var(--text-200);
+      font-size: 1.05rem;
+      max-width: 500px;
+    }
+    .faq-header-image {
+      flex: 1;
+      min-height: 300px;
+      border-radius: 20px;
+      background: var(--bg-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .faq-nav-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+      max-width: 600px;
+    }
+    .faq-nav-btn {
+      padding: 0.75rem 1.5rem;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #374151;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .faq-nav-btn:hover {
+      background: var(--accent-200);
+      color: #fff;
+      border-color: var(--accent-200);
+    }
+    
+    .faq-container {
+      max-width: 900px;
+      margin: 4rem auto;
+      padding: 0 1.5rem 6rem;
+    }
+    
+    .faq-section {
+      margin-bottom: 4rem;
+    }
+    .faq-section h2 {
+      font-size: 1.75rem;
+      color: #312e81;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--accent-200);
+    }
+    
+    .faq-item {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .faq-item:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    .faq-question {
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      background: #f9fafb;
+      transition: background 0.3s ease;
+    }
+    .faq-question:hover {
+      background: #f3f4f6;
+    }
+    
+    .faq-question-text {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #312e81;
+      flex: 1;
+      text-align: left;
+    }
+    
+    .faq-toggle-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent-200);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      margin-left: 1rem;
+      transition: transform 0.3s ease;
+    }
+    
+    .faq-item.active .faq-toggle-icon {
+      transform: rotate(45deg);
+    }
+    
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      background: #fff;
+    }
+    
+    .faq-item.active .faq-answer {
+      max-height: 1000px;
+      padding: 0 1.5rem 1.5rem;
+    }
+    
+    .faq-answer-text {
+      color: var(--text-100);
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+    
+    .faq-answer-text p {
+      margin-bottom: 1rem;
+    }
+    
+    .faq-answer-text ul {
+      margin: 1rem 0 1rem 2rem;
+      list-style: disc;
+    }
+    
+    .faq-answer-text li {
+      margin-bottom: 0.75rem;
+      color: var(--text-100);
+    }
+    
+    .faq-answer-text strong {
+      color: #312e81;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .faq-header-content {
+        flex-direction: column;
+        gap: 2rem;
+      }
+      .faq-header h1 {
+        font-size: 2rem;
+      }
+      .faq-nav-pills {
+        max-width: 100%;
+      }
+      .faq-question {
+        padding: 1rem;
+      }
+      .faq-question-text {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">incozi.</a>
+      <nav class="main-nav" style="display: none;">
+          <ul class="nav-list" style="display: flex; gap: 1.5rem; list-style: none; align-items: center; margin: 0;">
+              <li class="nav-item">
+                  <a href="#" class="nav-link">Services & Pricing <i class="fa-solid fa-chevron-down"></i></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="incorporation.html">Incorporation</a></li>
+                      <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+                      <li><a href="bookkeeping.html">Bookkeeping</a></li>
+                      <li><a href="consultation.html">Consultation</a></li>
+                  </ul>
+              </li>
+              <li><a href="blog.html" class="nav-link">Blog</a></li>
+              <li><a href="my-services.html" class="nav-link">My Services</a></li>
+              <li><a href="account.html" class="nav-link" aria-label="My Account"><i class="fa-regular fa-user"></i></a></li>
+              <li><a href="cart.html" class="nav-link" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+          </ul>
+      </nav>
+      <button class="menu-toggle custom-toggle" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </header>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar-overlay"></div>
+  <aside class="sidebar-menu">
+    <div class="sidebar-header-row">
+      <span class="sidebar-title">Menu</span>
+      <button class="sidebar-close" aria-label="Close Menu"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="sidebar-content">
+      <ul class="sidebar-nav-list">
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">Services & Pricing</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="consultation.html">Consultation</a></li>
+             <li><a href="incorporation.html">Incorporation</a></li>
+             <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+             <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          </ul>
+        </li>
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">About Us</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="#">Who We Are</a></li>
+             <li><a href="#">FAQs</a></li>
+             <li><a href="#">Contact Us</a></li>
+          </ul>
+        </li>
+        <li class="sidebar-group">
+          <a href="blog.html" class="sidebar-group-title" style="display:block; cursor:pointer;">Blog</a>
+        </li>
+        <li class="sidebar-divider"></li>
+        <li><a href="account.html" class="sidebar-link-item"><i class="fa-regular fa-user"></i> My Account</a></li>
+        <li><a href="cart.html" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <section class="faq-header">
+      <div class="faq-header-content">
+        <div class="faq-header-text">
+          <h1>Frequently asked questions</h1>
+          <p>If you don't find the answer here, don't hesitate to <a href="#" style="color: var(--accent-200); font-weight: 600;">contact us</a> and we'll be more than happy to help you!</p>
+          
+          <div class="faq-nav-pills">
+            <button class="faq-nav-btn" onclick="scrollToSection('incorporation')">Incorporation</button>
+            <button class="faq-nav-btn" onclick="scrollToSection('tax')">Tax</button>
+            <button class="faq-nav-btn" onclick="scrollToSection('bookkeeping')">Bookkeeping</button>
+            <button class="faq-nav-btn" onclick="scrollToSection('services')">Services & Pricing</button>
+            <button class="faq-nav-btn" onclick="scrollToSection('consultation')">Consultation</button>
+            <button class="faq-nav-btn" onclick="scrollToSection('account')">Account</button>
+          </div>
+        </div>
+        <div class="faq-header-image">
+          <img src="../assets/images/pages/faq-illustration.svg" alt="FAQ Illustration" style="width: 100%; height: 100%; object-fit: contain;">
+        </div>
+      </div>
+    </section>
+
+    <div class="faq-container">
+      <!-- Incorporation Section -->
+      <div class="faq-section" id="incorporation">
+        <h2>Incorporation</h2>
+        
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">What if I choose one entity type but later realize another is better?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Don't worry — our process is designed to keep things flexible for you. Once you purchase a package, you'll be able to schedule a consultation (which is included in the package) with us. During the consultation, we'll review your needs and ensure you've chosen the right company type. If another option turns out to be a better fit, our specialists can adjust your package type. Incorporation price is the same for all entity types.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">What is an LLC (Limited Liability Company)?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>An LLC (Limited Liability Company) is a business structure that offers liability protection, meaning your personal assets are protected from business debts or legal claims. It's a flexible and simple option for business owners.</p>
+              <p><strong>LLCs have two main tax classifications:</strong></p>
+              <ul>
+                <li><strong>Single-Member LLC (SM LLC):</strong> Owned by one person or entity, offering simplicity and liability protection.</li>
+                <li><strong>Multi-Member LLC (MM LLC):</strong> Owned by two or more members, providing shared responsibility and flexibility.</li>
+              </ul>
+              <p>Even if you're not a US resident, you can open a US LLC and benefit from features like a US bank account, payment processing, and asset protection. The process is simple and can be completed quickly with proper guidance.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">Can non-US residents open a US LLC, C Corp, or S Corp?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Yes, as a non-US resident, you can be the sole owner of a US LLC or C Corporation (C Corp) without any issues. However, S Corporations (S Corps) are different — only US citizens or residents can own them. So, while you have full ownership options with an LLC or C Corp, S Corps are off-limits unless you're a US resident or citizen.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">What documents are required to form a US company?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>To form a US company, we only need the basic information of the business itself, such as:</p>
+              <ul>
+                <li>Name of the company</li>
+                <li>Services/products offered</li>
+                <li>Owner's personal information</li>
+              </ul>
+              <p>If you want us to assist you in applying for a business bank account, we will also need a scan of the owner's passport.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">How can I avoid common pitfalls when forming a US business entity?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>To avoid common pitfalls when forming a US business entity, keep these tips in mind:</p>
+              <ul>
+                <li><strong>Choose the right structure:</strong> Understand the differences between an LLC, C Corp, and S Corp to select the best fit for your business needs, especially regarding taxes and ownership.</li>
+                <li><strong>Ensure eligibility for a US bank account:</strong> Confirm that you are from a country that is eligible to open a bank account in the US.</li>
+                <li><strong>Register in the right state:</strong> Some states offer better benefits for certain types of businesses. For instance, Delaware and Wyoming are popular for their business-friendly laws and lower fees.</li>
+                <li><strong>Keep personal and business finances separate:</strong> This helps maintain liability protection and simplifies accounting.</li>
+                <li><strong>Understand compliance requirements:</strong> Stay on top of annual reports, tax filings, and other legal obligations to avoid penalties.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">What information do I need to provide to get started on my Incorporation service?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Here's an overview of the information our clients typically provide for Incorporation packages:</p>
+              <ul>
+                <li><strong>Company Details:</strong> Preferred name, entity type, and basic information.</li>
+                <li><strong>Member Details:</strong> Legal name, address, ownership percentage, and other specifics.</li>
+                <li><strong>Identification:</strong> Passport (required later for bank account setup).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">What happens after I purchase an Incorporation package?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Once you purchase an Incorporation package, you'll receive a welcome email with all the details to get started, including a link to book your consultation (included in your package) and a short form to provide us with the necessary information. From there, we'll guide you every step of the way to ensure everything runs smoothly.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(this)">
+            <span class="faq-question-text">Are my personal data and documents secure?</span>
+            <div class="faq-toggle-icon">+</div>
+          </div>
+          <div class="faq-answer">
+            <div class="faq-answer-text">
+              <p>Yes, your data and documents are completely secure. At Incozi, your privacy and security always come first. Our client portal employs 256-bit encryption and advanced safety features to keep your personal information confidential. As a client, you'll create a free account in our secure portal to upload your documents safely. We avoid sharing sensitive information via email, ensuring your data remains protected at all times.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tax Section (Placeholder) -->
+      <div class="faq-section" id="tax">
+        <h2>Tax & Compliance</h2>
+        <p style="color: var(--text-200); text-align: center; padding: 2rem;">Tax-related questions coming soon...</p>
+      </div>
+
+      <!-- Bookkeeping Section (Placeholder) -->
+      <div class="faq-section" id="bookkeeping">
+        <h2>Bookkeeping</h2>
+        <p style="color: var(--text-200); text-align: center; padding: 2rem;">Bookkeeping-related questions coming soon...</p>
+      </div>
+
+      <!-- Services Section (Placeholder) -->
+      <div class="faq-section" id="services">
+        <h2>Services & Pricing</h2>
+        <p style="color: var(--text-200); text-align: center; padding: 2rem;">Services and pricing questions coming soon...</p>
+      </div>
+
+      <!-- Consultation Section (Placeholder) -->
+      <div class="faq-section" id="consultation">
+        <h2>Consultation</h2>
+        <p style="color: var(--text-200); text-align: center; padding: 2rem;">Consultation-related questions coming soon...</p>
+      </div>
+
+      <!-- Account Section (Placeholder) -->
+      <div class="faq-section" id="account">
+        <h2>Account</h2>
+        <p style="color: var(--text-200); text-align: center; padding: 2rem;">Account-related questions coming soon...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-col brand-col">
+        <a href="../index.html" class="footer-logo">incozi.</a>
+        <p class="tagline">Dream Worldwide, <br>Launch Stateside</p>
+        <div class="address-block">
+          <h4>Address</h4>
+          <p>347 5th Avenue</p>
+          <p>Suite 1402-171</p>
+          <p>New York, NY 10016, U.S.A.</p>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../index.html#services">Services & Pricing</a></li>
+          <li><a href="incorporation.html">Incorporation</a></li>
+          <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+          <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          <li><a href="consultation.html">Consultation</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Our Process</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Useful Links</h4>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../script.js"></script>
+  <script>
+    function toggleFAQ(element) {
+      const faqItem = element.parentElement;
+      faqItem.classList.toggle('active');
+    }
+
+    function scrollToSection(sectionId) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  </script>
+</body>
+</html>

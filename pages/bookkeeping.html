@@ -18,13 +18,13 @@
     
     /* Bookkeeping Layout */
     .bk-hero-title { text-align: center; margin-bottom: 4rem; padding-top: 2rem; }
-    .bk-hero-title h1 { color: #312e81; font-size: 2.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .bk-hero-title h1 { color: var(--accent-200); font-size: 2.75rem; font-weight: 700; margin-bottom: 0.5rem; }
     
     .bk-split-section { display: flex; align-items: center; gap: 4rem; margin-bottom: 2rem; }
     .bk-text { flex: 1; }
     .bk-image { flex: 1; }
     
-    .bk-text h3 { color: #312e81; font-size: 1.75rem; margin-bottom: 1.5rem; line-height: 1.3; font-weight: 600; }
+    .bk-text h3 { color: var(--accent-200); font-size: 1.75rem; margin-bottom: 1.5rem; line-height: 1.3; font-weight: 600; }
     .bk-text p { color: #4b5563; line-height: 1.7; margin-bottom: 1.5rem; font-size: 1.05rem; }
     .bk-highlight { font-weight: 600; color: #312e81; font-style: italic; }
 
@@ -48,26 +48,26 @@
 
     /* Why Us (Reused) */
     .why-us { background: #fff; }
-    .why-us h2 { font-size: 2.5rem; color: #312e81; margin-bottom: 2rem; }
+    .why-us h2 { font-size: 2.5rem; color: var(--accent-200); margin-bottom: 2rem; }
     .why-grid { display: flex; gap: 2rem; margin-bottom: 2rem; }
     .why-card { flex: 1; background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #f3f4f6; }
     .icon-box { width: 50px; height: 50px; background: #e0f2fe; color: #0ea5e9; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.5rem; }
-    .why-card h3 { color: #312e81; margin-bottom: 1rem; font-size: 1.25rem; }
+    .why-card h3 { color: var(--accent-200); margin-bottom: 1rem; font-size: 1.25rem; }
     .why-card p { color: #6b7280; line-height: 1.6; margin-bottom: 1.5rem; }
-    .quote { border-left: 3px solid #ddd; padding-left: 1rem; font-style: italic; color: #312e81; font-weight: 500; }
+    .quote { border-left: 3px solid #ddd; padding-left: 1rem; font-style: italic; color: var(--accent-200); font-weight: 500; }
     .quote span { display: block; margin-top: 0.5rem; font-size: 0.9rem; color: #6b7280; font-style: normal; }
     
     .big-testimonial { background: #f0fdf4; padding: 2rem; border-radius: 12px; display: flex; gap: 1rem; align-items: flex-start; }
-    .big-testimonial i { font-size: 2rem; color: #312e81; opacity: 0.3; }
-    .big-testimonial p { color: #312e81; font-size: 1.1rem; line-height: 1.6; font-weight: 500; }
+    .big-testimonial i { font-size: 2rem; color: var(--accent-200); opacity: 0.3; }
+    .big-testimonial p { color: var(--accent-200); font-size: 1.1rem; line-height: 1.6; font-weight: 500; }
 
     /* Pricing & Toggle */
     .pricing-table-container { padding: 4rem 1.5rem; background: #f9fafb; text-align: center; }
-    .pricing-table-container h2 { color: #312e81; font-size: 2.5rem; margin-bottom: 1rem; }
+    .pricing-table-container h2 { color: var(--accent-200); font-size: 2.5rem; margin-bottom: 1rem; }
     
     .pricing-toggle { display: flex; align-items: center; justify-content: center; margin-bottom: 3rem; gap: 1rem; margin-top: 2rem; }
     .toggle-label { font-size: 1.1rem; font-weight: 600; color: var(--text-200); cursor: pointer; transition: 0.3s; }
-    .toggle-label.active { color: #312e81; }
+    .toggle-label.active { color: var(--accent-200); }
     .toggle-switch { 
         width: 60px; height: 32px; background: #e5e7eb; border-radius: 32px; 
         position: relative; cursor: pointer; transition: 0.3s; 
@@ -76,7 +76,7 @@
         content: ''; width: 26px; height: 26px; background: #fff; border-radius: 50%; 
         position: absolute; top: 3px; left: 3px; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .toggle-switch.year-mode { background: #312e81; }
+    .toggle-switch.year-mode { background: var(--accent-200); }
     .toggle-switch.year-mode::after { transform: translateX(28px); }
 
     .pricing-grid { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
@@ -86,17 +86,17 @@
         box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: 0.3s;
     }
     .price-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
-    .price-card.popular { border: 2px solid #312e81; position: relative; }
+    .price-card.popular { border: 2px solid var(--accent-200); position: relative; }
     .pop-tag { 
-        position: absolute; top: -12px; right: 2rem; background: #312e81; color: #fff; 
+        position: absolute; top: -12px; right: 2rem; background: var(--accent-200); color: #fff; 
         padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; 
     }
     
     .pc-header { margin-bottom: 1.5rem; }
-    .pc-title { font-size: 1.25rem; font-weight: 700; color: #312e81; }
+    .pc-title { font-size: 1.25rem; font-weight: 700; color: var(--accent-200); }
     .pc-price { display: flex; align-items: baseline; margin-top: 1rem; }
-    .currency { font-size: 1.5rem; font-weight: 600; color: #312e81; }
-    .amount { font-size: 2.5rem; font-weight: 800; color: #312e81; }
+    .currency { font-size: 1.5rem; font-weight: 600; color: var(--accent-200); }
+    .amount { font-size: 2.5rem; font-weight: 800; color: var(--accent-200); }
     .period { color: #6b7280; margin-left: 0.5rem; }
     
     .pc-features { list-style: none; padding: 0; margin: 0 0 2rem 0; flex-grow: 1; }
@@ -210,11 +210,7 @@
         </div>
         <div class="bk-split-section">
             <div class="bk-image">
-                 <!-- Vector Image Space: Folder/Stack -->
-                 <div class="vector-placeholder">
-                      <i class="fa-solid fa-folder-open"></i>
-                      <span>Chart/Graph Illustration Space</span>
-                 </div>
+                 <img src="../assets/images/services/bookkeeping/book-dashboard.png" alt="Bookkeeping Dashboard" style="width: 100%; max-width: 500px; height: auto; border-radius: 12px;">
             </div>
             <div class="bk-text">
                 <h3>Don't let messy books hold your business back</h3>
@@ -238,11 +234,7 @@
                 </ul>
              </div>
              <div class="bk-image">
-                 <!-- Vector Image Space: Checklist -->
-                 <div class="vector-placeholder" style="border-color: #a78bfa; background: #f5f3ff; color: #7c3aed;">
-                      <i class="fa-solid fa-list-check"></i>
-                      <span>Workflow Illustration Space</span>
-                 </div>
+                 <img src="../assets/images/services/bookkeeping/book-workflow.svg" alt="Bookkeeping Workflow" style="width: 100%; max-width: 500px; height: auto; border-radius: 12px;">
              </div>
          </div>
     </section>

@@ -154,6 +154,7 @@
                 <div class="form-group">
                      <label>Email Address</label>
                      <input type="email" id="email" required class="form-control" placeholder="you@company.com">
+                     <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">We'll send a verification PIN to this email.</p>
                 </div>
             </div>
 
@@ -225,6 +226,19 @@
 
     </div>
   </main>
+
+  <!-- PIN Verification Modal -->
+  <div id="pin-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 400px; width: 90%; text-align: center;">
+      <h3 style="margin-bottom: 1rem; color: var(--text-100);">Verify Email</h3>
+      <p style="color: var(--text-200); margin-bottom: 1.5rem;">We've sent a 6-digit PIN to <span id="pin-email-display" style="font-weight: bold;"></span>.</p>
+      
+      <input type="text" id="pin-input" placeholder="Enter 6-digit PIN" maxlength="6" style="font-size: 1.5rem; letter-spacing: 0.5rem; text-align: center; width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; margin-bottom: 1.5rem;">
+      
+      <button id="verify-pin-btn" class="btn btn-primary" style="width: 100%;">Verify & Complete Order</button>
+      <button onclick="document.getElementById('pin-modal').style.display='none'" style="background: none; border: none; color: #666; margin-top: 1rem; cursor: pointer; text-decoration: underline;">Cancel</button>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="site-footer">
@@ -314,11 +328,25 @@
         summaryContainer.innerHTML = '';
         
         cart.forEach(item => {
+            if (!item || typeof item !== 'object') return;
+
+            // Robust price parsing
+            let priceNum = 0;
+            try {
+                if (typeof item.price === 'number') {
+                    priceNum = item.price;
+                } else if (typeof item.price === 'string') {
+                    priceNum = parseFloat(item.price.replace(/[^0-9.-]+/g, ""));
+                }
+            } catch (e) { console.error('Price parse error', e); }
+            
+            if (isNaN(priceNum)) priceNum = 0;
+
             const div = document.createElement('div');
             div.className = 'summary-item';
-            div.innerHTML = `<span>${item.item}</span> <span>$${item.price}</span>`;
+            div.innerHTML = `<span>${item.item || 'Unknown Item'}</span> <span>$${priceNum.toLocaleString('en-US', {minimumFractionDigits: 2})}</span>`;
             summaryContainer.appendChild(div);
-            total += parseFloat(item.price);
+            total += priceNum;
         });
 
         const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
@@ -345,45 +373,105 @@
                return;
            }
 
-           // Payment Logic - REAL BACKEND INTEGRATION
+           // 1. Send PIN First
+           const email = document.getElementById('email').value;
            const originalText = payBtn.innerText;
            payBtn.disabled = true;
-           payBtn.innerText = 'Processing...';
-           
+           payBtn.innerText = 'Sending PIN...';
+
            try {
-                // 1. Check User Login
+               const pinRes = await fetch(`${API_URL}/api/auth/send-pin`, {
+                   method: 'POST',
+                   headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify({ email })
+               });
+
+               if (!pinRes.ok) {
+                   throw new Error('Failed to send verification PIN');
+               }
+
+               // 2. Show Modal
+               document.getElementById('pin-email-display').innerText = email;
+               document.getElementById('pin-modal').style.display = 'flex';
+               payBtn.innerText = originalText;
+               payBtn.disabled = false;
+               
+               // Focus PIN input
+               setTimeout(() => document.getElementById('pin-input').focus(), 100);
+
+           } catch (error) {
+               console.error('PIN Error:', error);
+               alert('Error sending verification PIN. Please try again.');
+               payBtn.innerText = originalText;
+               payBtn.disabled = false;
+           }
+        });
+
+        // Verify PIN & Process Payment
+        document.getElementById('verify-pin-btn').addEventListener('click', async () => {
+           const enteredPin = document.getElementById('pin-input').value;
+           const email = document.getElementById('email').value;
+           const verifyBtn = document.getElementById('verify-pin-btn');
+           
+           if (!enteredPin || enteredPin.length < 6) {
+               alert('Please enter a valid 6-digit PIN');
+               return;
+           }
+
+           const originalBtnText = verifyBtn.innerText;
+           verifyBtn.disabled = true;
+           verifyBtn.innerText = 'Verifying...';
+
+           try {
+               // A. Verify PIN
+               const verifyRes = await fetch(`${API_URL}/api/auth/verify-pin`, {
+                   method: 'POST',
+                   headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify({ email, pin: enteredPin })
+               });
+               
+               if (!verifyRes.ok) {
+                   const errData = await verifyRes.json();
+                   throw new Error(errData.error || 'Invalid PIN');
+               }
+
+               // B. Proceed to Payment (Exising Logic)
                 const userJson = localStorage.getItem('incozi_user');
-                if (!userJson) {
-                    alert('Please log in to complete your purchase.');
-                    window.location.href = 'account.html';
-                    return;
-                }
-                const user = JSON.parse(userJson);
+                let userId = null;
                 
-                // 2. Map Items to Plans (Using Default Test Plan for Demo)
-                // In a real app, you'd fetch /api/services to map item names to plan IDs.
-                // For this check, we use the Plan ID found in the system.
+                if (userJson) {
+                    userId = JSON.parse(userJson).id;
+                } else {
+                     if (!userJson) {
+                        alert('Please log in to complete your purchase.');
+                        window.location.href = 'account.html';
+                        return;
+                    }
+                }
+                
                 const DEFAULT_PLAN_ID = "982748ed-36cc-4d74-8b33-5bdd65217b68"; 
                 
-                // 3. Process each item (Backend limitation: 1 plan per request)
-                // We will process the FIRST item only for this check, or loop if needed.
-                // Looping redirects is impossible, so we just process the first item.
                 if (cart.length > 1) {
                     if(!confirm("Note: Only the first item will be processed in this demo environment. Continue?")) {
-                        payBtn.disabled = false;
-                        payBtn.innerText = 'Confirm & Pay';
+                        verifyBtn.innerText = originalBtnText;
+                        verifyBtn.disabled = false;
                         return;
                     }
                 }
                 
                 const item = cart[0];
                 
+                let orderAmount = item.price;
+                if (typeof orderAmount === 'string') {
+                    orderAmount = parseFloat(orderAmount.replace(/[^0-9.-]+/g, ""));
+                }
+
                 const payload = {
-                    userId: user.id,
-                    planId: DEFAULT_PLAN_ID, // Mapped
-                    amount: item.price,
+                    userId: userId,
+                    planId: DEFAULT_PLAN_ID, 
+                    amount: orderAmount,
                     currency: 'USD',
-                    paymentMethod: 'card' // Simplified
+                    paymentMethod: 'card' 
                 };
 
                 const res = await fetch(`${API_URL}/api/payments/checkout`, {
@@ -396,7 +484,6 @@
                 
                 if (res.ok) {
                     if (data.redirectUrl) {
-                        // Clear cart for demo purposes (or handle partial)
                         localStorage.removeItem('incoziCart');
                         window.location.href = data.redirectUrl;
                     } else {
@@ -405,16 +492,19 @@
                         window.location.href = '../index.html';
                     }
                 } else {
-                    throw new Error(data.error || 'Payment declined');
+                    alert('Payment Failed: ' + data.error);
+                    verifyBtn.innerText = originalBtnText;
+                    verifyBtn.disabled = false;
                 }
 
-           } catch (err) {
-               console.error(err);
-               alert('Payment failed: ' + err.message);
-               payBtn.disabled = false;
-               payBtn.innerText = originalText;
+           } catch (error) {
+               console.error('Payment/Verify Error:', error);
+               alert(error.message);
+               verifyBtn.innerText = originalBtnText;
+               verifyBtn.disabled = false;
            }
         });
+
     });
   </script>
 </body>

@@ -1,4 +1,12 @@
 require('dotenv').config();
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -8,6 +16,7 @@ const emailService = require('./backend/emailService');
 const authRoutes = require('./backend/auth'); // Import auth routes
 const paymentRoutes = require('./backend/payments'); // Import payment routes
 const serviceRoutes = require('./backend/services'); // Import service routes
+const { authenticateToken, requireAdmin } = require('./backend/middleware');
 
 const app = express();
 
@@ -81,7 +90,7 @@ app.post('/api/contact', async (req, res) => {
 });
 
 // 3. Admin: Get Subscribers
-app.get('/api/admin/subscribers', async (req, res) => {
+app.get('/api/admin/subscribers', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('subscribers')

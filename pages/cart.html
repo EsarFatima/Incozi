@@ -418,11 +418,13 @@
         let subtotal = 0;
 
         cart.forEach((item, index) => {
+            if (!item || typeof item !== 'object') return;
+
             let iconClass = 'fa-box';
             let subtitle = 'Standard Package';
             
             // Determine Icon based on keywords
-            const name = item.item.toLowerCase();
+            const name = (item.item || '').toLowerCase();
             if (name.includes('incorporation') || name.includes('llc') || name.includes('corp')) {
                 iconClass = 'fa-building';
                 subtitle = 'Formation Service';
@@ -437,6 +439,16 @@
                 subtitle = 'Expert Advice';
             }
 
+            
+            // Robust price parsing
+            let priceNum = 0;
+            if (typeof item.price === 'number') {
+                priceNum = item.price;
+            } else if (typeof item.price === 'string') {
+                priceNum = parseFloat(item.price.replace(/[^0-9.-]+/g, ""));
+            }
+            if (isNaN(priceNum)) priceNum = 0;
+
             const div = document.createElement('div');
             div.className = 'cart-item';
             div.innerHTML = `
@@ -448,14 +460,14 @@
                     <p>${subtitle}</p>
                 </div>
                 <div class="item-actions">
-                    <span class="item-price">$${item.price.toLocaleString()}</span>
+                    <span class="item-price">$${priceNum.toLocaleString('en-US', {minimumFractionDigits: 2})}</span>
                     <button class="remove-btn" onclick="removeFromCart(${index})">
                         <i class="fa-solid fa-trash-can"></i> Remove
                     </button>
                 </div>
             `;
             container.appendChild(div);
-            subtotal += parseFloat(item.price); // Assumes price is clean number or we parse it
+            subtotal += priceNum;
         });
 
         // Format Money

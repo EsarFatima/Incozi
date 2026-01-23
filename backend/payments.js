@@ -90,22 +90,62 @@ module.exports = (supabase) => {
         // If 'completed' or 'success' (adjust based on real API response)
         // Simulator returns 'completed'.
         if (result.status === 'completed' || result.status === 'success' || result.status === 'paid') {
-             // Activate Subscription
+             
+             // 1. Fetch Data for Emails/Logging
+             let user = null;
+             let plan = null;
+             
+             const { data: sub } = await supabase
+                .from('subscriptions')
+                .select('user_id, plan_id')
+                .eq('id', orderId)
+                .maybeSingle();
+
+             if (sub) {
+                 const { data: u } = await supabase.from('users').select('email, full_name').eq('id', sub.user_id).maybeSingle();
+                 user = u;
+                 const { data: p } = await supabase.from('plans').select('name, price').eq('id', sub.plan_id).maybeSingle();
+                 plan = p;
+             }
+
+             // 2. Activate Subscription
              await supabase
                 .from('subscriptions')
                 .update({ status: 'active' })
                 .eq('id', orderId);
 
-             // Log Payment if not exists
+             // 3. Log Payment
              await supabase
                 .from('payments')
                 .insert([{
-                    user_id: 1, // Ideally fetch from subscription
+                    user_id: sub ? sub.user_id : null, 
                     subscription_id: orderId,
-                    amount: result.transactionAmount || 0,
+                    amount: result.transactionAmount || (plan ? plan.price : 0),
                     payment_status: 'success',
                     payment_provider: paymentService.PROVIDER_NAME
                 }]);
+
+             // 4. Send Emails
+             if (user && plan) {
+                 const orderDetails = {
+                    transactionId: orderId,
+                    planName: plan.name,
+                    currency: 'USD',
+                    amount: plan.price,
+                    customerName: user.full_name || 'Valued Customer',
+                    customerEmail: user.email
+                 };
+
+                 // Send to Buyer
+                 emailService.sendPurchaseConfirmation(user.email, orderDetails)
+                    .then(() => console.log('Order confirmation sent to buyer'))
+                    .catch(e => console.error('Failed to send buyer email:', e));
+
+                 // Send to Admin
+                 emailService.sendNewOrderNotificationToAdmin(orderDetails)
+                    .then(() => console.log('Order notification sent to admin'))
+                    .catch(e => console.error('Failed to send admin email:', e));
+             }
                 
              return res.json({ status: 'active' });
         }

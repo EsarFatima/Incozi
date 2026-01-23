@@ -7,8 +7,67 @@ const emailService = require('./emailService');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_in_production';
 
+// In-memory store for Verification PINs (not persistent)
+// Key: email, Value: { pin, expires }
+const verificationCodes = new Map();
+
 // Supabase-driven auth routes
 module.exports = (supabase) => {
+
+  // SEND PIN
+  router.post('/send-pin', async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email) return res.status(400).json({ error: 'Email required' });
+
+      // Generate 6 digit PIN
+      const pin = Math.floor(100000 + Math.random() * 900000).toString();
+      
+      // Store with 5 min expiration
+      verificationCodes.set(email, { 
+        pin, 
+        expires: Date.now() + 5 * 60 * 1000 
+      });
+
+      // Send Email
+      await emailService.sendVerificationPin(email, pin);
+      
+      res.json({ message: 'PIN sent to your email' });
+    } catch (error) {
+      console.error('Send PIN error:', error);
+      res.status(500).json({ error: 'Server error sending PIN' });
+    }
+  });
+
+  // VERIFY PIN
+  router.post('/verify-pin', async (req, res) => {
+    try {
+      const { email, pin } = req.body;
+      if (!email || !pin) return res.status(400).json({ error: 'Email and PIN required' });
+
+      const record = verificationCodes.get(email);
+      
+      if (!record) {
+        return res.status(400).json({ error: 'Invalid or expired PIN' });
+      }
+
+      if (Date.now() > record.expires) {
+        verificationCodes.delete(email);
+        return res.status(400).json({ error: 'PIN expired' });
+      }
+
+      if (record.pin !== pin) {
+        return res.status(400).json({ error: 'Incorrect PIN' });
+      }
+
+      // Valid PIN
+      verificationCodes.delete(email); // One-time use
+      res.json({ message: 'PIN verified' });
+    } catch (error) {
+      console.error('Verify PIN error:', error);
+      res.status(500).json({ error: 'Server error verifying PIN' });
+    }
+  });
 
   // LOGIN ROUTE
   router.post('/login', async (req, res) => {

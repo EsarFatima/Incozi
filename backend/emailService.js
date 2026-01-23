@@ -69,6 +69,19 @@ const sendEmail = async (to, subject, html) => {
   }
 };
 
+const sendVerificationPin = async (email, pin) => {
+  const subject = `Your Verification PIN: ${pin}`;
+  const content = `
+    <h2>Verify Your Transaction</h2>
+    <p>Please use the following PIN to complete your checkout process. This code is valid for 5 minutes.</p>
+    <div style="background: #f3f4f6; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #00668c; border-radius: 8px; margin: 20px 0;">
+      ${pin}
+    </div>
+    <p>If you did not request this code, please ignore this email.</p>
+  `;
+  return sendEmail(email, subject, wrapWithTemplate('Verification PIN', content));
+};
+
 const sendNewsletterWelcome = async (email) => {
   const subject = 'Welcome to the Incozi Community!';
   const content = `
@@ -302,6 +315,7 @@ const sendOrderStatusUpdate = async (email, customerName, orderStatus, trackingN
 };
 
 module.exports = {
+  sendVerificationPin,
   sendNewsletterWelcome,
   sendContactFormAcknowledgement,
   sendContactFormNotificationToAdmin,

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Documents - Incozi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body {
+        background-color: #f3f4f6;
+        display: flex;
+        min-height: 100vh;
+    }
+    
+    .dash-sidebar {
+        width: 260px;
+        background: #fff;
+        border-right: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        z-index: 100;
+    }
+    
+    .dash-logo {
+        padding: 1.5rem;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--accent-200);
+        text-decoration: none;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .dash-nav {
+        flex: 1;
+        padding: 1.5rem 1rem;
+    }
+    
+    .dash-nav-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--text-200);
+        text-decoration: none;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s;
+    }
+    
+    .dash-nav-item:hover {
+        background: #f3f4f6;
+        color: var(--accent-200);
+    }
+    
+    .dash-nav-item.active {
+        background: var(--bg-200);
+        color: var(--accent-200);
+        font-weight: 600;
+    }
+    
+    .dash-nav-item i {
+        margin-right: 0.75rem;
+        width: 20px;
+    }
+    
+    .dash-user {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: var(--accent-200);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+    }
+    
+    .dash-main {
+        margin-left: 260px;
+        flex: 1;
+        padding: 2rem;
+    }
+    
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    
+    .admin-header h1 {
+        font-size: 2rem;
+        color: var(--text-100);
+    }
+    
+    .content-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .dash-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .dash-table thead {
+        background: #f9fafb;
+    }
+    
+    .dash-table th {
+        text-align: left;
+        padding: 1rem;
+        font-weight: 600;
+        color: var(--text-100);
+        border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .dash-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+        color: var(--text-200);
+    }
+    
+    .dash-table tr:hover {
+        background: #f9fafb;
+    }
+
+    @media (max-width: 768px) {
+        .dash-sidebar { display: none; }
+        .dash-main { margin-left: 0; padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="dash-sidebar">
+    <a href="../index.html" class="dash-logo">incozi.</a>
+    
+    <nav class="dash-nav">
+      <a href="admin.html" class="dash-nav-item">
+        <i class="fa-solid fa-chart-line"></i> Dashboard
+      </a>
+      <a href="admin-subscribers.html" class="dash-nav-item">
+        <i class="fa-solid fa-users"></i> Subscribers
+      </a>
+      <a href="admin-documents.html" class="dash-nav-item active">
+        <i class="fa-solid fa-file"></i> Documents
+      </a>
+      <a href="profile.html" class="dash-nav-item">
+        <i class="fa-regular fa-user"></i> My Profile
+      </a>
+    </nav>
+    
+    <div class="dash-user">
+      <div class="user-avatar" id="user-initials">A</div>
+      <div style="flex: 1; overflow: hidden;">
+        <div style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="user-name">Admin</div>
+        <a href="#" id="logout-btn" style="font-size: 0.8rem; color: #ef4444; text-decoration: none;">Sign Out</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dash-main">
+    <div class="admin-header">
+      <div>
+        <h1>Customer Documents</h1>
+        <p style="color: #666;">View and download files uploaded by clients</p>
+      </div>
+      <div>
+        <button onclick="loadDocuments()" style="padding: 0.5rem 1rem; background: white; border: 1px solid #e5e7eb; border-radius: 6px; cursor: pointer;">
+            <i class="fa-solid fa-rotate-right"></i> Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Documents List -->
+    <div class="content-card">
+        <div style="overflow-x: auto;">
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>File Info</th>
+                <th>Type</th>
+                <th>Uploaded At</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="docs-table">
+              <tr><td colspan="5" style="text-align:center; padding: 2rem;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+    </div>
+  </main>
+
+  <script>
+    const API_URL = 'http://localhost:3000'; 
+    const token = localStorage.getItem('incozi_token');
+    const userJson = localStorage.getItem('incozi_user');
+    
+    // 1. Auth Check
+    if (!token || !userJson) {
+        window.location.href = 'account.html';
+    }
+    
+    const user = JSON.parse(userJson);
+    if (user.role !== 'admin') {
+        alert('Access Denied');
+        window.location.href = 'my-services.html';
+    }
+    
+    // 2. Set User Details
+    document.getElementById('user-name').textContent = user.full_name || 'Admin';
+    document.getElementById('user-initials').textContent = (user.full_name ? user.full_name[0] : 'A').toUpperCase();
+
+    // 3. Logout Logic
+    document.getElementById('logout-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.removeItem('incozi_token');
+        localStorage.removeItem('incozi_user');
+        window.location.href = 'account.html';
+    });
+
+    // 4. Load Documents
+    async function loadDocuments() {
+        try {
+            const tbody = document.getElementById('docs-table');
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem;">Loading...</td></tr>';
+
+            const res = await fetch(`${API_URL}/api/services/admin/documents`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            const docs = await res.json();
+            
+            if (!docs || docs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem; color:#999;">No documents found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            
+            docs.forEach(doc => {
+                const tr = document.createElement('tr');
+                const cleanName = doc.file_path.split('/').pop().substring(14); // Remove timestamp prefix roughly
+                
+                tr.innerHTML = `
+                    <td>
+                        <div style="font-weight: 600;">${doc.user?.full_name || 'Unknown'}</div>
+                        <div style="font-size: 0.85rem; color: #666;">${doc.user?.email || ''}</div>
+                    </td>
+                    <td>
+                        <div style="font-family:monospace; font-size: 0.9rem;">${cleanName}</div>
+                    </td>
+                    <td>
+                        <span style="background: #e0e7ff; color: #4338ca; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.85rem;">
+                            ${doc.document_type || 'General'}
+                        </span>
+                    </td>
+                    <td>${new Date(doc.uploaded_at).toLocaleString()}</td>
+                    <td>
+                        <a href="${API_URL}${doc.file_path}" target="_blank" download class="btn-sm" style="background:#3b82f6; color:white; padding: 6px 12px; text-decoration: none; border-radius: 4px;">
+                            <i class="fa-solid fa-download"></i> Download
+                        </a>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (error) {
+            console.error('Error loading documents:', error);
+            document.getElementById('docs-table').innerHTML = '<tr><td colspan="5" style="text-align:center; color:red;">Failed to load documents</td></tr>';
+        }
+    }
+
+    // Load on start
+    loadDocuments();
+  </script>
+</body>
+</html>

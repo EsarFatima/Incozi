@@ -314,6 +314,26 @@ const sendOrderStatusUpdate = async (email, customerName, orderStatus, trackingN
   return sendEmail(email, subject, wrapWithTemplate('Order Update', content));
 };
 
+
+const sendDocumentUploadNotificationToAdmin = async (doc, user) => {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) return;
+
+  const subject = `[New Document] ${user.full_name} uploaded a file`;
+  const content = `
+    <h2>New Document Uploaded 📂</h2>
+    <p>A customer has uploaded a new document.</p>
+    <div style="background-color: #f3f4f6; padding: 15px; border-left: 4px solid #8b5cf6; border-radius: 4px;">
+      <p><strong>Customer:</strong> ${user.full_name} (<a href="mailto:${user.email}">${user.email}</a>)</p>
+      <p><strong>Document ID:</strong> #${doc.id}</p>
+      <p><strong>File Name:</strong> ${doc.filename}</p>
+      <p><strong>Type:</strong> ${doc.type}</p>
+    </div>
+    <p>Please log in to the admin panel to view/download this file.</p>
+  `;
+  return sendEmail(adminEmail, subject, wrapWithTemplate('New Upload', content));
+};
+
 module.exports = {
   sendVerificationPin,
   sendNewsletterWelcome,
@@ -325,6 +345,7 @@ module.exports = {
   sendNewOrderNotificationToAdmin,
   sendConsultationBookingConfirmation,
   sendDocumentUploadNotification,
+  sendDocumentUploadNotificationToAdmin,
   sendSubscriptionRenewalSuccess,
   sendSubscriptionRenewalFailure,
   sendOrderStatusUpdate

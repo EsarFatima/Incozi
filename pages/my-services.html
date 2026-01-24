@@ -92,6 +92,23 @@
 
       <!-- Documents Tab -->
       <div id="documents-content" class="tab-content" style="display: none;">
+        
+        <!-- Upload Section -->
+        <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+            <h3 style="margin-top: 0; color: var(--text-100);">Upload Document</h3>
+            <p style="color: var(--text-200); font-size: 0.9rem; margin-bottom: 1rem;">Upload necessary files (ID, Tax Forms, etc.) for admin review. <strong>PDF is recommended.</strong></p>
+            <form id="uploadForm" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <input type="file" id="docFile" required accept=".pdf, .png, .jpg, .jpeg" style="flex: 1; padding: 0.5rem; border: 1px solid #e5e7eb; border-radius: 4px;">
+                <select id="docType" style="padding: 0.5rem; border: 1px solid #e5e7eb; border-radius: 4px;">
+                    <option value="ID Verification">ID Verification</option>
+                    <option value="Tax Form">Tax Form</option>
+                    <option value="Incorporation Data">Incorporation Data</option>
+                    <option value="Other">Other</option>
+                </select>
+                <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1.5rem;">Upload</button>
+            </form>
+        </div>
+
         <div id="documentsContainer" style="display: grid; gap: 1.5rem;">
           <!-- Documents will be loaded here -->
           <div style="text-align: center; padding: 2rem; color: var(--text-200);">
@@ -373,6 +390,61 @@
         localStorage.removeItem('incozi_user');
         window.location.href = 'account.html';
     });
+
+    // Upload Document Logic
+    const uploadForm = document.getElementById('uploadForm');
+    if (uploadForm) {
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('docFile');
+            const typeInput = document.getElementById('docType');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file.');
+                return;
+            }
+
+            // UI Feedback
+            const btn = uploadForm.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = 'Uploading...';
+            btn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('document', file);
+            formData.append('type', typeInput.value);
+
+            try {
+                const token = localStorage.getItem('incozi_token');
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                const data = await res.json();
+                
+                if (res.ok) {
+                    alert('Document uploaded successfully!');
+                    uploadForm.reset();
+                    loadDocuments(); // Refresh list
+                } else {
+                    alert('Upload failed: ' + (data.error || 'Unknown error'));
+                }
+
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred during upload.');
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        });
+    }
 
     // On page load
     if (checkAuth()) {

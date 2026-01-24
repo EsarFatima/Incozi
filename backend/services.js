@@ -207,5 +207,24 @@ module.exports = (supabase) => {
     }
   });
 
+  // GET ALL DOCUMENTS (Admin)
+  router.get('/admin/documents', authenticateToken, requireAdmin, async (req, res) => {
+      try {
+          const { data, error } = await supabase
+            .from('documents')
+            .select(`
+                *,
+                user:users(full_name, email)
+            `)
+            .order('uploaded_at', { ascending: false });
+          
+          if (error) throw error;
+          res.json(data);
+      } catch (error) {
+          console.error('Error fetching admin documents:', error);
+          res.status(500).json({ error: 'Server error' });
+      }
+  });
+
   return router;
 };

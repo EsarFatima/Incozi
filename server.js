@@ -58,65 +58,61 @@ app.use('/api/auth', authRoutes(supabase));
 app.use('/api/payments', paymentRoutes(supabase));
 app.use('/api/services', serviceRoutes(supabase));
 
-// --- File Upload Endpoint ---
-app.post('/api/upload', authenticateToken, upload.single('document'), async (req, res) => {
+// --- File Upload Endpoint (Multiple supported) ---
+app.post('/api/upload', authenticateToken, upload.array('documents', 10), async (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).json({ error: 'No file uploaded' });
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ error: 'No files uploaded' });
         }
 
         const userId = req.user.id;
         const documentType = req.body.type || 'General';
-        const filePath = '/uploads/' + req.file.filename; // Relative web path
-
-        // Fix: Fetch a valid service ID (UUID) instead of hardcoding '1'
-        const { data: serviceData } = await supabase
-            .from('services')
-            .select('id')
-            .limit(1)
-            .maybeSingle();
-
-        // If no service exists, we can't insert because of the Foreign Key constraint. 
-        // We'll use the user's ID if we can't find a service (hacky but unlikely to happen if services exist)
-        // or loop up a specific 'General' service. 
-        // For now, allow it to fail gracefully if no service found, or use the found ID.
+        
+        // Fetch Service ID
+        const { data: serviceData } = await supabase.from('services').select('id').limit(1).maybeSingle();
         const serviceIdToUse = serviceData ? serviceData.id : null;
+        if (!serviceIdToUse) return res.status(400).json({ error: 'System Error: No services configured.' });
 
-        if (!serviceIdToUse) {
-             return res.status(400).json({ error: 'System Error: No services configured to link file to.' });
+        const savedDocs = [];
+
+        // 1. Loop and Save
+        for (const file of req.files) {
+            const filePath = '/uploads/' + file.filename;
+            
+            const { data: doc, error } = await supabase
+                .from('documents')
+                .insert([{
+                    user_id: userId,
+                    file_path: filePath,
+                    document_type: documentType,
+                    uploaded_by: 'client',
+                    service_id: serviceIdToUse 
+                }])
+                .select()
+                .single();
+
+            if (error) throw error;
+            savedDocs.push({ id: doc.id, filename: file.originalname, type: documentType });
         }
 
-        // 1. Save to DB
-        const { data: doc, error } = await supabase
-            .from('documents')
-            .insert([{
-                user_id: userId,
-                file_path: filePath,
-                document_type: documentType,
-                uploaded_by: 'client',
-                service_id: serviceIdToUse 
-            }])
-            .select()
-            .single();
-
-        if (error) { 
-             // If service_id is the issue, fail gracefully
-             if (error.code === '23503') { // Foreign key violation
-                 throw new Error("Invalid Service ID linked to document.");
-             }
-             throw error; 
-        }
-
-        // 2. Send Admin Notification
-        // Fetch User details for email
+        // 2. Send Admin Notification (Summary)
         const { data: user } = await supabase.from('users').select('*').eq('id', userId).single();
         
-        await emailService.sendDocumentUploadNotificationToAdmin(
-            { id: doc.id, filename: req.file.originalname, type: documentType },
-            user
-        );
+        // We'll update the email service to handle a list, or just loop for now to ensure delivery.
+        // For better UX, let's just send one email with the count if multiple, or list them.
+        if (savedDocs.length === 1) {
+            await emailService.sendDocumentUploadNotificationToAdmin(savedDocs[0], user);
+        } else {
+             // Create a composite "doc" object for the email template
+             const compositeDoc = {
+                 id: savedDocs.map(d => d.id).join(', '),
+                 filename: `${savedDocs.length} files: ` + savedDocs.map(d => d.filename).join(', '),
+                 type: documentType
+             };
+             await emailService.sendDocumentUploadNotificationToAdmin(compositeDoc, user);
+        }
 
-        res.json({ success: true, message: 'File uploaded successfully', document: doc });
+        res.json({ success: true, message: `${savedDocs.length} file(s) uploaded successfully`, documents: savedDocs });
 
     } catch (error) {
         console.error('Upload Error:', error);

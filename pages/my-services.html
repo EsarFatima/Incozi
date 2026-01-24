@@ -96,9 +96,9 @@
         <!-- Upload Section -->
         <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 2rem;">
             <h3 style="margin-top: 0; color: var(--text-100);">Upload Document</h3>
-            <p style="color: var(--text-200); font-size: 0.9rem; margin-bottom: 1rem;">Upload necessary files (ID, Tax Forms, etc.) for admin review. <strong>PDF is recommended.</strong></p>
+            <p style="color: var(--text-200); font-size: 0.9rem; margin-bottom: 1rem;">Upload necessary files (ID, Tax Forms, etc.) for admin review. <strong>PDF is recommended.</strong> You can select multiple files.</p>
             <form id="uploadForm" style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                <input type="file" id="docFile" required accept=".pdf, .png, .jpg, .jpeg" style="flex: 1; padding: 0.5rem; border: 1px solid #e5e7eb; border-radius: 4px;">
+                <input type="file" id="docFile" required multiple accept=".pdf, .png, .jpg, .jpeg" style="flex: 1; padding: 0.5rem; border: 1px solid #e5e7eb; border-radius: 4px;">
                 <select id="docType" style="padding: 0.5rem; border: 1px solid #e5e7eb; border-radius: 4px;">
                     <option value="ID Verification">ID Verification</option>
                     <option value="Tax Form">Tax Form</option>
@@ -399,10 +399,10 @@
             
             const fileInput = document.getElementById('docFile');
             const typeInput = document.getElementById('docType');
-            const file = fileInput.files[0];
+            const files = fileInput.files;
 
-            if (!file) {
-                alert('Please select a file.');
+            if (!files || files.length === 0) {
+                alert('Please select at least one file.');
                 return;
             }
 
@@ -413,7 +413,10 @@
             btn.disabled = true;
 
             const formData = new FormData();
-            formData.append('document', file);
+            // Append all files with the key 'documents' (matching server.js)
+            for (let i = 0; i < files.length; i++) {
+                formData.append('documents', files[i]);
+            }
             formData.append('type', typeInput.value);
 
             try {
@@ -429,7 +432,7 @@
                 const data = await res.json();
                 
                 if (res.ok) {
-                    alert('Document uploaded successfully!');
+                    alert((data.message || 'Documents uploaded successfully!'));
                     uploadForm.reset();
                     loadDocuments(); // Refresh list
                 } else {

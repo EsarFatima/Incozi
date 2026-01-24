@@ -96,7 +96,7 @@ module.exports = (supabase) => {
       // 3. Create Token
       const token = jwt.sign(
         { id: user.id, email: user.email, role: user.role, is_verified: user.is_verified },
-        process.env.JWT_SECRET || 'secret_key',
+        process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_in_production',
         { expiresIn: '24h' }
       );
 
@@ -466,7 +466,7 @@ module.exports = (supabase) => {
       // Verify JWT token
       let decoded;
       try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_key');
+        decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_in_production');
       } catch (error) {
         console.error('JWT verification failed:', error);
         return res.status(401).json({ error: 'Invalid or expired token' });
@@ -611,7 +611,7 @@ module.exports = (supabase) => {
       const token = authHeader.substring(7);
       let decoded;
       try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_key');
+        decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_in_production');
       } catch (error) {
         return res.status(401).json({ error: 'Invalid or expired token' });
       }
@@ -656,7 +656,7 @@ module.exports = (supabase) => {
       const token = authHeader.substring(7);
       let decoded;
       try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_key');
+        decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_in_production');
       } catch (error) {
         return res.status(401).json({ error: 'Invalid or expired token' });
       }
@@ -702,7 +702,7 @@ module.exports = (supabase) => {
       const token = authHeader.substring(7);
       let decoded;
       try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_key');
+        decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_in_production');
       } catch (error) {
         return res.status(401).json({ error: 'Invalid or expired token' });
       }

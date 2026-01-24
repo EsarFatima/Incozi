@@ -466,11 +466,7 @@ module.exports = (supabase) => {
       // Verify JWT token
       let decoded;
       try {
-<<<<<<< HEAD
-        decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_in_production');
-=======
         decoded = jwt.verify(token, JWT_SECRET);
->>>>>>> 19f2df2731c1ffcd524d26d20d093023fe6576c9
       } catch (error) {
         console.error('JWT verification failed:', error);
         return res.status(401).json({ error: 'Invalid or expired token' });
@@ -615,11 +611,7 @@ module.exports = (supabase) => {
       const token = authHeader.substring(7);
       let decoded;
       try {
-<<<<<<< HEAD
-        decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_in_production');
-=======
         decoded = jwt.verify(token, JWT_SECRET);
->>>>>>> 19f2df2731c1ffcd524d26d20d093023fe6576c9
       } catch (error) {
         return res.status(401).json({ error: 'Invalid or expired token' });
       }
@@ -664,11 +656,7 @@ module.exports = (supabase) => {
       const token = authHeader.substring(7);
       let decoded;
       try {
-<<<<<<< HEAD
-        decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_in_production');
-=======
         decoded = jwt.verify(token, JWT_SECRET);
->>>>>>> 19f2df2731c1ffcd524d26d20d093023fe6576c9
       } catch (error) {
         return res.status(401).json({ error: 'Invalid or expired token' });
       }
@@ -714,11 +702,7 @@ module.exports = (supabase) => {
       const token = authHeader.substring(7);
       let decoded;
       try {
-<<<<<<< HEAD
-        decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_super_secret_jwt_key_change_in_production');
-=======
         decoded = jwt.verify(token, JWT_SECRET);
->>>>>>> 19f2df2731c1ffcd524d26d20d093023fe6576c9
       } catch (error) {
         return res.status(401).json({ error: 'Invalid or expired token' });
       }

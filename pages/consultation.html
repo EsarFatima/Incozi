@@ -181,18 +181,37 @@
 
         <!-- User Actions -->
         <li><a href="account.html" class="sidebar-link-item"><i class="fa-regular fa-user"></i> My Account</a></li>
+        <li><a href="my-services.html" class="sidebar-link-item"><i class="fa-solid fa-briefcase"></i> My Services</a></li>
         <li><a href="cart.html" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
       </ul>
     </div>
   </aside>
 
   <main class="container" style="padding-bottom: 5rem;">
-    <!-- Hero & Cards -->
-    <section class="hero-service">
-        <h1>Two types of consultation — depending on your needs</h1>
+    <!-- Hero Section with Text and Image -->
+    <section class="hero-service" style="text-align: left; padding: 5rem 0 3rem;">
+      <div style="display: flex; align-items: center; gap: 4rem; margin-bottom: 3rem;">
+        <div style="flex: 1;">
+          <h1 style="text-align: left; font-size: 2.5rem; color: var(--text-100); margin-bottom: 1.5rem;">Expert business consultation<br><span style="color:var(--accent-200);">for international entrepreneurs</span></h1>
+          <p style="font-size: 1.125rem; color: var(--text-200); line-height: 1.7; max-width: 700px; margin-bottom: 2rem;">
+            Get personalized guidance from experienced consultants. We help you navigate entity structure, tax planning, and regulatory requirements—avoiding costly mistakes and maximizing opportunities.
+          </p>
+          <a href="#package-section" class="cta-button-hero">
+            <i class="fa-solid fa-arrow-down"></i> View Our Options
+          </a>
+        </div>
+        <div style="flex: 1; text-align: center;">
+          <img src="../assets/images/services/consultation/cons-hero.svg" alt="Business Consultation" style="width: 100%; max-width: 500px; height: auto;">
+        </div>
+      </div>
+    </section>
+
+    <!-- Hero & Cards (Packages) -->
+    <section class="hero-service" id="package-section" style="text-align: center; padding: 5rem 0 3rem; background: transparent;">
+        <h2 style="font-size: 2rem; color: var(--text-100); margin-bottom: 1rem;">Two types of consultation — depending on your needs</h2>
         <p class="hero-subtitle">Choose the right expert to guide your US expansion journey.</p>
 
-        <div class="consult-grid">
+        <div class="consult-grid" style="margin-top: 3rem;">
             <!-- Incorporation Card -->
             <div class="consult-card">
                 <div class="consult-icon-box icon-inc"><i class="fa-regular fa-building"></i></div>

@@ -309,12 +309,8 @@
             localStorage.setItem('incozi_token', data.token);
             localStorage.setItem('incozi_user', JSON.stringify(data.user)); // Store user info
             
-            // Redirect based on role
-            if (data.user.role === 'admin') {
-                window.location.href = 'admin.html';
-            } else {
-                window.location.href = 'my-services.html'; 
-            }
+            // Redirect to main dashboard
+            window.location.href = 'my-services.html';
           } else {
             // Error
             alert(data.error || 'Login failed. Please checks your credentials.');
@@ -403,7 +399,6 @@
             document.getElementById('profileSection').style.display = 'block';
             document.getElementById('profileName').textContent = user.full_name || 'User';
             document.getElementById('profileEmail').textContent = user.email || '';
-            document.getElementById('profileRole').textContent = user.role === 'admin' ? 'Admin' : 'Client';
             
             // Handle logout
             const logoutBtn = document.getElementById('logoutBtnProfile');

@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../style.css">
   <style>
-    /* Dashboard Specific Styles */
     body {
         background-color: #f3f4f6;
         display: flex;
@@ -25,7 +24,6 @@
         position: fixed;
         height: 100vh;
         z-index: 100;
-        transition: transform 0.3s ease;
     }
     
     .dash-logo {
@@ -68,6 +66,12 @@
         padding: 1.5rem;
         border-top: 1px solid #e5e7eb;
         display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .user-info {
+        display: flex;
         align-items: center;
         gap: 10px;
     }
@@ -82,22 +86,135 @@
         align-items: center;
         justify-content: center;
         font-weight: bold;
+        font-size: 1.2rem;
+    }
+    
+    .user-name {
+        font-weight: 600;
+        color: var(--text-100);
+    }
+    
+    .sign-out-btn {
+        background: none;
+        border: none;
+        color: #ef4444;
+        cursor: pointer;
+        font-weight: 500;
+        text-align: left;
+        padding: 0;
+        transition: color 0.2s;
+    }
+    
+    .sign-out-btn:hover {
+        color: #dc2626;
     }
     
     /* Main Content */
     .dash-main {
         flex: 1;
-        margin-left: 260px; /* Sidebar width */
+        margin-left: 260px;
         padding: 2rem;
         overflow-y: auto;
     }
     
     .dash-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
         margin-bottom: 2rem;
     }
+    
+    .dash-header h1 {
+        font-size: 2rem;
+        color: var(--text-100);
+        margin: 0;
+    }
+    
+    .dash-content {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    
+    .empty-state {
+      color: #999;
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #ddd;
+    }
+    
+    .empty-state p {
+      font-size: 1.1rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="dash-sidebar">
+    <a href="../index.html" class="dash-logo">incozi.</a>
+    
+    <nav class="dash-nav">
+      <a href="dashboard.html" class="dash-nav-item active">
+        <i class="fa-solid fa-house"></i>
+        <span>Dashboard</span>
+      </a>
+    </nav>
+    
+    <div class="dash-user">
+      <div class="user-info">
+        <div class="user-avatar">A</div>
+        <div class="user-name" id="adminName">System Admin</div>
+      </div>
+      <button class="sign-out-btn" id="signOutBtn">
+        <i class="fa-solid fa-sign-out-alt" style="margin-right: 0.5rem;"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+  
+  <!-- Main Content -->
+  <main class="dash-main">
+    <div class="dash-header">
+      <h1>Dashboard</h1>
+    </div>
+    
+    <div class="dash-content">
+      <div class="empty-state">
+        <i class="fa-solid fa-inbox"></i>
+        <p>Welcome to the dashboard.<br>More features coming soon.</p>
+      </div>
+    </div>
+  </main>
+  
+  <script src="../script.js"></script>
+  <script>
+    // Check if admin is logged in
+    const token = localStorage.getItem('incozi_token');
+    const userStr = localStorage.getItem('incozi_user');
+    
+    if (!token || !userStr) {
+      window.location.href = 'account.html';
+    } else {
+      const user = JSON.parse(userStr);
+      const firstLetter = user.full_name ? user.full_name.charAt(0).toUpperCase() : 'A';
+      document.querySelector('.user-avatar').textContent = firstLetter;
+      document.getElementById('adminName').textContent = user.full_name || 'Admin';
+    }
+    
+    // Handle sign out
+    document.getElementById('signOutBtn').addEventListener('click', () => {
+      localStorage.removeItem('incozi_token');
+      localStorage.removeItem('incozi_user');
+      window.location.href = 'account.html';
+    });
+  </script>
+</body>
+</html>
 
     .stat-grid {
         display: grid;

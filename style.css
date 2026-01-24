@@ -166,25 +166,81 @@ h1, h2, h3, h4 { margin: 0; font-weight: 700; color: var(--text-100); }
 .dropdown-menu li a:hover { background-color: var(--bg-200); color: var(--accent-200); }
 
 .btn {
-  display: inline-block; padding: 0.75rem 1.5rem;
-  border-radius: 99px; font-weight: 600; text-align: center;
-  cursor: pointer; border: none; transition: all 0.2s;
+  display: inline-block; 
+  padding: 0.9rem 2rem;
+  border-radius: 99px; 
+  font-weight: 600; 
+  text-align: center;
+  cursor: pointer; 
+  border: none; 
+  transition: all 0.3s ease;
+  font-size: 1rem;
 }
-.btn-primary { background-color: var(--accent-200); color: #fff; box-shadow: 0 4px 6px -1px rgba(0, 102, 140, 0.3); }
-.btn-primary:hover { background-color: var(--accent-100); color: var(--text-100); }
+.btn-primary { 
+  background-color: var(--accent-200); 
+  color: #fff; 
+  box-shadow: 0 6px 20px rgba(0, 102, 140, 0.4);
+}
+.btn-primary:hover { 
+  background-color: var(--accent-100);
+  color: var(--text-100);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 102, 140, 0.5);
+}
+.hero-actions .btn-primary {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  box-shadow: 0 8px 25px rgba(0, 102, 140, 0.5);
+}
 .mobile-menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-100); }
 
 /* Hero */
 .hero {
   background-color: var(--primary-100);
   background-image: url('assets/hero-bg.jpg'); 
-  background-size: cover; background-position: center;
-  padding: 6rem 0 8rem; text-align: center; position: relative;
+  background-size: cover; 
+  background-position: center;
+  background-attachment: fixed;
+  padding: 8rem 1.5rem 10rem; 
+  text-align: center; 
+  position: relative;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.hero::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.4); z-index: 1; }
-.hero-content { position: relative; z-index: 2; }
-.hero h1 { font-size: 3.5rem; margin-bottom: 1.5rem; color: var(--text-100); text-shadow: 0 1px 2px rgba(255,255,255,0.8); }
-.hero p { font-size: 1.3rem; max-width: 600px; margin: 0 auto 2rem; color: var(--text-200); text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
+.hero::before { 
+  content: ""; 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  background: rgba(0, 0, 0, 0.35); 
+  z-index: 1; 
+}
+.hero-content { 
+  position: relative; 
+  z-index: 2;
+  max-width: 800px;
+}
+.hero h1 { 
+  font-size: 3.8rem; 
+  font-weight: 800;
+  margin-bottom: 1.5rem; 
+  color: #ffffff; 
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  line-height: 1.2;
+}
+.hero p { 
+  font-size: 1.25rem; 
+  max-width: 650px; 
+  margin: 0 auto 2.5rem; 
+  color: #ffffff; 
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 500;
+  line-height: 1.6;
+}
 
 /* Service Section */
 .services-section { padding: 4rem 1.5rem; min-height: 100vh; }
@@ -270,7 +326,22 @@ h1, h2, h3, h4 { margin: 0; font-weight: 700; color: var(--text-100); }
 }
 @media (max-width: 500px) {
   .footer-grid { grid-template-columns: 1fr; }
-  .hero h1 { font-size: 2rem; } 
+  .hero {
+    padding: 5rem 1rem 6rem;
+    min-height: 500px;
+  }
+  .hero h1 { 
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+  }
+  .hero p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  .hero-actions .btn-primary {
+    padding: 0.85rem 2rem;
+    font-size: 1rem;
+  }
   .tabs-header { display: flex; flex-direction: column; width: 100%; }
 }
 

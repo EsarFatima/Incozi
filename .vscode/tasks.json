@@ -69,6 +69,11 @@
 			],
 			"isBackground": false,
 			"group": "none"
+		},
+		{
+			"label": "append_wizard_css",
+			"type": "shell",
+			"command": "powershell"
 		}
 	]
 }

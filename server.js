@@ -16,6 +16,8 @@ const emailService = require('./backend/emailService');
 const authRoutes = require('./backend/auth'); // Import auth routes
 const paymentRoutes = require('./backend/payments'); // Import payment routes
 const serviceRoutes = require('./backend/services'); // Import service routes
+const adminRoutes = require('./backend/admin'); // Import admin routes
+const consultationRoutes = require('./backend/consultations'); // Import consultation routes
 const { authenticateToken, requireAdmin } = require('./backend/middleware');
 const multer = require('multer');
 const fs = require('fs');
@@ -53,72 +55,114 @@ const upload = multer({
     limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
 });
 
+// --- DOCUMENT ROUTES ---
+
+// 1. Upload Documents (Multiple)
+app.post('/api/documents/upload', authenticateToken, upload.array('documents', 10), async (req, res) => {
+    try {
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ error: 'No files uploaded.' });
+        }
+
+        const userId = req.user.id;
+        
+        // FIX: Retrieve a default Service ID for the 'NOT NULL' constraint
+        // Ideally, we make the column nullable, but as a fallback, we grab the first service.
+        let serviceId = null;
+        const { data: serviceData } = await supabase.from('services').select('id').limit(1).maybeSingle();
+        if (serviceData) {
+            serviceId = serviceData.id;
+        }
+
+        const uploadedFiles = [];
+        const fileNames = [];
+        const errors = [];
+
+        for (const file of req.files) {
+            const filePath = `uploads/${file.filename}`; // Relative path for DB
+            
+            const insertPayload = {
+                user_id: userId,
+                file_path: filePath, 
+                document_type: file.mimetype,
+                uploaded_by: 'client'
+            };
+            
+            // Only add service_id if we found one. If the DB requires it and we didn't find one, it will fail.
+            // If the DB allows null, this is fine.
+            if (serviceId) {
+                insertPayload.service_id = serviceId;
+            }
+
+            const { data, error } = await supabase
+                .from('documents')
+                .insert(insertPayload)
+                .select()
+                .single();
+            
+            if (error) {
+                console.error('DB Insert Error for file:', file.originalname, error);
+                errors.push(file.originalname + ': ' + error.message);
+            } else {
+                uploadedFiles.push(data);
+                fileNames.push(file.originalname);
+            }
+        }
+
+        // Fetch user details for email
+        const { data: user } = await supabase.from('users').select('email, full_name').eq('id', userId).single();
+        
+        // Send Emails
+        if (user && fileNames.length > 0) {
+           // We suppress email errors to avoid blocking the response
+           try {
+               await emailService.sendUserUploadConfirmation(user.email, fileNames);
+               await emailService.sendAdminUploadAlert(user, fileNames);
+           } catch (emailErr) {
+               console.error("Email failed:", emailErr);
+           }
+        }
+        
+        if (uploadedFiles.length === 0 && errors.length > 0) {
+             return res.status(500).json({ error: 'Upload failed for all files.', details: errors });
+        }
+
+        res.json({ 
+            message: 'Files processed', 
+            files: uploadedFiles, 
+            errors: errors.length > 0 ? errors : undefined 
+        });
+
+    } catch (error) {
+        console.error('Upload Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// 2. Get My Documents
+app.get('/api/documents/my-documents', authenticateToken, async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('documents')
+            .select('*')
+            .eq('user_id', req.user.id)
+            .order('uploaded_at', { ascending: false });
+        
+        if (error) throw error;
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+
 // Mount Routes with Supabase client
 app.use('/api/auth', authRoutes(supabase));
 app.use('/api/payments', paymentRoutes(supabase));
 app.use('/api/services', serviceRoutes(supabase));
-
-// --- File Upload Endpoint (Multiple supported) ---
-app.post('/api/upload', authenticateToken, upload.array('documents', 10), async (req, res) => {
-    try {
-        if (!req.files || req.files.length === 0) {
-            return res.status(400).json({ error: 'No files uploaded' });
-        }
-
-        const userId = req.user.id;
-        const documentType = req.body.type || 'General';
-        
-        // Fetch Service ID
-        const { data: serviceData } = await supabase.from('services').select('id').limit(1).maybeSingle();
-        const serviceIdToUse = serviceData ? serviceData.id : null;
-        if (!serviceIdToUse) return res.status(400).json({ error: 'System Error: No services configured.' });
-
-        const savedDocs = [];
-
-        // 1. Loop and Save
-        for (const file of req.files) {
-            const filePath = '/uploads/' + file.filename;
-            
-            const { data: doc, error } = await supabase
-                .from('documents')
-                .insert([{
-                    user_id: userId,
-                    file_path: filePath,
-                    document_type: documentType,
-                    uploaded_by: 'client',
-                    service_id: serviceIdToUse 
-                }])
-                .select()
-                .single();
-
-            if (error) throw error;
-            savedDocs.push({ id: doc.id, filename: file.originalname, type: documentType });
-        }
-
-        // 2. Send Admin Notification (Summary)
-        const { data: user } = await supabase.from('users').select('*').eq('id', userId).single();
-        
-        // We'll update the email service to handle a list, or just loop for now to ensure delivery.
-        // For better UX, let's just send one email with the count if multiple, or list them.
-        if (savedDocs.length === 1) {
-            await emailService.sendDocumentUploadNotificationToAdmin(savedDocs[0], user);
-        } else {
-             // Create a composite "doc" object for the email template
-             const compositeDoc = {
-                 id: savedDocs.map(d => d.id).join(', '),
-                 filename: `${savedDocs.length} files: ` + savedDocs.map(d => d.filename).join(', '),
-                 type: documentType
-             };
-             await emailService.sendDocumentUploadNotificationToAdmin(compositeDoc, user);
-        }
-
-        res.json({ success: true, message: `${savedDocs.length} file(s) uploaded successfully`, documents: savedDocs });
-
-    } catch (error) {
-        console.error('Upload Error:', error);
-        res.status(500).json({ error: 'Upload failed: ' + error.message });
-    }
-});
+app.use('/api/consultations', authenticateToken, consultationRoutes(supabase));
+app.use('/api/admin', authenticateToken, adminRoutes(supabase));
 
 // --- Standalone Endpoints converted to Supabase ---
 

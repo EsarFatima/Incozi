@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Client Management - Incozi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body {
+        background-color: #f3f4f6;
+        display: flex;
+        min-height: 100vh;
+    }
+    
+    .dash-sidebar {
+        width: 260px;
+        background: #fff;
+        border-right: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        z-index: 100;
+    }
+    
+    .dash-logo {
+        padding: 1.5rem;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--accent-200);
+        text-decoration: none;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .dash-nav {
+        flex: 1;
+        padding: 1.5rem 1rem;
+    }
+    
+    .dash-nav-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--text-200);
+        text-decoration: none;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s;
+    }
+    
+    .dash-nav-item:hover {
+        background: #f3f4f6;
+        color: var(--accent-200);
+    }
+    
+    .dash-nav-item.active {
+        background: var(--bg-200);
+        color: var(--accent-200);
+        font-weight: 600;
+    }
+    
+    .dash-nav-item i {
+        margin-right: 0.75rem;
+        width: 20px;
+    }
+    
+    .dash-user {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: var(--accent-200);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+    }
+    
+    .dash-main {
+        margin-left: 260px;
+        flex: 1;
+        padding: 2rem;
+    }
+    
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    
+    .admin-header h1 {
+        font-size: 2rem;
+        color: var(--text-100);
+    }
+    
+    .content-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .dash-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .dash-table thead {
+        background: #f9fafb;
+    }
+    
+    .dash-table th {
+        text-align: left;
+        padding: 1rem;
+        font-weight: 600;
+        color: var(--text-100);
+        border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .dash-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+        color: var(--text-200);
+    }
+    
+    .dash-table tr:hover {
+        background: #f9fafb;
+    }
+
+    .badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    .badge-admin { background: #dbeafe; color: #1e40af; }
+    .badge-user { background: #e5e7eb; color: #374151; }
+    
+    @media (max-width: 768px) {
+        .dash-sidebar { display: none; }
+        .dash-main { margin-left: 0; padding: 1rem; }
+        .dash-table { font-size: 0.875rem; }
+        .dash-table th, .dash-table td { padding: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="dash-sidebar">
+        <a href="../index.html" class="dash-logo">incozi.</a>
+        <nav class="dash-nav">
+            <a href="admin.html" class="dash-nav-item">
+                <i class="fa-solid fa-chart-line"></i> Dashboard
+            </a>
+            <a href="admin-clients.html" class="dash-nav-item active">
+                <i class="fa-solid fa-users"></i> Clients
+            </a>
+            <a href="admin-documents.html" class="dash-nav-item">
+                <i class="fa-solid fa-folder"></i> Documents
+            </a>
+            <a href="admin-bookings.html" class="dash-nav-item">
+                <i class="fa-solid fa-calendar-check"></i> Bookings
+            </a>
+            <a href="admin-subscribers.html" class="dash-nav-item">
+                <i class="fa-solid fa-envelope"></i> Newsletter
+            </a>
+        </nav>
+        <div class="dash-user">
+            <div class="user-avatar">A</div>
+            <div>
+                <p style="font-weight: 600; color: var(--text-100);">Admin</p>
+                <a href="#" id="logoutBtn" style="font-size: 0.85rem; color: var(--text-200);">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dash-main">
+        <div class="admin-header">
+            <h1>Client Management</h1>
+            <div style="color: var(--text-200);">Manage your registered users</div>
+        </div>
+
+        <div class="content-card">
+            <div class="table-responsive">
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clientsTableBody">
+                        <tr>
+                            <td colspan="5" style="text-align:center;">Loading clients...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('incozi_token');
+            if (!token) {
+                window.location.href = 'my-services.html'; // Redirect if no token
+                return;
+            }
+
+            // Verify Admin (simple client check, real check on backend)
+            const user = JSON.parse(localStorage.getItem('incozi_user') || '{}');
+            if (user.role !== 'admin') {
+                alert('Access Denied');
+                window.location.href = 'dashboard.html';
+                return;
+            }
+            
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('incozi_token');
+                localStorage.removeItem('incozi_user');
+                window.location.href = '../index.html';
+            });
+
+            // Fetch Clients
+            try {
+                const res = await fetch(`${API_URL}/admin/clients`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!res.ok) throw new Error('Failed to load clients');
+                
+                const clients = await res.json();
+                renderClients(clients);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('clientsTableBody').innerHTML = `
+                    <tr><td colspan="5" style="text-align:center; color: red;">Error loading clients.</td></tr>
+                `;
+            }
+        });
+
+        function renderClients(clients) {
+            const tbody = document.getElementById('clientsTableBody');
+            if (clients.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No clients found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = clients.map(client => `
+                <tr>
+                    <td>
+                        <div style="font-weight: 500;">${client.full_name || 'N/A'}</div>
+                    </td>
+                    <td>${client.email}</td>
+                    <td>
+                        <span class="badge ${client.role === 'admin' ? 'badge-admin' : 'badge-user'}">
+                            ${client.role}
+                        </span>
+                    </td>
+                    <td>${new Date(client.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button onclick="alert('View details for ${client.full_name}')" style="cursor:pointer; background:none; border:none; color: var(--accent-200);">
+                            View
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

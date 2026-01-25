@@ -105,14 +105,21 @@
               <p style="color: var(--text-200); margin-bottom: 1rem;"><strong>Account Status:</strong> <span style="color: #10b981;">Active</span></p>
               
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-                <a href="my-services.html" style="display: flex; align-items: center; justify-content: center; padding: 0.75rem; background: var(--bg-200); color: var(--accent-200); text-decoration: none; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
-                  <i class="fa-solid fa-briefcase" style="margin-right: 0.5rem;"></i> My Services
+                <a href="dashboard.html" style="display: flex; align-items: center; justify-content: center; padding: 0.75rem; background: var(--bg-200); color: var(--accent-200); text-decoration: none; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
+                  <i class="fa-solid fa-briefcase" style="margin-right: 0.5rem;"></i> Dashboard
                 </a>
                 <a href="cart.html" style="display: flex; align-items: center; justify-content: center; padding: 0.75rem; background: var(--bg-200); color: var(--accent-200); text-decoration: none; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
                   <i class="fa-solid fa-cart-shopping" style="margin-right: 0.5rem;"></i> Cart
                 </a>
               </div>
               
+              <!-- Admin Button (Dynamically shown) -->
+              <div id="adminButtonData" style="display: none; margin-bottom: 1.5rem;">
+                 <a href="admin.html" style="display: flex; align-items: center; justify-content: center; width: 100%; padding: 0.75rem; background: #e0e7ff; color: #4338ca; text-decoration: none; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid #4338ca;">
+                    <i class="fa-solid fa-shield-halved" style="margin-right: 0.5rem;"></i> Admin Dashboard
+                 </a>
+              </div>
+
               <button id="logoutBtnProfile" style="width: 100%; padding: 0.75rem; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 1rem; transition: all 0.3s ease;">
                 <i class="fa-solid fa-sign-out-alt" style="margin-right: 0.5rem;"></i> Logout
               </button>
@@ -309,8 +316,12 @@
             localStorage.setItem('incozi_token', data.token);
             localStorage.setItem('incozi_user', JSON.stringify(data.user)); // Store user info
             
-            // Redirect to main dashboard
-            window.location.href = 'my-services.html';
+            // Redirect based on role
+            if (data.user.role === 'admin') {
+                window.location.href = 'admin.html';
+            } else {
+                window.location.href = 'dashboard.html';
+            }
           } else {
             // Error
             alert(data.error || 'Login failed. Please checks your credentials.');
@@ -400,6 +411,12 @@
             document.getElementById('profileName').textContent = user.full_name || 'User';
             document.getElementById('profileEmail').textContent = user.email || '';
             
+            // Show Admin Button if user is Admin
+            if (user.role === 'admin') {
+               const adminBtn = document.getElementById('adminButtonData');
+               if (adminBtn) adminBtn.style.display = 'block';
+            }
+
             // Handle logout
             const logoutBtn = document.getElementById('logoutBtnProfile');
             if (logoutBtn) {

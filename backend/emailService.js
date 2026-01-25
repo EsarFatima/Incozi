@@ -334,6 +334,56 @@ const sendDocumentUploadNotificationToAdmin = async (doc, user) => {
   return sendEmail(adminEmail, subject, wrapWithTemplate('New Upload', content));
 };
 
+const sendUserUploadConfirmation = async (email, filesList) => {
+  const subject = 'Document Upload Received - Incozi';
+  const fileItems = filesList.map(f => `<li>${f}</li>`).join('');
+  const content = `
+    <h2>Upload Received ✅</h2>
+    <p>We have successfully received the following documents from you:</p>
+    <ul>${fileItems}</ul>
+    <p>Our team has been notified and will review your documents shortly.</p>
+    <a href="${process.env.BASE_URL || 'http://localhost:3000'}/pages/dashboard.html#documents" class="button">View Dashboard</a>
+  `;
+  return sendEmail(email, subject, wrapWithTemplate('Upload Confirmation', content));
+};
+
+const sendAdminUploadAlert = async (user, filesList) => {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) return;
+  
+  const subject = `[New Files] ${user.full_name || user.email} uploaded documents`;
+  const fileItems = filesList.map(f => `<li>${f}</li>`).join('');
+  const content = `
+    <h2>New User Uploads 📂</h2>
+    <p><strong>User:</strong> ${user.full_name} (${user.email})</p>
+    <p><strong>Documents:</strong></p>
+    <ul>${fileItems}</ul>
+    <p>Please log in to the admin panel to view these files.</p>
+    <a href="${process.env.BASE_URL || 'http://localhost:3000'}/pages/admin.html" class="button">Admin Dashboard</a>
+  `;
+  return sendEmail(adminEmail, subject, wrapWithTemplate('New User Uploads', content));
+};
+
+const sendConsultationNotificationToAdmin = async (user, booking) => {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) return;
+
+  const subject = `[New Consultation] ${user.full_name || user.email} booked a meeting`;
+  const content = `
+    <h2>New Consultation Scheduled 📅</h2>
+    <p>A new consultation has been booked.</p>
+    <div style="background-color: #f3f4f6; padding: 15px; border-left: 4px solid #8b5cf6; border-radius: 4px;">
+      <p><strong>Customer:</strong> ${user.full_name} (<a href="mailto:${user.email}">${user.email}</a>)</p>
+      <p><strong>Date:</strong> ${booking.date}</p>
+      <p><strong>Time:</strong> ${booking.time} EST</p>
+      <p><strong>Topic:</strong> ${booking.topic}</p>
+      ${booking.notes ? `<p><strong>Notes:</strong> ${booking.notes}</p>` : ''}
+    </div>
+    <p>Please log in to the admin panel to manage your schedule.</p>
+  `;
+  return sendEmail(adminEmail, subject, wrapWithTemplate('New Consultation', content));
+};
+
 module.exports = {
   sendVerificationPin,
   sendNewsletterWelcome,
@@ -348,5 +398,8 @@ module.exports = {
   sendDocumentUploadNotificationToAdmin,
   sendSubscriptionRenewalSuccess,
   sendSubscriptionRenewalFailure,
-  sendOrderStatusUpdate
+  sendOrderStatusUpdate,
+  sendUserUploadConfirmation,
+  sendAdminUploadAlert,
+  sendConsultationNotificationToAdmin
 };

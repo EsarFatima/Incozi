@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Bookings - Incozi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body {
+        background-color: #f3f4f6;
+        display: flex;
+        min-height: 100vh;
+    }
+    
+    .dash-sidebar {
+        width: 260px;
+        background: #fff;
+        border-right: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        z-index: 100;
+        left: 0; top: 0;
+    }
+    
+    .dash-logo {
+        padding: 1.5rem;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--accent-200);
+        text-decoration: none;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .dash-nav {
+        flex: 1;
+        padding: 1.5rem 1rem;
+    }
+    
+    .dash-nav-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--text-200);
+        text-decoration: none;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s;
+    }
+    
+    .dash-nav-item:hover {
+        background: #f3f4f6;
+        color: var(--accent-200);
+    }
+    
+    .dash-nav-item.active {
+        background: var(--bg-200);
+        color: var(--accent-200);
+        font-weight: 600;
+    }
+    
+    .dash-nav-item i {
+        margin-right: 0.75rem;
+        width: 20px;
+    }
+    
+    .dash-user {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: var(--accent-200);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+    }
+    
+    .dash-main {
+        margin-left: 260px;
+        flex: 1;
+        padding: 2rem;
+    }
+    
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    
+    .content-card {
+        background: white;
+        padding: 0;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+
+    .dash-table { width: 100%; border-collapse: collapse; }
+    .dash-table th, .dash-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #f3f4f6; }
+    .dash-table th { background: #f9fafb; font-weight: 600; color: var(--text-200); font-size: 0.85rem; }
+    
+    @media (max-width: 768px) {
+        .dash-sidebar { display: none; }
+        .dash-main { margin-left: 0; padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="dash-sidebar">
+        <a href="../index.html" class="dash-logo">incozi.</a>
+        <nav class="dash-nav">
+            <a href="admin.html" class="dash-nav-item">
+                <i class="fa-solid fa-chart-line"></i> Dashboard
+            </a>
+            <a href="admin-clients.html" class="dash-nav-item">
+                <i class="fa-solid fa-users"></i> Clients
+            </a>
+            <a href="admin-documents.html" class="dash-nav-item">
+                <i class="fa-solid fa-folder"></i> Documents
+            </a>
+            <a href="admin-bookings.html" class="dash-nav-item active">
+                <i class="fa-solid fa-calendar-check"></i> Bookings
+            </a>
+            <a href="admin-subscribers.html" class="dash-nav-item">
+                <i class="fa-solid fa-envelope"></i> Newsletter
+            </a>
+        </nav>
+        <div class="dash-user">
+            <div class="user-avatar">A</div>
+            <div>
+                <p style="font-weight: 600; color: var(--text-100);">Admin</p>
+                <a href="#" id="logoutBtn" style="font-size: 0.85rem; color: var(--text-200);">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dash-main">
+        <div class="admin-header">
+            <div>
+                <h1 style="font-size: 2rem; color: var(--text-100);">Bookings</h1>
+                <p style="color: var(--text-200);">Manage scheduled consultations</p>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>User</th>
+                        <th>Topic</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="bookings-list">
+                    <tr><td colspan="4" style="text-align:center; padding: 2rem;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('incozi_token');
+            if (!token) {
+                window.location.href = 'account.html'; 
+                return;
+            }
+
+            const user = JSON.parse(localStorage.getItem('incozi_user') || '{}');
+            if (user.role !== 'admin') {
+                alert('Access Denied');
+                window.location.href = 'dashboard.html';
+                return;
+            }
+            
+            document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('incozi_token');
+                localStorage.removeItem('incozi_user');
+                window.location.href = '../index.html';
+            });
+
+            // Fetch Bookings
+            try {
+                const res = await fetch('/api/admin/bookings', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    renderBookings(data);
+                } else {
+                    document.getElementById('bookings-list').innerHTML = '<tr><td colspan="4" style="color:red; text-align:center; padding:1rem;">Failed to load bookings.</td></tr>';
+                }
+            } catch (error) {
+                console.error("Error fetching bookings:", error);
+            }
+        });
+
+        function renderBookings(bookings) {
+            const tbody = document.getElementById('bookings-list');
+            if (!bookings || bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:2rem; color:#666;">No bookings found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = bookings.map(b => {
+                const dateObj = new Date(b.scheduled_at);
+                const date = dateObj.toLocaleDateString();
+                const time = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                return `
+                    <tr>
+                        <td>
+                            <div style="font-weight:600; color:var(--text-100);">${date}</div>
+                            <div style="font-size:0.85rem; color:var(--text-200);">${time} EST</div>
+                        </td>
+                        <td>
+                            <div style="font-weight:600; color:var(--text-100);">${b.users ? b.users.full_name : 'Unknown'}</div>
+                            <div style="font-size:0.8rem; color:var(--text-200);">${b.users ? b.users.email : ''}</div>
+                        </td>
+                        <td>${b.notes || 'General'}</td>
+                        <td>
+                            <span style="padding:0.25rem 0.75rem; border-radius:100px; font-size:0.8rem; font-weight:600; background:#dcfce7; color:#166534;">
+                                ${b.status.toUpperCase()}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>

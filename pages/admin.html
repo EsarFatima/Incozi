@@ -3,43 +3,282 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Redirecting - Incozi</title>
+  <title>Admin Dashboard - Incozi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../style.css">
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background-color: #f3f4f6;
+        display: flex;
+        min-height: 100vh;
     }
-    .container {
-      text-align: center;
-      color: white;
+    
+    .dash-sidebar {
+        width: 260px;
+        background: #fff;
+        border-right: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        z-index: 100;
+        left: 0; top: 0;
     }
-    h1 {
-      margin: 0;
-      font-size: 1.5rem;
+    
+    .dash-logo {
+        padding: 1.5rem;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--accent-200);
+        text-decoration: none;
+        border-bottom: 1px solid #e5e7eb;
     }
-    p {
-      margin: 0.5rem 0 0;
-      opacity: 0.9;
+    
+    .dash-nav {
+        flex: 1;
+        padding: 1.5rem 1rem;
+    }
+    
+    .dash-nav-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--text-200);
+        text-decoration: none;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s;
+    }
+    
+    .dash-nav-item:hover {
+        background: #f3f4f6;
+        color: var(--accent-200);
+    }
+    
+    .dash-nav-item.active {
+        background: var(--bg-200);
+        color: var(--accent-200);
+        font-weight: 600;
+    }
+    
+    .dash-nav-item i {
+        margin-right: 0.75rem;
+        width: 20px;
+    }
+    
+    .dash-user {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: var(--accent-200);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+    }
+    
+    .dash-main {
+        margin-left: 260px;
+        flex: 1;
+        padding: 2rem;
+    }
+    
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        transition: transform 0.2s;
+    }
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    
+    @media (max-width: 768px) {
+        .dash-sidebar { display: none; }
+        .dash-main { margin-left: 0; padding: 1rem; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Admin Dashboard Removed</h1>
-    <p>Redirecting you to the main account page...</p>
-  </div>
-  
-  <script>
-    // Redirect to main account page
-    setTimeout(() => {
-      window.location.href = 'account.html';
-    }, 1000);
-  </script>
+
+    <!-- Sidebar -->
+    <div class="dash-sidebar">
+        <a href="../index.html" class="dash-logo">incozi.</a>
+        <nav class="dash-nav">
+            <a href="admin.html" class="dash-nav-item active">
+                <i class="fa-solid fa-chart-line"></i> Dashboard
+            </a>
+            <a href="admin-clients.html" class="dash-nav-item">
+                <i class="fa-solid fa-users"></i> Clients
+            </a>
+            <a href="admin-documents.html" class="dash-nav-item">
+                <i class="fa-solid fa-folder"></i> Documents
+            </a>
+            <a href="admin-bookings.html" class="dash-nav-item">
+                <i class="fa-solid fa-calendar-check"></i> Bookings
+            </a>
+            <a href="admin-subscribers.html" class="dash-nav-item">
+                <i class="fa-solid fa-envelope"></i> Newsletter
+            </a>
+        </nav>
+        <div class="dash-user">
+            <div class="user-avatar">A</div>
+            <div>
+                <p style="font-weight: 600; color: var(--text-100);">Admin</p>
+                <a href="#" id="logoutBtn" style="font-size: 0.85rem; color: var(--text-200);">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dash-main">
+        <div class="admin-header">
+            <div>
+                <h1 style="font-size: 2rem; color: var(--text-100);">Admin Dashboard</h1>
+                <p style="color: var(--text-200);">Overview of platform activity</p>
+            </div>
+            <div>
+                <span style="background: #e0e7ff; color: #4338ca; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; font-size: 0.9rem;">
+                    <i class="fa-solid fa-shield-halved"></i> Admin Access
+                </span>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            
+            <!-- Card 1: Total Orders -->
+            <div class="stat-card">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <div style="color: var(--text-200); font-weight: 500; margin-bottom: 0.5rem;">Total Orders</div>
+                        <div id="totalOrders" style="font-size: 2.5rem; font-weight: 800; color: var(--text-100);">--</div>
+                    </div>
+                    <div style="background: #dcfce7; color: #166534; width:50px; height:50px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.5rem;">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </div>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-200); margin-top: 1rem; border-top: 1px solid #f3f4f6; padding-top: 1rem;">
+                    Completed subscriptions
+                </div>
+            </div>
+
+            <!-- Card 2: Total Users -->
+            <div class="stat-card">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <div style="color: var(--text-200); font-weight: 500; margin-bottom: 0.5rem;">Total Users</div>
+                        <div id="totalUsers" style="font-size: 2.5rem; font-weight: 800; color: var(--text-100);">--</div>
+                    </div>
+                    <div style="background: #e0e7ff; color: #4338ca; width:50px; height:50px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.5rem;">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-200); margin-top: 1rem; border-top: 1px solid #f3f4f6; padding-top: 1rem;">
+                    Registered accounts
+                </div>
+            </div>
+
+            <!-- Card 3: Documents -->
+            <div class="stat-card">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <div style="color: var(--text-200); font-weight: 500; margin-bottom: 0.5rem;">Client Documents</div>
+                        <div id="totalDocs" style="font-size: 2.5rem; font-weight: 800; color: var(--text-100);">--</div>
+                    </div>
+                    <div style="background: #ffedd5; color: #9a3412; width:50px; height:50px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.5rem;">
+                        <i class="fa-solid fa-file-arrow-up"></i>
+                    </div>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-200); margin-top: 1rem; border-top: 1px solid #f3f4f6; padding-top: 1rem;">
+                    Files uploaded by users
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('incozi_token');
+            if (!token) {
+                window.location.href = 'account.html'; 
+                return;
+            }
+
+            // Verify Admin (backend should verify this too)
+            const user = JSON.parse(localStorage.getItem('incozi_user') || '{}');
+            if (user.role !== 'admin') {
+                alert('Access Denied');
+                window.location.href = 'dashboard.html';
+                return;
+            }
+            
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('incozi_token');
+                localStorage.removeItem('incozi_user');
+                window.location.href = '../index.html';
+            });
+
+            // --- FETCH STATS ---
+            try {
+                const res = await fetch('/api/admin/stats', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    animateValue("totalOrders", 0, data.orders, 1000);
+                    animateValue("totalUsers", 0, data.users, 1000);
+                    animateValue("totalDocs", 0, data.documents, 1000);
+                } else {
+                    console.error("Failed to load stats");
+                }
+            } catch (error) {
+                console.error("Error fetching stats:", error);
+            }
+        });
+
+        // Animation helper
+        function animateValue(id, start, end, duration) {
+            if (start === end) {
+                document.getElementById(id).innerHTML = end;
+                return;
+            }
+            const range = end - start;
+            let current = start;
+            const increment = end > start ? 1 : -1;
+            const stepTime = Math.abs(Math.floor(duration / range));
+            const obj = document.getElementById(id);
+            const timer = setInterval(function() {
+                current += increment;
+                obj.innerHTML = current;
+                if (current == end) {
+                    clearInterval(timer);
+                }
+            }, Math.max(stepTime, 20)); // min 20ms per frame
+        }
+    </script>
 </body>
 </html>

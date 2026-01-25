@@ -152,70 +152,137 @@
       font-size: 1.1rem;
       color: #666;
     }
-  </style>
-</head>
-<body>
-  <!-- Sidebar -->
-  <aside class="dash-sidebar">
-    <a href="../index.html" class="dash-logo">incozi.</a>
-    
-    <nav class="dash-nav">
-      <a href="dashboard.html" class="dash-nav-item active">
-        <i class="fa-solid fa-house"></i>
-        <span>Dashboard</span>
-      </a>
-    </nav>
-    
-    <div class="dash-user">
-      <div class="user-info">
-        <div class="user-avatar">A</div>
-        <div class="user-name" id="adminName">System Admin</div>
-      </div>
-      <button class="sign-out-btn" id="signOutBtn">
-        <i class="fa-solid fa-sign-out-alt" style="margin-right: 0.5rem;"></i> Sign Out
-      </button>
-    </div>
-  </aside>
-  
-  <!-- Main Content -->
-  <main class="dash-main">
-    <div class="dash-header">
-      <h1>Dashboard</h1>
-    </div>
-    
-    <div class="dash-content">
-      <div class="empty-state">
-        <i class="fa-solid fa-inbox"></i>
-        <p>Welcome to the dashboard.<br>More features coming soon.</p>
-      </div>
-    </div>
-  </main>
-  
-  <script src="../script.js"></script>
-  <script>
-    // Check if admin is logged in
-    const token = localStorage.getItem('incozi_token');
-    const userStr = localStorage.getItem('incozi_user');
-    
-    if (!token || !userStr) {
-      window.location.href = 'account.html';
-    } else {
-      const user = JSON.parse(userStr);
-      const firstLetter = user.full_name ? user.full_name.charAt(0).toUpperCase() : 'A';
-      document.querySelector('.user-avatar').textContent = firstLetter;
-      document.getElementById('adminName').textContent = user.full_name || 'Admin';
-    }
-    
-    // Handle sign out
-    document.getElementById('signOutBtn').addEventListener('click', () => {
-      localStorage.removeItem('incozi_token');
-      localStorage.removeItem('incozi_user');
-      window.location.href = 'account.html';
-    });
-  </script>
-</body>
-</html>
 
+    /* Entity Management Styles */
+    .section-title { font-size: 1.25rem; font-weight: 700; color: var(--text-100); margin-bottom: 1rem; margin-top: 2rem; }
+    .section-title:first-of-type { margin-top: 0; }
+
+    .company-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: box-shadow 0.2s;
+    }
+    .company-card:hover {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .company-info h3 { margin: 0 0 0.5rem 0; font-size: 1.1rem; color: var(--text-100); }
+    .company-meta { color: var(--text-200); font-size: 0.9rem; display: flex; gap: 1rem; }
+    .company-meta div { display: flex; align-items: center; gap: 0.4rem; }
+    
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 99px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .status-good { background: #dcfce7; color: #166534; }
+    .status-alert { background: #fee2e2; color: #991b1b; }
+
+    .action-btn {
+        background: #fff;
+        border: 1px solid #d1d5db;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        color: var(--text-100);
+        margin-left: 0.5rem;
+    }
+    .action-btn:hover { background: #f9fafb; color: var(--accent-200); border-color: var(--accent-200); }
+
+    .doc-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    .doc-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .doc-icon { color: var(--accent-200); font-size: 1.5rem; }
+    .doc-name { font-weight: 500; color: var(--text-100); }
+    .doc-date { font-size: 0.8rem; color: var(--text-200); }
+
+    /* Dashboard Widgets & Grid */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+        align-items: start;
+    }
+    @media (max-width: 1024px) {
+        .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    .widget-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .widget-title { font-size: 1rem; font-weight: 700; color: var(--text-100); margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
+    
+    .timeline-item {
+        display: flex;
+        gap: 1rem;
+        padding-bottom: 1rem;
+        border-left: 2px solid #e5e7eb;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+    .timeline-item:last-child { padding-bottom: 0; border-left-color: transparent; }
+    .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -5px;
+        top: 0;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent-200);
+    }
+    .timeline-date { font-size: 0.8rem; color: var(--text-200); font-weight: 600; margin-bottom: 0.25rem; }
+    .timeline-content { font-size: 0.9rem; color: var(--text-100); }
+    
+    .stat-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    .mini-stat {
+        background: #fff;
+        border-radius: 8px;
+        padding: 1.25rem;
+        border: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+    }
+    .mini-stat-label { font-size: 0.85rem; color: var(--text-200); }
+    .mini-stat-value { font-size: 1.75rem; font-weight: 800; color: var(--text-100); margin-top: 0.5rem; }
+    .mini-stat-icon { align-self: flex-end; color: var(--accent-100); font-size: 1.5rem; margin-top: -2rem; }
+
+    @media (max-width: 768px) {
+        .company-card { flex-direction: column; align-items: flex-start; gap: 1rem; }
+        .company-actions { width: 100%; display: flex; gap: 0.5rem; }
+        .action-btn { flex: 1; margin-left: 0; text-align: center; }
+        .stat-row { grid-template-columns: 1fr; }
+    }
     .stat-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -331,6 +398,11 @@
       <a href="profile.html" class="dash-nav-item">
         <i class="fa-regular fa-user"></i> My Profile
       </a>
+      
+      <!-- Admin Link (Dynamically Added) -->
+      <a href="admin.html" class="dash-nav-item" id="adminSidebarLink" style="display:none; color: #4338ca; background: #e0e7ff; font-weight: 600;">
+        <i class="fa-solid fa-shield-halved"></i> Admin
+      </a>
     </nav>
     
     <div class="dash-user">
@@ -436,20 +508,79 @@
         </div>
     </div>
 
-     <!-- Placeholders for other views -->
+     <!-- Consultations View -->
      <div id="view-consultations" style="display: none;">
          <div class="content-card">
-             <div class="section-title">Book a Consultation</div>
-             <p>Select a time to speak with one of our experts.</p>
-             <!-- Calendar integration will go here -->
-             <button class="btn btn-primary">Schedule New Meeting</button>
+             <div class="section-title">Step 1: Book a Consultation</div>
+             <p style="margin-bottom: 1.5rem; color: var(--text-200);">Select a date and time to speak with one of our tax experts.</p>
+             
+             <form id="booking-form" style="display: grid; gap: 1rem; max-width: 500px;">
+                 <div style="display:flex; gap:1rem;">
+                    <div style="flex:1;">
+                        <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:0.5rem;">Date</label>
+                        <input type="date" id="book-date" required style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:6px;">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:0.5rem;">Time (EST)</label>
+                        <select id="book-time" required style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:6px;">
+                            <option value="">Select Time</option>
+                            <option value="09:00">9:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="13:00">1:00 PM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="15:00">3:00 PM</option>
+                            <option value="16:00">4:00 PM</option>
+                        </select>
+                    </div>
+                 </div>
+                 
+                 <div>
+                    <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:0.5rem;">Topic</label>
+                    <select id="book-topic" required style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:6px;">
+                        <option value="General Inquiry">General Inquiry</option>
+                        <option value="Tax Planning">Tax Planning</option>
+                        <option value="Business Formation">Business Formation</option>
+                        <option value="IRS Notice">IRS Notice Help</option>
+                    </select>
+                 </div>
+
+                 <div>
+                    <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:0.5rem;">Additional Notes (Optional)</label>
+                    <textarea id="book-notes" rows="3" style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:6px; font-family:inherit;"></textarea>
+                 </div>
+
+                 <button type="submit" class="btn btn-primary" style="justify-self: start;">Confirm Booking</button>
+                 <div id="booking-msg" style="margin-top: 0.5rem;"></div>
+             </form>
+         </div>
+
+         <div class="content-card">
+             <div class="section-title">Upcoming Appointments</div>
+             <div id="consultation-list">
+                 <p style="color:#999;">Loading scheduled meetings...</p>
+             </div>
          </div>
      </div>
 
      <div id="view-documents" style="display: none;">
          <div class="content-card">
+             <div class="section-title">Upload Documents</div>
+             <p style="color:var(--text-200); margin-bottom: 1rem;">Select one or more files to upload securely.</p>
+             <form id="upload-docs-form">
+                 <input type="file" id="doc-files" multiple required style="margin-right: 1rem;">
+                 <button type="submit" class="action-btn" style="background: var(--accent-200); color:white; border:none;">
+                    <i class="fa fa-upload"></i> Upload
+                 </button>
+             </form>
+             <div id="upload-message" style="margin-top: 10px;"></div>
+         </div>
+
+         <div class="content-card">
              <div class="section-title">My Documents</div>
-             <p>Securely upload and view your tax and legal documents.</p>
+             <div id="user-docs-list" class="doc-grid">
+                 <p style="color: #999;">Loading...</p>
+             </div>
          </div>
      </div>
 
@@ -470,6 +601,12 @@
     document.getElementById('user-name').textContent = user.full_name || user.email.split('@')[0];
     document.getElementById('user-initials').textContent = (user.full_name ? user.full_name[0] : user.email[0]).toUpperCase();
 
+    // Show Admin Link if Admin
+    if (user.role === 'admin') {
+        const adLink = document.getElementById('adminSidebarLink');
+        if (adLink) adLink.style.display = 'flex';
+    }
+
     // 3. Logout Logic
     document.getElementById('logout-btn').addEventListener('click', (e) => {
         e.preventDefault();
@@ -479,45 +616,71 @@
     });
 
     // 4. Navigation Logic using "Pages" (SPA feel)
+    function switchTab(viewId) {
+        // Update Sidebar
+        navItems.forEach(n => {
+            if (n.dataset.view) {
+                n.classList.remove('active');
+                if (n.dataset.view === viewId) n.classList.add('active');
+            }
+        });
+
+        // Hide all views
+        views.forEach(v => {
+            const el = document.getElementById('view-' + v);
+            if (el) el.style.display = 'none';
+        });
+
+        // Show target view
+        const target = document.getElementById('view-' + viewId);
+        if (target) {
+            target.style.display = 'block';
+            // Update Title
+            const titles = {
+                'home': 'Dashboard Overview',
+                'services': 'My Services',
+                'consultations': 'Consultations',
+                'documents': 'Documents'
+            };
+            pageTitle.textContent = titles[viewId] || 'Dashboard';
+        }
+
+        if (viewId === 'services') {
+            loadServices();
+        } else if (viewId === 'documents') {
+            loadDocuments();
+        } else if (viewId === 'consultations') {
+            loadConsultations();
+        }
+    }
+
     const navItems = document.querySelectorAll('.dash-nav-item');
     const views = ['home', 'services', 'consultations', 'documents'];
     const pageTitle = document.getElementById('page-title');
 
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
-            // If the item has no data-view, it's a real link (like Profile), so let it function normally.
-            if (!item.hasAttribute('data-view')) {
-                return;
-            }
-
+            if (!item.hasAttribute('data-view')) return;
             e.preventDefault();
-            
-            // UI Updates
-            navItems.forEach(n => n.classList.remove('active'));
-            item.classList.add('active');
-            
-            // Hide all views
-            views.forEach(v => document.getElementById('view-' + v).style.display = 'none');
-            
-            // Show target view
-            const target = item.getAttribute('data-view');
-            document.getElementById('view-' + target).style.display = 'block';
-            
-            // Update Title
-            const titles = {
-                'home': 'Dashboard Overview',
-                'services': 'My Services',
-                'consultations': 'Consultations',
-                'documents': 'Document Center'
-            };
-            pageTitle.textContent = titles[target];
-
-            // Specific View Logic
-            if (target === 'services') {
-                loadServices();
-            }
+            const view = item.getAttribute('data-view');
+            switchTab(view);
+            history.pushState(null, null, '#' + view);
         });
     });
+
+    // Check Hash on Load
+    if (window.location.hash) {
+        const hash = window.location.hash.substring(1); // remove #
+        if (views.includes(hash)) {
+            switchTab(hash);
+        }
+    } else if (window.location.search.includes('tab=')) {
+        // Fallback for query param (tab=services)
+        const params = new URLSearchParams(window.location.search);
+        const tab = params.get('tab');
+        if (views.includes(tab)) switchTab(tab);
+    }
+
 
     // 5. Service Logic
     let plansLoaded = false;
@@ -786,6 +949,238 @@
              loadServices();
              window.history.replaceState({}, document.title, window.location.pathname);
         });
+    }
+
+    // --- DOCUMENTS LOGIC ---
+    
+    // Upload Form Listener
+    const uploadForm = document.getElementById('upload-docs-form');
+    if (uploadForm) {
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = document.getElementById('doc-files');
+            const msgDiv = document.getElementById('upload-message');
+            const btn = uploadForm.querySelector('button');
+            
+            if (fileInput.files.length === 0) return;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Uploading...';
+            msgDiv.textContent = '';
+            msgDiv.style.color = 'inherit';
+
+            const formData = new FormData();
+            for (let i = 0; i < fileInput.files.length; i++) {
+                formData.append('documents', fileInput.files[i]);
+            }
+
+            try {
+                const res = await fetch('/api/documents/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}` 
+                    },
+                    body: formData 
+                });
+                
+                const result = await res.json();
+                
+                if (res.ok) {
+                    msgDiv.textContent = 'Upload Successful! Confirmation email sent.';
+                    msgDiv.style.color = 'green';
+                    uploadForm.reset();
+                    loadDocuments(); // Refresh list
+                } else {
+                    msgDiv.textContent = result.error || 'Upload failed.';
+                    msgDiv.style.color = 'red';
+                }
+            } catch (err) {
+                console.error(err);
+                msgDiv.textContent = 'Error uploading files.';
+                msgDiv.style.color = 'red';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa fa-upload"></i> Upload';
+            }
+        });
+    }
+
+    async function loadDocuments() {
+        const container = document.getElementById('user-docs-list');
+        if (!container) return;
+        
+        container.innerHTML = '<p>Loading...</p>';
+        
+        try {
+            const res = await fetch('/api/documents/my-documents', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const docs = await res.json();
+            
+            container.innerHTML = '';
+            
+            if (docs.length === 0) {
+                container.innerHTML = '<p style="color: #999;">No uploaded documents yet.</p>';
+                return;
+            }
+            
+            docs.forEach(doc => {
+                const div = document.createElement('div');
+                div.className = 'doc-card';
+                // Attempt to clean filename: remove "digits-digits-" prefix
+                const rawName = doc.file_path.split('/').pop(); 
+                const niceName = rawName.replace(/^\d+-\d+-/, '');
+
+                div.innerHTML = `
+                    <div class="doc-icon"><i class="fa fa-file-alt"></i></div>
+                    <div class="doc-name" style="word-break: break-all; font-weight:600;">${niceName}</div>
+                    <div class="doc-date">${new Date(doc.uploaded_at).toLocaleDateString()}</div>
+                    <a href="/${doc.file_path}" target="_blank" style="font-size: 0.8rem; margin-top: 0.5rem; text-decoration: none; color: var(--accent-200);">Download</a>
+                `;
+                container.appendChild(div);
+            });
+        } catch (err) {
+            console.error(err);
+            container.innerHTML = '<p style="color:red;">Failed to load documents.</p>';
+        }
+    }
+
+    // --- CONSULTATION LOGIC ---
+    
+    // Check Availability on Date Change
+    const dateInput = document.getElementById('book-date');
+    const timeSelect = document.getElementById('book-time');
+
+    if (dateInput && timeSelect) {
+        dateInput.addEventListener('change', async (e) => {
+            const date = e.target.value;
+            if (!date) return;
+
+            // Reset options
+            Array.from(timeSelect.options).forEach(opt => {
+                opt.disabled = false;
+                opt.innerText = opt.innerText.replace(' (Booked)', '');
+            });
+
+            try {
+                // Must authenticate for this too? backend/consultations attached to authenticateToken
+                const res = await fetch(`/api/consultations/booked-slots?date=${date}`, {
+                     headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const bookedTimes = await res.json();
+                
+                if (Array.isArray(bookedTimes)) {
+                    bookedTimes.forEach(t => {
+                        // t is HH:MM:SS or HH:MM. Ensure match.
+                        // Our values are HH:MM
+                        const shortTime = t.substring(0, 5);
+                        const option = timeSelect.querySelector(`option[value="${shortTime}"]`);
+                        if (option) {
+                            option.disabled = true;
+                            option.innerText += ' (Booked)';
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error('Failed to check availability', err);
+            }
+        });
+    }
+
+    // Booking Form
+    const bookingForm = document.getElementById('booking-form');
+    if (bookingForm) {
+        bookingForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msgDiv = document.getElementById('booking-msg');
+            const btn = bookingForm.querySelector('button');
+            const date = document.getElementById('book-date').value;
+            const time = document.getElementById('book-time').value;
+            const topic = document.getElementById('book-topic').value;
+            const notes = document.getElementById('book-notes').value;
+
+            btn.disabled = true;
+            btn.innerHTML = 'Booking...';
+            msgDiv.textContent = '';
+
+            try {
+                const res = await fetch('/api/consultations/book', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ date, time, topic, notes })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    msgDiv.innerHTML = '<span style="color:green;">Booking Confirmed! Check your email.</span>';
+                    bookingForm.reset();
+                    loadConsultations();
+                } else {
+                    msgDiv.innerHTML = `<span style="color:red;">${data.error || 'Failed to book.'}</span>`;
+                }
+            } catch (err) {
+                console.error(err);
+                msgDiv.innerHTML = '<span style="color:red;">Network Error.</span>';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Confirm Booking';
+            }
+        });
+    }
+
+    async function loadConsultations() {
+        const list = document.getElementById('consultation-list');
+        if (!list) return;
+
+        list.innerHTML = '<p>Loading...</p>';
+
+        try {
+            const res = await fetch('/api/consultations', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const items = await res.json();
+
+            list.innerHTML = '';
+            
+            if (items.length === 0) {
+                list.innerHTML = '<p style="color: #999;">No upcoming consultations.</p>';
+                return;
+            }
+
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'company-card'; // Reuse style
+                div.style.alignItems = 'flex-start';
+                
+                const dateObj = new Date(item.scheduled_at);
+                const dateStr = dateObj.toLocaleDateString(undefined, { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+                const timeStr = dateObj.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit' });
+
+                div.innerHTML = `
+                    <div class="company-info" style="flex:1;">
+                        <h3>${item.notes ? item.notes.split(' - ')[0] : 'Consultation'}</h3>
+                        <div class="company-meta" style="flex-direction: column; align-items: flex-start; gap: 0.25rem;">
+                            <div><i class="fa fa-calendar" style="width:16px;"></i> ${dateStr} at ${timeStr} EST</div>
+                            ${item.notes && item.notes.includes(' - ') ? `<div style="color:#666; font-size:0.85rem;">${item.notes.split(' - ')[1]}</div>` : ''}
+                        </div>
+                    </div>
+                    <div>
+                        <span class="status-badge ${item.status === 'completed' ? 'status-good' : 'status-pending'}">
+                            ${item.status.toUpperCase()}
+                        </span>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+
+        } catch (err) {
+            console.error(err);
+            list.innerHTML = '<p style="color:red;">Error loading schedule.</p>';
+        }
     }
 
   </script>

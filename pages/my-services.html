@@ -39,7 +39,16 @@
         border-bottom: 2px solid #e5e7eb;
         margin-bottom: 2rem;
         overflow-x: auto;
+        overflow-y: hidden; /* Hide vertical scrollbar */
         padding-bottom: 1px; /* Align with border */
+        
+        /* Hide scrollbar visually but keep functionality */
+        scrollbar-width: none;  /* Firefox */
+        -ms-overflow-style: none;  /* IE and Edge */
+    }
+    
+    .dash-tabs::-webkit-scrollbar {
+        display: none;
     }
     
     .dash-tab {
@@ -185,6 +194,50 @@
         align-items: flex-start;
     }
     .doc-icon { color: var(--accent-200); font-size: 1.5rem; }
+
+    /* Modal Styles */
+    .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 2000; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgba(0,0,0,0.5); 
+        backdrop-filter: blur(4px);
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto; 
+        padding: 2rem;
+        border: 1px solid #888;
+        width: 90%;
+        max-width: 500px;
+        border-radius: 12px;
+        position: relative;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        animation: modalFadeIn 0.3s;
+    }
+    @keyframes modalFadeIn {
+        from {opacity: 0; transform: translateY(-20px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+    .close-modal {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        line-height: 1;
+    }
+    .close-modal:hover,
+    .close-modal:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -244,6 +297,8 @@
         <li><a href="account.html" class="sidebar-link-item"><i class="fa-regular fa-user"></i> My Account</a></li>
         <li><a href="my-services.html" class="sidebar-link-item"><i class="fa-solid fa-briefcase"></i> My Services</a></li>
         <li><a href="cart.html" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="#" class="sidebar-link-item logout-link"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a></li>
       </ul>
     </div>
   </aside>
@@ -254,7 +309,7 @@
         <div style="display: flex; align-items: center; gap: 1rem;">
              <span id="user-display-name" style="font-weight: 500; color:var(--text-200);"></span>
              <a href="#" id="admin-link" style="display:none; color: var(--accent-200); font-weight:600; text-decoration: none; background: #e0e7ff; padding: 0.5rem 1rem; border-radius: 99px;">Admin Panel</a>
-             <a href="#" id="logout-btn" style="color: #ef4444; font-weight: 500;">Sign Out</a>
+             <!-- Sign Out removed from here -->
         </div>
      </div>
 
@@ -309,15 +364,15 @@
                     <div style="font-size: 0.85rem; color: #666;">Available 9am-5pm EST</div>
                     </div>
                 </div>
-                <button class="btn btn-primary" style="width: 100%; text-align: center;">Contact Support</button>
+                <!-- Contact Support Modal Trigger -->
+                <button class="btn btn-primary" style="width: 100%; text-align: center;" onclick="openSupportModal()">Contact Support</button>
             </div>
             
             <!-- Important Dates -->
             <div class="content-card">
                 <div class="section-title">Important Dates</div>
-                <div style="border-left: 3px solid #10b981; padding-left: 0.75rem;">
-                    <div style="font-size: 0.8rem; color: #999; text-transform: uppercase; letter-spacing: 0.5px;">Today</div>
-                    <div style="font-weight: 600; color: var(--text-100);">Dashboard Accessed</div>
+                <div id="dashboard-important-dates">
+                    <div style="font-size: 0.9rem; color: #999; padding: 0.5rem 0;">Loading...</div>
                 </div>
             </div>
         </div>
@@ -328,9 +383,9 @@
         <div class="content-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <div class="section-title" style="margin: 0; border: none;">My Active Plans</div>
-                <!-- <button class="btn btn-primary" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
+                <a href="../index.html" class="btn btn-primary" style="font-size: 0.8rem; padding: 0.5rem 1rem; text-decoration: none;">
                     <i class="fa-solid fa-plus"></i> Add Service
-                </button> -->
+                </a>
             </div>
             
             <table class="dash-table">
@@ -406,10 +461,10 @@
                             <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:0.5rem;">Time (EST)</label>
                             <select id="book-time" required style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:6px;">
                                 <option value="">Select Time</option>
-                                <option value="09:00">9:00 AM</option>
-                                <option value="11:00">11:00 AM</option>
-                                <option value="13:00">1:00 PM</option>
-                                <option value="15:00">3:00 PM</option>
+                                <option value="09:00">09:00</option>
+                                <option value="11:00">11:00</option>
+                                <option value="13:00">13:00</option>
+                                <option value="15:00">15:00</option>
                             </select>
                         </div>
                      </div>
@@ -471,7 +526,14 @@
                <a href="#" class="dash-tab active" onclick="switchProfileTab('personal'); return false;" id="ptab-personal">Personal Info</a>
                <a href="#" class="dash-tab" onclick="switchProfileTab('security'); return false;" id="ptab-security">Security</a>
                <a href="#" class="dash-tab" onclick="switchProfileTab('preferences'); return false;" id="ptab-preferences">Preferences</a>
+             </divSign Out (Desktop) -->
+             <div style="margin-bottom: 2rem; display: flex; justify-content: flex-end;">
+                  <button class="btn logout-link" style="background: #fee2e2; color: #b91c1c; font-size: 0.9rem;">
+                     <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                  </button>
              </div>
+             
+             <!-- >
              
              <!-- Personal Info -->
              <div id="psect-personal">
@@ -555,6 +617,31 @@
          </div>
      </div>
 
+     <!-- Support Modal -->
+     <div id="supportModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeSupportModal()">&times;</span>
+            <h2 style="margin-top:0; margin-bottom:1rem; color:var(--text-100);">Contact Support</h2>
+            <form id="support-form">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Subject</label>
+                    <select id="support-subject" style="width:100%; padding:0.75rem; border:1px solid #ccc; border-radius:6px; font-family:inherit;">
+                        <option value="General Inquiry">General Inquiry</option>
+                        <option value="Billing Issue">Billing Issue</option>
+                        <option value="Technical Support">Technical Support</option>
+                        <option value="Document Question">Document Question</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Message</label>
+                    <textarea id="support-message" required rows="5" style="width:100%; padding:0.75rem; border:1px solid #ccc; border-radius:6px; font-family:inherit;"></textarea>
+                </div>
+                <div id="support-response" style="margin-bottom:1rem;"></div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Send Message</button>
+            </form>
+        </div>
+     </div>
+
   </main>
 
   <!-- Footer -->
@@ -605,19 +692,14 @@
         document.body.style.display = 'block'; // Restore flex (since body has flex in global css potentially, or block)
         
         const user = JSON.parse(userStr);
-        document.getElementById('user-display-name').textContent = `Hello, ${user.full_name || user.email}`;
-        
-        if (user.role === 'admin') {
-            document.getElementById('admin-link').style.display = 'inline-block';
-            document.getElementById('admin-link').href = 'admin.html';
-        }
-
-        // Logout
-        document.getElementById('logout-btn').addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('incozi_token');
-            localStorage.removeItem('incozi_user');
-            window.location.href = 'account.html';
+        // Logout Logic (targets multiple buttons now)
+        document.querySelectorAll('.logout-link').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('incozi_token');
+                localStorage.removeItem('incozi_user');
+                window.location.href = 'account.html';
+            });
         });
 
         // Tabs Logic
@@ -720,6 +802,86 @@
              }
         });
 
+        // Booking Form Handler
+        const bookingForm = document.getElementById('booking-form');
+         if(bookingForm) {
+            // 1. Availability Check
+            const dateInput = document.getElementById('book-date');
+            const timeSelect = document.getElementById('book-time');
+            
+            dateInput.addEventListener('change', async () => {
+                const dateVal = dateInput.value;
+                if(!dateVal) return;
+                
+                // Reset times - make all visible first
+                Array.from(timeSelect.options).forEach(opt => {
+                    opt.disabled = false; 
+                    opt.hidden = false; // Add hidden property reset
+                    opt.style.display = ''; // Reset CSS display
+                    
+                    // Reset text content if it was modified with (Booked)
+                    // We know the values are simple 09:00 etc.
+                    if (opt.value) opt.textContent = opt.value;
+                });
+
+                try {
+                    const res = await fetch(`/api/consultations/booked-slots?date=${dateVal}`);
+                    const bookedSlots = await res.json(); // Array of "HH:MM" strings
+                    
+                    if(Array.isArray(bookedSlots)) {
+                        Array.from(timeSelect.options).forEach(opt => {
+                             // Check if this option's value (HH:MM) is in bookedSlots
+                             if(bookedSlots.includes(opt.value)) {
+                                 // Completely hide the booked slot
+                                 opt.hidden = true; 
+                                 opt.style.display = 'none';
+                                 opt.disabled = true; // Fallback
+                             }
+                        });
+                    }
+                } catch(e) { console.error("Error checking availability", e); }
+            });
+
+            // 2. Submission
+            bookingForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const msg = document.getElementById('booking-msg');
+                msg.textContent = 'Booking...';
+                
+                const date = document.getElementById('book-date').value;
+                const time = document.getElementById('book-time').value;
+                const topic = document.getElementById('book-topic').value;
+                const notes = document.getElementById('book-notes').value;
+
+                // date and time are already variables from earlier
+                
+                try {
+                    const res = await fetch('/api/consultations/book', { 
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                        body: JSON.stringify({ 
+                            date, // 'YYYY-MM-DD'
+                            time, // 'HH:MM'
+                            topic,
+                            notes
+                        })
+                    });
+                    
+                    if(res.ok) {
+                         msg.style.color = 'green'; msg.textContent = 'Booking confirmed!';
+                         bookingForm.reset();
+                         loadConsultations(token); // Refresh list
+                         loadCalendar(token); // Refresh calendar
+                    } else {
+                        const err = await res.json();
+                        throw new Error(err.error || 'Failed to book');
+                    }
+                } catch(err) {
+                    msg.style.color = 'red'; msg.textContent = err.message;
+                }
+            });
+         }
+
         tabs.forEach(tab => {
             tab.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -751,6 +913,18 @@
             // Set stats
             document.getElementById('stats-active-services').textContent = data.length || 0;
             
+            // Fetch Document Stats
+            try {
+                const docRes = await fetch('/api/documents/my-documents', {
+                     headers: { 'Authorization': `Bearer ${localStorage.getItem('incozi_token')}` }
+                });
+                const docData = await docRes.json();
+                document.getElementById('stats-documents').textContent = docData.length || 0;
+            } catch(e) { console.error("Stats error", e); }
+
+            // Important Dates (Calendar + Consultations)
+            loadImportantDates(userId, localStorage.getItem('incozi_token'));
+
             // Recent Orders
             const container = document.getElementById('recent-orders-container');
             if (data.length === 0) {
@@ -892,19 +1066,54 @@
                 div.style.padding = '1rem';
                 div.style.border = '1px solid #eee';
                 div.style.marginBottom = '0.5rem';
-                div.innerHTML = `<strong>${item.notes || 'Consultation'}</strong> - ${new Date(item.scheduled_at).toLocaleString()}`;
+                // 24-hour format
+                const timeStr = new Date(item.scheduled_at).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute:'2-digit' });
+                const dateStr = new Date(item.scheduled_at).toLocaleDateString();
+                
+                div.innerHTML = `<strong>${item.notes || 'Consultation'}</strong> - ${dateStr} ${timeStr}`;
                 list.appendChild(div);
             });
         } catch(e) {}
     }
 
     async function loadCalendar(token) {
-         // Implementation similar to dashboard.html
          const tbody = document.getElementById('calendar-list');
+         if(!tbody) return;
+         
          try {
-             // simplified
-             tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:2rem; color:#999;">No events.</td></tr>';
-         } catch(e) {}
+             // Fetch consultations
+             const res = await fetch('/api/consultations', {
+                 headers: { 'Authorization': `Bearer ${token}` }
+             });
+             const items = await res.json();
+             
+             tbody.innerHTML = '';
+             
+             if(!items || !items.length) {
+                 tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:2rem; color:#999;">No events found.</td></tr>';
+                 return;
+             }
+             
+             // Sort by date
+             items.sort((a,b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+
+             items.forEach(item => {
+                 const dateObj = new Date(item.scheduled_at);
+                 const dateStr = dateObj.toLocaleDateString();
+                 const timeStr = dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                 
+                 const tr = document.createElement('tr');
+                 tr.innerHTML = `
+                    <td>${dateStr} ${timeStr}</td>
+                    <td>${item.notes || 'Consultation'}</td>
+                    <td>-</td>
+                    <td><span class="status-badge status-active">${item.status}</span></td>
+                 `;
+                 tbody.appendChild(tr);
+             });
+         } catch(e) {
+             tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Error loading calendar.</td></tr>';
+         }
     }
 
     async function loadProfile(token, userId) {
@@ -927,6 +1136,145 @@
             
         } catch(e) { console.error("Profile load error", e); }
     }
+
+    async function loadImportantDates(userId, token) {
+        const container = document.getElementById('dashboard-important-dates');
+        try {
+            // Fetch Consultations
+            const consultRes = await fetch('/api/consultations', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const consultations = await consultRes.json();
+            
+            // Allow fetch errors for calendar_events if table is missing/empty, but try
+            let events = [];
+            try {
+                 const calRes = await fetch('/api/dashboard/calendar', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const calData = await calRes.json();
+                if(Array.isArray(calData)) events = calData; // These are compliance events
+            } catch(e) {}
+
+            // Normalize and Merge
+            const allItems = [];
+            
+            // Add Consultations
+            if(Array.isArray(consultations)) {
+                consultations.forEach(c => {
+                    if(c.status !== 'cancelled' && new Date(c.scheduled_at) > new Date()) {
+                        allItems.push({
+                            date: new Date(c.scheduled_at),
+                            title: c.notes || 'Consultation',
+                            type: 'consultation'
+                        });
+                    }
+                });
+            }
+
+            // Add Events
+            events.forEach(e => {
+                 if(new Date(e.due_date) > new Date()) {
+                     allItems.push({
+                        date: new Date(e.due_date),
+                        title: e.title || 'Compliance Deadline',
+                        type: 'deadline'
+                     });
+                 }
+            });
+
+            // Sort
+            allItems.sort((a,b) => a.date - b.date);
+            
+            // Render
+            container.innerHTML = '';
+            if(allItems.length === 0) {
+                 container.innerHTML = '<div style="font-size: 0.9rem; color: #999;">No upcoming events.</div>';
+                 return;
+            }
+
+            // Show top 3
+            allItems.slice(0, 3).forEach(item => {
+                 const div = document.createElement('div');
+                 div.style.cssText = 'border-left: 3px solid #ccc; padding-left: 0.75rem; margin-bottom: 1rem;';
+                 
+                 // Color code
+                 if(item.type === 'consultation') div.style.borderLeftColor = '#4f46e5'; // Blue
+                 if(item.type === 'deadline') div.style.borderLeftColor = '#ef4444'; // Red
+                 
+                 // Date Logic (Today, Tomorrow, or Date)
+                 const today = new Date();
+                 const isToday = item.date.toDateString() === today.toDateString();
+                 let dateDisplay = item.date.toLocaleDateString();
+                 if(isToday) dateDisplay = 'TODAY';
+                 
+                 div.innerHTML = `
+                    <div style="font-size: 0.8rem; color: #999; text-transform: uppercase; letter-spacing: 0.5px;">${dateDisplay}</div>
+                    <div style="font-weight: 600; color: var(--text-100);">${item.title}</div>
+                 `;
+                 container.appendChild(div);
+            });
+
+        } catch(e) { console.error('Imp Dates Error', e); }
+    }
+
+    // --- SUPPORT MODAL LOGIC ---
+    const modal = document.getElementById("supportModal");
+    
+    window.openSupportModal = function() {
+        modal.style.display = "block";
+    }
+
+    window.closeSupportModal = function() {
+        modal.style.display = "none";
+        document.getElementById('support-response').innerHTML = '';
+        document.getElementById('support-form').reset();
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeSupportModal();
+        }
+    }
+
+    document.getElementById('support-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msgDiv = document.getElementById('support-response');
+        msgDiv.innerHTML = '<span style="color:#666;">Sending...</span>';
+        
+        const userStr = localStorage.getItem('incozi_user');
+        if(!userStr) return;
+        const user = JSON.parse(userStr);
+
+        const subject = document.getElementById('support-subject').value;
+        const message = document.getElementById('support-message').value;
+
+        // Use the endpoint we found in server.js
+        try {
+            const res = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: user.full_name || 'Incozi User',
+                    email: user.email,
+                    message: `[${subject}] ${message}`
+                })
+            });
+            const data = await res.json();
+            
+            if(res.ok) {
+                msgDiv.innerHTML = '<span style="color:green; font-weight:600;">Message sent! We will reply shortly.</span>';
+                setTimeout(() => {
+                    closeSupportModal();
+                }, 2000);
+            } else {
+                throw new Error(data.message || 'Failed to send.');
+            }
+        } catch(err) {
+            msgDiv.innerHTML = `<span style="color:red;">Error: ${err.message}</span>`;
+        }
+    });
+
   </script>
 </body>
 </html>

@@ -1,1 +1,932 @@
-<!DOCTYPE html><html lang=" en\><head><meta charset=\UTF-8\><title>Redirecting</title><script>window.location.href = \dashboard.html#services\;</script></head><body>Redirecting...</body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Services | Incozi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    /* Prevent Flash of Unauthenticated Content */
+    body { display: none; }
+
+    /* Dashboard specific overrides for main layout */
+    .dash-container {
+        padding: 4rem 1.5rem;
+        min-height: 80vh;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .dash-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .dash-header h1 {
+        font-size: 2rem;
+        color: var(--text-100);
+        margin: 0;
+    }
+
+    /* Tabs Navigation */
+    .dash-tabs {
+        display: flex;
+        gap: 0.5rem;
+        border-bottom: 2px solid #e5e7eb;
+        margin-bottom: 2rem;
+        overflow-x: auto;
+        padding-bottom: 1px; /* Align with border */
+    }
+    
+    .dash-tab {
+        padding: 0.75rem 1.25rem;
+        color: var(--text-200);
+        cursor: pointer;
+        font-weight: 500;
+        border-radius: 6px 6px 0 0;
+        white-space: nowrap;
+        text-decoration: none;
+        border: 1px solid transparent;
+        border-bottom: none;
+        margin-bottom: -2px; /* Overlap border */
+        transition: all 0.2s;
+    }
+    
+    .dash-tab:hover {
+        background: #f9fafb;
+        color: var(--accent-200);
+    }
+    
+    .dash-tab.active {
+        background: #fff;
+        color: var(--accent-200);
+        border-color: #e5e7eb;
+        border-bottom-color: #fff;
+        font-weight: 600;
+    }
+
+    /* Common Card Styles from user dashboard */
+    .content-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-100);
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #f3f4f6;
+        padding-bottom: 1rem;
+    }
+
+    .dash-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .dash-table th {
+        text-align: left;
+        padding: 1rem;
+        background: #f9fafb;
+        color: var(--text-200);
+        font-weight: 600;
+        font-size: 0.9rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .dash-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+        color: var(--text-100);
+        vertical-align: middle;
+    }
+    .dash-table tr:last-child td { border-bottom: none; }
+
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 99px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-transform: capitalize;
+    }
+    .status-active { background: #dcfce7; color: #166534; }
+    .status-pending { background: #fef9c3; color: #854d0e; }
+    .status-cancelled { background: #fee2e2; color: #991b1b; }
+    
+    .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+    }
+    .btn-primary {
+        background: var(--accent-200, #4f46e5);
+        color: #fff;
+    }
+    .btn-primary:hover {
+        background: var(--accent-100, #4338ca);
+        opacity: 0.9;
+    }
+    
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .stat-card {
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        border: 1px solid #e5e7eb;
+    }
+    .stat-title { font-size: 0.85rem; color: var(--text-200); text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-value { font-size: 2rem; font-weight: 700; color: var(--text-100); margin-top: 0.5rem; }
+
+    /* Home Grid */
+    .home-grid-layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+        align-items: start;
+    }
+    @media (max-width: 900px) {
+        .home-grid-layout { grid-template-columns: 1fr; }
+    }
+    
+    /* Doc Grid */
+    .doc-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    .doc-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+    .doc-icon { color: var(--accent-200); font-size: 1.5rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">incozi.</a>
+      
+      <!-- Navbar Links (Desktop) -->
+      <nav class="main-nav" style="display: none;">
+          <ul class="nav-list" style="display: flex; gap: 1.5rem; list-style: none; align-items: center; margin: 0;">
+              <li class="nav-item">
+                  <a href="#" class="nav-link">Services & Pricing <i class="fa-solid fa-chevron-down"></i></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="incorporation.html">Incorporation</a></li>
+                      <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+                      <li><a href="bookkeeping.html">Bookkeeping</a></li>
+                      <li><a href="consultation.html">Consultation</a></li>
+                  </ul>
+              </li>
+              <li><a href="blog.html" class="nav-link">Blog</a></li>
+              <li><a href="my-services.html" class="nav-link" style="color:var(--accent-200); font-weight:600;">My Services</a></li>
+              <li><a href="account.html" class="nav-link" aria-label="My Account"><i class="fa-regular fa-user"></i></a></li>
+              <li><a href="cart.html" class="nav-link" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+          </ul>
+      </nav>
+
+      <!-- Menu Toggle (Hamburger) -->
+      <button class="menu-toggle custom-toggle" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </header>
+
+  <!-- Sidebar Navigation (Mobile) -->
+  <div class="sidebar-overlay"></div>
+  <aside class="sidebar-menu">
+    <div class="sidebar-header-row">
+      <span class="sidebar-title">Menu</span>
+      <button class="sidebar-close" aria-label="Close Menu"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div class="sidebar-content">
+      <ul class="sidebar-nav-list">
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">Services & Pricing</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="consultation.html">Consultation</a></li>
+             <li><a href="incorporation.html">Incorporation</a></li>
+             <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+             <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          </ul>
+        </li>
+        <li class="sidebar-group">
+          <a href="blog.html" class="sidebar-group-title" style="display:block; cursor:pointer;">Blog</a>
+        </li>
+        <li class="sidebar-divider"></li>
+        <li><a href="account.html" class="sidebar-link-item"><i class="fa-regular fa-user"></i> My Account</a></li>
+        <li><a href="my-services.html" class="sidebar-link-item"><i class="fa-solid fa-briefcase"></i> My Services</a></li>
+        <li><a href="cart.html" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="dash-container">
+     <div class="dash-header">
+        <h1 id="page-title">My Services</h1>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+             <span id="user-display-name" style="font-weight: 500; color:var(--text-200);"></span>
+             <a href="#" id="admin-link" style="display:none; color: var(--accent-200); font-weight:600; text-decoration: none; background: #e0e7ff; padding: 0.5rem 1rem; border-radius: 99px;">Admin Panel</a>
+             <a href="#" id="logout-btn" style="color: #ef4444; font-weight: 500;">Sign Out</a>
+        </div>
+     </div>
+
+     <!-- Tabs -->
+     <nav class="dash-tabs">
+        <a href="#" class="dash-tab active" data-view="home"><i class="fa-solid fa-house"></i> Overview</a>
+        <a href="#" class="dash-tab" data-view="services"><i class="fa-solid fa-layer-group"></i> Services</a>
+        <a href="#" class="dash-tab" data-view="documents"><i class="fa-solid fa-file-contract"></i> Documents</a>
+        <a href="#" class="dash-tab" data-view="entities"><i class="fa-solid fa-building"></i> Entities</a>
+        <a href="#" class="dash-tab" data-view="consultations"><i class="fa-solid fa-comments"></i> Consultations</a>
+        <a href="#" class="dash-tab" data-view="calendar"><i class="fa-solid fa-calendar-days"></i> Calendar</a>
+        <a href="#" class="dash-tab" data-view="profile"><i class="fa-regular fa-user"></i> Profile</a>
+     </nav>
+
+     <!-- View: Home -->
+     <div id="view-home" class="home-grid-layout">
+        <div>
+            <!-- Stats -->
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-title">Active Services</div>
+                    <div class="stat-value" id="stats-active-services">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Documents</div>
+                    <div class="stat-value" id="stats-documents">0</div>
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="content-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <div class="section-title" style="margin: 0; border: none;">Recent Activity</div>
+                    <a href="#" onclick="switchTab('services'); return false;" style="color: var(--accent-200); text-decoration: none; font-size: 0.9rem;">View All Services →</a>
+                </div>
+                <div id="recent-orders-container">
+                    <p style="color: #666; font-style: italic;">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <div>
+             <!-- Account Manager -->
+            <div class="content-card">
+                <div class="section-title">Your Account Team</div>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="background: #e0e7ff; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #4338ca; font-weight: bold; font-size: 1.1rem;">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <div>
+                    <div style="font-weight: 600;">Support Team</div>
+                    <div style="font-size: 0.85rem; color: #666;">Available 9am-5pm EST</div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="width: 100%; text-align: center;">Contact Support</button>
+            </div>
+            
+            <!-- Important Dates -->
+            <div class="content-card">
+                <div class="section-title">Important Dates</div>
+                <div style="border-left: 3px solid #10b981; padding-left: 0.75rem;">
+                    <div style="font-size: 0.8rem; color: #999; text-transform: uppercase; letter-spacing: 0.5px;">Today</div>
+                    <div style="font-weight: 600; color: var(--text-100);">Dashboard Accessed</div>
+                </div>
+            </div>
+        </div>
+     </div>
+
+     <!-- View: Services -->
+     <div id="view-services" style="display: none;">
+        <div class="content-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div class="section-title" style="margin: 0; border: none;">My Active Plans</div>
+                <!-- <button class="btn btn-primary" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
+                    <i class="fa-solid fa-plus"></i> Add Service
+                </button> -->
+            </div>
+            
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Status</th>
+                        <th>Order Status</th>
+                        <th>Started</th>
+                    </tr>
+                </thead>
+                <tbody id="services-list">
+                    <tr><td colspan="4" style="text-align:center; padding:2rem; color:#999;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+     </div>
+
+     <!-- View: Documents -->
+     <div id="view-documents" style="display: none;">
+        <div class="content-card">
+             <div class="section-title">Upload Documents</div>
+             <p style="color:var(--text-200); margin-bottom: 1rem;">Select one or more files to upload securely.</p>
+             <form id="upload-docs-form">
+                 <input type="file" id="doc-files" multiple required style="margin-right: 1rem;">
+                 <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-upload"></i> Upload
+                 </button>
+             </form>
+             <div id="upload-message" style="margin-top: 10px;"></div>
+         </div>
+
+         <div class="content-card">
+             <div class="section-title">My Documents</div>
+             <div id="user-docs-list" class="doc-grid">
+                 <p style="color: #999;">Loading...</p>
+             </div>
+         </div>
+     </div>
+
+     <!-- View: Entities -->
+     <div id="view-entities" style="display: none;">
+         <div class="content-card">
+             <div class="section-title">My Entities</div>
+             <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>Entity Name</th>
+                        <th>Compliance</th>
+                        <th>Jurisdiction</th>
+                        <th>Registered Agent</th>
+                    </tr>
+                </thead>
+                <tbody id="entities-list">
+                    <tr><td colspan="4" style="text-align:center; padding:2rem; color:#999;">Loading...</td></tr>
+                </tbody>
+            </table>
+         </div>
+     </div>
+
+     <!-- View: Consultations -->
+     <div id="view-consultations" style="display: none;">
+         <div class="home-grid-layout">
+            <div class="content-card">
+                 <div class="section-title">Book a Consultation</div>
+                 <form id="booking-form" style="display: grid; gap: 1rem;">
+                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                        <div>
+                            <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:0.5rem;">Date</label>
+                            <input type="date" id="book-date" required style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:6px;">
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:0.5rem;">Time (EST)</label>
+                            <select id="book-time" required style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:6px;">
+                                <option value="">Select Time</option>
+                                <option value="09:00">9:00 AM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="13:00">1:00 PM</option>
+                                <option value="15:00">3:00 PM</option>
+                            </select>
+                        </div>
+                     </div>
+                     
+                     <div>
+                        <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:0.5rem;">Topic</label>
+                        <select id="book-topic" required style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:6px;">
+                            <option value="General Inquiry">General Inquiry</option>
+                            <option value="Tax Planning">Tax Planning</option>
+                            <option value="Business Formation">Business Formation</option>
+                        </select>
+                     </div>
+    
+                     <div>
+                        <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:0.5rem;">Notes</label>
+                        <textarea id="book-notes" rows="3" style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:6px; font-family:inherit;"></textarea>
+                     </div>
+    
+                     <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                     <div id="booking-msg" style="margin-top: 0.5rem;"></div>
+                 </form>
+             </div>
+    
+             <div class="content-card">
+                 <div class="section-title">Upcoming Appointments</div>
+                 <div id="consultation-list">
+                     <p style="color:#999;">Loading...</p>
+                 </div>
+             </div>
+         </div>
+     </div>
+
+     <!-- View: Calendar -->
+     <div id="view-calendar" style="display: none;">
+         <div class="content-card">
+            <div class="section-title">Calendar & Deadlines</div>
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Event</th>
+                        <th>Entity</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="calendar-list">
+                     <tr><td colspan="4" style="text-align:center; padding:2rem; color:#999;">Loading...</td></tr>
+                </tbody>
+            </table>
+         </div>
+     </div>
+
+     <!-- View: Profile -->
+     <div id="view-profile" style="display: none;">
+         <div class="content-card">
+              <div class="section-title">Profile Settings</div>
+              <!-- Profile Tabs -->
+             <div class="dash-tabs" style="margin-bottom: 2rem; border-bottom: 1px solid #eee;">
+               <a href="#" class="dash-tab active" onclick="switchProfileTab('personal'); return false;" id="ptab-personal">Personal Info</a>
+               <a href="#" class="dash-tab" onclick="switchProfileTab('security'); return false;" id="ptab-security">Security</a>
+               <a href="#" class="dash-tab" onclick="switchProfileTab('preferences'); return false;" id="ptab-preferences">Preferences</a>
+             </div>
+             
+             <!-- Personal Info -->
+             <div id="psect-personal">
+                  <form id="personal-form" style="display: grid; gap: 1rem;">
+                      <div id="personal-alert" style="display:none; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;"></div>
+                      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                          <div>
+                              <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Full Name</label>
+                              <input type="text" id="full_name" required style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px;">
+                          </div>
+                           <div>
+                              <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Email</label>
+                              <input type="email" id="email" disabled style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px; background:#f9fafb;">
+                          </div>
+                      </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                           <div>
+                              <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Phone</label>
+                              <input type="tel" id="phone" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px;">
+                           </div>
+                           <div>
+                              <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Company</label>
+                              <input type="text" id="company_name" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px;">
+                           </div>
+                       </div>
+                       
+                       <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 1rem;">
+                            <div>
+                              <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Address</label>
+                              <input type="text" id="address" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px;">
+                           </div>
+                           <div>
+                              <label style="display:block; margin-bottom:0.5rem; font-weight:600;">City</label>
+                              <input type="text" id="city" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px;">
+                           </div>
+                           <div>
+                              <label style="display:block; margin-bottom:0.5rem; font-weight:600;">State</label>
+                              <input type="text" id="state" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px;">
+                           </div>
+                            <div>
+                              <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Zip</label>
+                              <input type="text" id="zip" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px;">
+                           </div>
+                       </div>
+                       <button type="submit" class="btn btn-primary">Save Changes</button>
+                  </form>
+             </div>
+             
+             <!-- Security -->
+             <div id="psect-security" style="display:none;">
+                  <form id="security-form" style="display: grid; gap: 1rem; max-width: 500px;">
+                        <div id="security-alert" style="display:none; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;"></div>
+                        <div>
+                            <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Current Password</label>
+                            <input type="password" id="current_password" required style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px;">
+                        </div>
+                         <div>
+                            <label style="display:block; margin-bottom:0.5rem; font-weight:600;">New Password</label>
+                            <input type="password" id="new_password" required minlength="6" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px;">
+                        </div>
+                         <div>
+                            <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Confirm Password</label>
+                            <input type="password" id="confirm_password" required style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px;">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Password</button>
+                  </form>
+             </div>
+
+             <!-- Preferences -->
+             <div id="psect-preferences" style="display:none;">
+                  <form id="preferences-form">
+                       <div id="preferences-alert" style="display:none; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;"></div>
+                       <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                           <input type="checkbox" id="email_notifications">
+                           Receive email notifications about order updates
+                       </label>
+                       <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Save Preferences</button>
+                  </form>
+             </div>
+
+         </div>
+     </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-col brand-col">
+        <a href="../index.html" class="footer-logo">incozi.</a>
+        <p class="tagline">Dream Worldwide, <br>Launch Stateside</p>
+        <div class="address-block">
+          <h4>Address</h4>
+          <p>347 5th Avenue, Suite 1402-171, New York, NY 10016</p>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="incorporation.html">Incorporation</a></li>
+          <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+          <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          <li><a href="consultation.html">Consultation</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+              <li><a href="account.html">My Account</a></li>
+              <li><a href="cart.html">Cart</a></li>
+              <li><a href="faq.html">FAQs</a></li>
+              <li><a href="terms.html">Terms</a></li>
+          </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../script.js"></script>
+  <script>
+    // DASHBOARD LOGIC
+    document.addEventListener('DOMContentLoaded', () => {
+        const userStr = localStorage.getItem('incozi_user');
+        const token = localStorage.getItem('incozi_token');
+        
+        if (!token || !userStr) {
+            window.location.href = 'account.html?msg=login_required';
+            return;
+        }
+        
+        // Auth success - reveal page
+        document.body.style.display = 'block'; // Restore flex (since body has flex in global css potentially, or block)
+        
+        const user = JSON.parse(userStr);
+        document.getElementById('user-display-name').textContent = `Hello, ${user.full_name || user.email}`;
+        
+        if (user.role === 'admin') {
+            document.getElementById('admin-link').style.display = 'inline-block';
+            document.getElementById('admin-link').href = 'admin.html';
+        }
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('incozi_token');
+            localStorage.removeItem('incozi_user');
+            window.location.href = 'account.html';
+        });
+
+        // Tabs Logic
+        const tabs = document.querySelectorAll('.dash-tab');
+        const views = document.querySelectorAll('[id^="view-"]');
+
+        window.switchTab = function(viewName) {
+            // Update tabs
+            tabs.forEach(t => {
+                t.classList.remove('active');
+                if (t.dataset.view === viewName) t.classList.add('active');
+            });
+
+            // Update views
+            views.forEach(v => {
+                v.style.display = 'none';
+                if (v.id === `view-${viewName}`) v.style.display = 'block';
+                // Restore grid layout if home
+                if (v.id === 'view-home' && viewName === 'home') v.style.display = 'grid';
+            });
+
+            // Load data if needed
+            if (viewName === 'services') loadServices(user.id);
+            if (viewName === 'documents') loadDocuments(token);
+            if (viewName === 'entities') loadEntities(token);
+            if (viewName === 'consultations') loadConsultations(token);
+            if (viewName === 'calendar') loadCalendar(token);
+            if (viewName === 'profile') loadProfile(token, user.id);
+        };
+
+        window.switchProfileTab = function(tabName) {
+            ['personal', 'security', 'preferences'].forEach(t => {
+                document.getElementById('ptab-' + t).classList.remove('active');
+                document.getElementById('psect-' + t).style.display = 'none';
+            });
+            document.getElementById('ptab-' + tabName).classList.add('active');
+            document.getElementById('psect-' + tabName).style.display = 'block';
+        };
+
+        // Profile Form Handlers
+        document.getElementById('personal-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const alert = document.getElementById('personal-alert');
+            alert.style.display = 'none';
+            
+            const formData = {
+                full_name: document.getElementById('full_name').value,
+                phone: document.getElementById('phone').value,
+                company_name: document.getElementById('company_name').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                zip: document.getElementById('zip').value
+            };
+            
+            try {
+                const res = await fetch(`/api/auth/profile/${user.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(formData)
+                });
+                const data = await res.json();
+                if(res.ok) {
+                    alert.style.display = 'block'; alert.style.color = 'green'; alert.style.background = '#dcfce7'; alert.textContent = 'Profile updated!';
+                    user.full_name = formData.full_name;
+                    localStorage.setItem('incozi_user', JSON.stringify(user));
+                    document.getElementById('user-display-name').textContent = `Hello, ${user.full_name}`;
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch(err) {
+                alert.style.display = 'block'; alert.style.color = 'red'; alert.style.background = '#fee2e2'; alert.textContent = err.message || 'Error updating.';
+            }
+        });
+
+        document.getElementById('security-form').addEventListener('submit', async (e) => {
+             e.preventDefault();
+             const alert = document.getElementById('security-alert');
+             const pwd = document.getElementById('new_password').value;
+             const cfm = document.getElementById('confirm_password').value;
+             const cur = document.getElementById('current_password').value;
+             
+             if(pwd !== cfm) {
+                 alert.style.display='block'; alert.style.color='red'; alert.textContent='Passwords do not match.'; return;
+             }
+             
+             try {
+                const res = await fetch(`/api/auth/change-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ userId: user.id, currentPassword: cur, newPassword: pwd })
+                });
+                const data = await res.json();
+                if(res.ok) {
+                    alert.style.display='block'; alert.style.color='green'; alert.textContent='Password changed successfully.';
+                    document.getElementById('security-form').reset();
+                } else throw new Error(data.error);
+             } catch(err) {
+                 alert.style.display='block'; alert.style.color='red'; alert.textContent=err.message || 'Error changing password.';
+             }
+        });
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                const view = tab.getAttribute('data-view');
+                switchTab(view);
+                // history.pushState(null, null, `#${view}`);
+            });
+        });
+
+        // Initialize Home
+        loadDashboardStats(user.id);
+        
+        // Handle URL Hash
+        if(window.location.hash) {
+            const view = window.location.hash.substring(1);
+            if(document.getElementById(`view-${view}`)) {
+                switchTab(view);
+            }
+        }
+    });
+
+    // --- DATA LOADERS ---
+
+    async function loadDashboardStats(userId) {
+        try {
+            const res = await fetch(`/api/services/my-subscriptions?userId=${userId}`);
+            const data = await res.json();
+            
+            // Set stats
+            document.getElementById('stats-active-services').textContent = data.length || 0;
+            
+            // Recent Orders
+            const container = document.getElementById('recent-orders-container');
+            if (data.length === 0) {
+                container.innerHTML = '<p style="color: #666;">No active services found.</p>';
+            } else {
+                container.innerHTML = '';
+                data.slice(0, 3).forEach(sub => {
+                    const div = document.createElement('div');
+                    div.style.cssText = 'padding: 1rem; background: #f9fafb; border-radius: 8px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;';
+                    div.innerHTML = `
+                        <div>
+                            <div style="font-weight: 600;">${sub.service_name}</div>
+                            <div style="font-size: 0.85rem; color: #666;">${sub.plan_name}</div>
+                        </div>
+                        <span class="status-badge status-${sub.status}">${sub.status}</span>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+        } catch(e) { console.error(e); }
+    }
+
+    async function loadServices(userId) {
+        const tbody = document.getElementById('services-list');
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
+        try {
+            const res = await fetch(`/api/services/my-subscriptions?userId=${userId}`);
+            const data = await res.json();
+          
+            tbody.innerHTML = '';
+            if(!data.length) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#999; padding:2rem;">No services found.</td></tr>';
+                return;
+            }
+
+            data.forEach(sub => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div style="font-weight:600;">${sub.service_name}</div>
+                        <div style="font-size:0.85rem; color:#666;">${sub.plan_name}</div>
+                    </td>
+                    <td><span class="status-badge status-${sub.status}">${sub.status}</span></td>
+                    <td>${sub.order_status ? sub.order_status.replace('_',' ') : '-'}</td>
+                    <td>${sub.start_date ? new Date(sub.start_date).toLocaleDateString() : '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch(e) { 
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Error loading services</td></tr>';
+        }
+    }
+
+    async function loadDocuments(token) {
+        const container = document.getElementById('user-docs-list');
+        container.innerHTML = 'Loading...';
+        try {
+             // Mock documents if API fails (since backend structure is complex)
+             // or call real API
+             const res = await fetch('/api/documents/my-documents', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const docs = await res.json();
+            container.innerHTML = '';
+            
+            if(!docs.length) {
+                container.innerHTML = '<p style="color:#999;">No documents found.</p>';
+                return;
+            }
+
+             docs.forEach(doc => {
+                const div = document.createElement('div');
+                div.className = 'doc-card';
+                // Attempt to clean filename
+                const rawName = doc.file_path ? doc.file_path.split('/').pop() : 'Document'; 
+                const niceName = rawName.replace(/^\d+-\d+-/, '');
+
+                div.innerHTML = `
+                    <div class="doc-icon"><i class="fa fa-file-alt"></i></div>
+                    <div class="doc-name" style="word-break: break-all; font-weight:600;">${niceName}</div>
+                    <div class="doc-date">${new Date(doc.uploaded_at).toLocaleDateString()}</div>
+                    <a href="/${doc.file_path}" target="_blank" style="font-size: 0.8rem; margin-top: 0.5rem; text-decoration: none; color: var(--accent-200);">Download</a>
+                `;
+                container.appendChild(div);
+            });
+        } catch (e) {
+            container.innerHTML = '<p style="color:red;">Failed to load documents.</p>';
+        }
+    }
+
+    async function loadEntities(token) {
+         const tbody = document.getElementById('entities-list');
+         // Check if element exists (tab is hidden by default)
+         if(!tbody) return;
+         
+         try {
+            const res = await fetch('/api/dashboard/entities', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const items = await res.json();
+            tbody.innerHTML = '';
+            
+            if(!items || !items.length) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#999; padding:2rem;">No entities found.</td></tr>';
+                return;
+            }
+            
+            items.forEach(ent => {
+                 const tr = document.createElement('tr');
+                 tr.innerHTML = `
+                    <td>${ent.name}</td>
+                    <td>${ent.compliance_status}</td>
+                    <td>${ent.jurisdiction || '-'}</td>
+                    <td>${ent.registered_agent || '-'}</td>
+                 `;
+                 tbody.appendChild(tr);
+            });
+
+         } catch(e) {
+             tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No entities or error loading.</td></tr>';
+         }
+    }
+
+    async function loadConsultations(token) {
+        // Implementation similar to dashboard.html
+        const list = document.getElementById('consultation-list');
+        try {
+            const res = await fetch('/api/consultations', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const items = await res.json();
+            list.innerHTML = '';
+            if(!items.length) {
+                 list.innerHTML = '<p style="color:#999;">No upcoming consultations.</p>';
+                 return;
+            }
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.style.padding = '1rem';
+                div.style.border = '1px solid #eee';
+                div.style.marginBottom = '0.5rem';
+                div.innerHTML = `<strong>${item.notes || 'Consultation'}</strong> - ${new Date(item.scheduled_at).toLocaleString()}`;
+                list.appendChild(div);
+            });
+        } catch(e) {}
+    }
+
+    async function loadCalendar(token) {
+         // Implementation similar to dashboard.html
+         const tbody = document.getElementById('calendar-list');
+         try {
+             // simplified
+             tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:2rem; color:#999;">No events.</td></tr>';
+         } catch(e) {}
+    }
+
+    async function loadProfile(token, userId) {
+        try {
+            const res = await fetch(`/api/auth/profile/${userId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if(!res.ok) return;
+            const profile = await res.json();
+            
+            if(document.getElementById('full_name')) document.getElementById('full_name').value = profile.full_name || '';
+            if(document.getElementById('email')) document.getElementById('email').value = profile.email || '';
+            if(document.getElementById('phone')) document.getElementById('phone').value = profile.phone || '';
+            if(document.getElementById('company_name')) document.getElementById('company_name').value = profile.company_name || '';
+            if(document.getElementById('address')) document.getElementById('address').value = profile.address || '';
+            if(document.getElementById('city')) document.getElementById('city').value = profile.city || '';
+            if(document.getElementById('state')) document.getElementById('state').value = profile.state || '';
+            if(document.getElementById('zip')) document.getElementById('zip').value = profile.zip || '';
+            if(document.getElementById('email_notifications')) document.getElementById('email_notifications').checked = profile.email_notifications !== false;
+            
+        } catch(e) { console.error("Profile load error", e); }
+    }
+  </script>
+</body>
+</html>

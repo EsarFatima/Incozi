@@ -217,7 +217,7 @@
     } else {
       const user = JSON.parse(userStr);
       if (user.role !== 'admin') {
-          window.location.href = 'dashboard.html';
+          window.location.href = 'my-services.html';
       }
       const firstLetter = user.full_name ? user.full_name.charAt(0).toUpperCase() : 'A';
       document.querySelector('.user-avatar').textContent = firstLetter;

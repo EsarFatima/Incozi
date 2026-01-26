@@ -105,7 +105,7 @@
               <p style="color: var(--text-200); margin-bottom: 1rem;"><strong>Account Status:</strong> <span style="color: #10b981;">Active</span></p>
               
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-                <a href="dashboard.html" style="display: flex; align-items: center; justify-content: center; padding: 0.75rem; background: var(--bg-200); color: var(--accent-200); text-decoration: none; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
+                <a href="my-services.html" id="userDashboardBtn" style="display: flex; align-items: center; justify-content: center; padding: 0.75rem; background: var(--bg-200); color: var(--accent-200); text-decoration: none; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
                   <i class="fa-solid fa-briefcase" style="margin-right: 0.5rem;"></i> Dashboard
                 </a>
                 <a href="cart.html" style="display: flex; align-items: center; justify-content: center; padding: 0.75rem; background: var(--bg-200); color: var(--accent-200); text-decoration: none; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
@@ -320,7 +320,7 @@
             if (data.user.role === 'admin') {
                 window.location.href = 'admin.html';
             } else {
-                window.location.href = 'dashboard.html';
+                window.location.href = 'my-services.html';
             }
           } else {
             // Error
@@ -415,6 +415,14 @@
             if (user.role === 'admin') {
                const adminBtn = document.getElementById('adminButtonData');
                if (adminBtn) adminBtn.style.display = 'block';
+
+               // Hide regular dashboard button for admins
+               const userDashBtn = document.getElementById('userDashboardBtn');
+               if (userDashBtn) {
+                   userDashBtn.style.display = 'none';
+                   // Make the remaining Cart button full width
+                   userDashBtn.parentElement.style.gridTemplateColumns = '1fr';
+               }
             }
 
             // Handle logout
@@ -435,6 +443,27 @@
     
     // Run on load
     checkAuth();
+
+    // Check for redirect message
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('msg') === 'login_required') {
+        const header = document.querySelector('.auth-header h1');
+        const sub = document.querySelector('.auth-header p');
+        if(header) {
+            header.textContent = 'Please Sign In';
+            header.style.color = '#4338ca';
+        }
+        if(sub) {
+            sub.textContent = 'You need to be logged in to view your services.';
+            sub.style.color = '#dc2626'; 
+            sub.style.fontWeight = '500';
+            sub.style.backgroundColor = '#fee2e2';
+            sub.style.padding = '0.75rem';
+            sub.style.borderRadius = '6px';
+            sub.style.display = 'inline-block';
+            sub.style.marginTop = '0.5rem';
+        }
+    }
 
   </script>
 </body>

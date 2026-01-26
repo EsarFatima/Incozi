@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Payment Methods - Incozi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body {
+        background-color: #f3f4f6;
+        display: flex;
+        min-height: 100vh;
+    }
+    
+    .dash-sidebar {
+        width: 260px;
+        background: #fff;
+        border-right: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        z-index: 100;
+        left: 0; top: 0;
+    }
+    
+    .dash-logo {
+        padding: 1.5rem;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--accent-200);
+        text-decoration: none;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .dash-nav {
+        flex: 1;
+        padding: 1.5rem 1rem;
+    }
+    
+    .dash-nav-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--text-200);
+        text-decoration: none;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s;
+    }
+    
+    .dash-nav-item:hover {
+        background: #f3f4f6;
+        color: var(--accent-200);
+    }
+    
+    .dash-nav-item.active {
+        background: var(--bg-200);
+        color: var(--accent-200);
+        font-weight: 600;
+    }
+    
+    .dash-nav-item i {
+        margin-right: 0.75rem;
+        width: 20px;
+    }
+    
+    .dash-user {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: var(--accent-200);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+    }
+    
+    .dash-main {
+        margin-left: 260px;
+        flex: 1;
+        padding: 2rem;
+    }
+    
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .content-card {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        border: 1px solid #e5e7eb;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Table Styles */
+    .dash-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .dash-table th, .dash-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .dash-table th {
+        font-weight: 600;
+        color: var(--text-200);
+        font-size: 0.9rem;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .dash-sidebar { display: none; }
+        .dash-main { margin-left: 0; padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="dash-sidebar">
+        <a href="../index.html" class="dash-logo">incozi.</a>
+        <nav class="dash-nav">
+            <a href="admin.html" class="dash-nav-item">
+                <i class="fa-solid fa-chart-line"></i> Dashboard
+            </a>
+            <a href="admin-clients.html" class="dash-nav-item">
+                <i class="fa-solid fa-users"></i> Clients
+            </a>
+            <a href="admin-documents.html" class="dash-nav-item">
+                <i class="fa-solid fa-folder"></i> Documents
+            </a>
+            <a href="admin-bookings.html" class="dash-nav-item">
+                <i class="fa-solid fa-calendar-check"></i> Bookings
+            </a>
+            <a href="admin-payments.html" class="dash-nav-item active">
+                <i class="fa-regular fa-credit-card"></i> Payment Methods
+            </a>
+             <a href="admin-subscribers.html" class="dash-nav-item">
+                <i class="fa-solid fa-envelope"></i> Newsletter
+            </a>
+        </nav>
+        <div class="dash-user">
+            <div class="user-avatar">A</div>
+            <div>
+                <p style="font-weight: 600; color: var(--text-100);">Admin</p>
+                <a href="#" id="logoutBtn" style="font-size: 0.85rem; color: var(--text-200);">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dash-main">
+        <div class="admin-header">
+            <div>
+                <h1 style="font-size: 2rem; color: var(--text-100);">Payment Methods</h1>
+                <p style="color: var(--text-200);">Manage and view stored payment methods across all users.</p>
+            </div>
+        </div>
+
+        <div class="content-card">
+             <!-- Filtering -->
+             <div style="background: #f9fafb; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #e5e7eb;">
+                <h4 style="margin-top:0; margin-bottom:1rem; color:var(--text-100);">Filter Payment Methods</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.5rem; color:var(--text-200);">Name on Card / Last 4</label>
+                        <input type="text" id="filterDetail" placeholder="Search..." style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:6px;">
+                    </div>
+                     <div>
+                        <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.5rem; color:var(--text-200);">Card Type</label>
+                         <select id="filterType" style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:6px;">
+                            <option value="(All)">(All)</option>
+                            <option value="Visa">Visa</option>
+                            <option value="MasterCard">MasterCard</option>
+                            <option value="Amex">Amex</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <button id="searchBtn" class="btn btn-primary" style="background-color: var(--accent-200); color:white; padding: 0.5rem 1.5rem; border:none; border-radius:6px; cursor:pointer;">Search</button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Type</th>
+                        <th>Card Number</th>
+                        <th>Name on Card</th>
+                        <th>Expires</th>
+                        <th>Created</th>
+                    </tr>
+                </thead>
+                <tbody id="params-table-body">
+                    <tr><td colspan="7" style="text-align:center; padding:2rem; color:#999;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+             const token = localStorage.getItem('incozi_token');
+             
+             // Auth Check
+             if (!token) { window.location.href = 'account.html'; return; }
+             const user = JSON.parse(localStorage.getItem('incozi_user') || '{}');
+             if (user.role !== 'admin') { window.location.href = 'my-services.html'; return; }
+
+             // Logout
+            document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('incozi_token');
+                localStorage.removeItem('incozi_user');
+                window.location.href = '../index.html';
+            });
+
+            // Load Data
+            loadMethods();
+
+            // Search
+            document.getElementById('searchBtn').addEventListener('click', loadMethods);
+        });
+
+        async function loadMethods() {
+            const tbody = document.getElementById('params-table-body');
+            const detail = document.getElementById('filterDetail').value;
+            const type = document.getElementById('filterType').value;
+            const token = localStorage.getItem('incozi_token');
+
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem;">Loading...</td></tr>';
+
+            try {
+                // Construct URL
+                let url = '/api/admin/payment-methods?';
+                if (detail) url += `cardDetail=${encodeURIComponent(detail)}&`;
+                if (type) url += `cardType=${encodeURIComponent(type)}`;
+
+                const res = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!res.ok) throw new Error('Failed to fetch');
+
+                const data = await res.json();
+                tbody.innerHTML = '';
+
+                if (data.length === 0) {
+                     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem; color:#666;">No payment methods found.</td></tr>';
+                     return;
+                }
+
+                data.forEach(m => {
+                    const tr = document.createElement('tr');
+                    const userName = m.users ? m.users.full_name : 'Unknown';
+                    const userEmail = m.users ? m.users.email : '-';
+
+                    tr.innerHTML = `
+                        <td style="font-weight:500;">${userName}</td>
+                        <td style="color:#666; font-size:0.9rem;">${userEmail}</td>
+                        <td>${m.card_type}</td>
+                        <td style="font-family:monospace;">**** **** **** ${m.last_four}</td>
+                        <td>${m.cardholder_name}</td>
+                        <td>${m.expiry_month}/${m.expiry_year}</td>
+                        <td style="font-size:0.85rem; color:#666;">${new Date(m.created_at).toLocaleDateString()}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem; color:red;">Error loading data.</td></tr>';
+            }
+        }
+    </script>
+</body>
+</html>

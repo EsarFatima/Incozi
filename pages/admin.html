@@ -137,6 +137,9 @@
             <a href="admin-bookings.html" class="dash-nav-item">
                 <i class="fa-solid fa-calendar-check"></i> Bookings
             </a>
+            <a href="admin-payments.html" class="dash-nav-item">
+                <i class="fa-regular fa-credit-card"></i> Payment Methods
+            </a>
             <a href="admin-subscribers.html" class="dash-nav-item">
                 <i class="fa-solid fa-envelope"></i> Newsletter
             </a>
@@ -230,7 +233,7 @@
             const user = JSON.parse(localStorage.getItem('incozi_user') || '{}');
             if (user.role !== 'admin') {
                 alert('Access Denied');
-                window.location.href = 'dashboard.html';
+                window.location.href = 'my-services.html';
                 return;
             }
             

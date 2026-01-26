@@ -205,9 +205,13 @@
       window.location.href = 'account.html';
     } else {
       const user = JSON.parse(userStr);
-      const firstLetter = user.full_name ? user.full_name.charAt(0).toUpperCase() : 'A';
-      document.querySelector('.user-avatar').textContent = firstLetter;
-      document.getElementById('adminName').textContent = user.full_name || 'Admin';
+      if (user.role !== 'admin') {
+          window.location.href = 'my-services.html';
+      } else {
+          const firstLetter = user.full_name ? user.full_name.charAt(0).toUpperCase() : 'A';
+          document.querySelector('.user-avatar').textContent = firstLetter;
+          document.getElementById('adminName').textContent = user.full_name || 'Admin';
+      }
     }
     
     // Handle sign out

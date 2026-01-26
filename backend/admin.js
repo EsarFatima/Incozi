@@ -98,6 +98,42 @@ function adminRoutes(supabase) {
         }
     });
 
+    // GET /payment-methods - All payment methods
+    router.get('/payment-methods', async (req, res) => {
+        try {
+            const { cardDetail, cardType } = req.query; // Filters
+
+            let query = supabase
+                .from('payment_methods')
+                .select(`
+                    *,
+                    users (
+                        full_name,
+                        email
+                    )
+                `)
+                .order('created_at', { ascending: false });
+
+            // Apply Filters
+            if (cardType && cardType !== '(All)') {
+                query = query.ilike('card_type', `%${cardType}%`);
+            }
+            if (cardDetail) {
+              // Search cardholder name OR last four
+              query = query.or(`cardholder_name.ilike.%${cardDetail}%,last_four.ilike.%${cardDetail}%`);
+            }
+
+            const { data, error } = await query;
+
+            if (error) throw error;
+            res.json(data);
+        } catch (error) {
+            console.error('Admin Payment Methods Error:', error);
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+
     // GET /bookings - All bookings
     router.get('/bookings', async (req, res) => {
         try {

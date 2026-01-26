@@ -22,7 +22,7 @@ const initiatePayment = async (amount, orderId, customerInfo) => {
         return {
             success: true,
             isRedirect: true,
-            redirectUrl: `http://localhost:3000/pages/dashboard.html?payment_success=true&order_id=${orderId}`, // Fake success loop
+            redirectUrl: `http://localhost:3000/pages/my-services.html?payment_success=true&order_id=${orderId}`, // Fake success loop
             transactionId: 'SIMULATED_TXN_' + orderId
         };
     }
@@ -32,7 +32,7 @@ const initiatePayment = async (amount, orderId, customerInfo) => {
             amount: String(amount), // API expects String
             order_id: String(orderId),
             store_name: "Incozi Services",
-            link: `http://localhost:3000/pages/dashboard.html?payment_return=true&order_id=${orderId}` // Where user returns
+            link: `http://localhost:3000/pages/my-services.html?payment_return=true&order_id=${orderId}` // Where user returns
         };
 
         const response = await fetch(`${BASE_URL}/payment-request/qr/${MERCHANT_ID}`, {

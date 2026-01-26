@@ -187,7 +187,7 @@
             const user = JSON.parse(localStorage.getItem('incozi_user') || '{}');
             if (user.role !== 'admin') {
                 alert('Access Denied');
-                window.location.href = 'dashboard.html';
+                window.location.href = 'my-services.html';
                 return;
             }
             

@@ -309,7 +309,7 @@ const sendOrderStatusUpdate = async (email, customerName, orderStatus, trackingN
       ${trackingNotes ? `<p><strong>Notes:</strong></p><p style="color: #374151; white-space: pre-wrap;">${trackingNotes}</p>` : ''}
     </div>
     <p>You can view complete details of your order in your dashboard.</p>
-    <a href="${process.env.BASE_URL || 'http://localhost:3000'}/pages/dashboard.html" class="button">View Dashboard</a>
+    <a href="${process.env.BASE_URL || 'http://localhost:3000'}/pages/my-services.html" class="button">View Dashboard</a>
   `;
   return sendEmail(email, subject, wrapWithTemplate('Order Update', content));
 };
@@ -342,7 +342,7 @@ const sendUserUploadConfirmation = async (email, filesList) => {
     <p>We have successfully received the following documents from you:</p>
     <ul>${fileItems}</ul>
     <p>Our team has been notified and will review your documents shortly.</p>
-    <a href="${process.env.BASE_URL || 'http://localhost:3000'}/pages/dashboard.html#documents" class="button">View Dashboard</a>
+    <a href="${process.env.BASE_URL || 'http://localhost:3000'}/pages/my-services.html#documents" class="button">View Dashboard</a>
   `;
   return sendEmail(email, subject, wrapWithTemplate('Upload Confirmation', content));
 };

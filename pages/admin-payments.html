@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Payment Methods - Incozi</title>
+  <title>Admin - Payment Records - Incozi</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../style.css">
@@ -153,11 +153,9 @@
                 <i class="fa-solid fa-calendar-check"></i> Bookings
             </a>
             <a href="admin-payments.html" class="dash-nav-item active">
-                <i class="fa-regular fa-credit-card"></i> Payment Methods
+                <i class="fa-solid fa-receipt"></i> Payment Records
             </a>
-             <a href="admin-subscribers.html" class="dash-nav-item">
-                <i class="fa-solid fa-envelope"></i> Newsletter
-            </a>
+
         </nav>
         <div class="dash-user">
             <div class="user-avatar">A</div>
@@ -172,27 +170,27 @@
     <div class="dash-main">
         <div class="admin-header">
             <div>
-                <h1 style="font-size: 2rem; color: var(--text-100);">Payment Methods</h1>
-                <p style="color: var(--text-200);">Manage and view stored payment methods across all users.</p>
+                <h1 style="font-size: 2rem; color: var(--text-100);">Payment Records</h1>
+                <p style="color: var(--text-200);">View all payment transactions across users.</p>
             </div>
         </div>
 
         <div class="content-card">
              <!-- Filtering -->
              <div style="background: #f9fafb; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #e5e7eb;">
-                <h4 style="margin-top:0; margin-bottom:1rem; color:var(--text-100);">Filter Payment Methods</h4>
+                <h4 style="margin-top:0; margin-bottom:1rem; color:var(--text-100);">Filter Payment Records</h4>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                     <div>
-                        <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.5rem; color:var(--text-200);">Name on Card / Last 4</label>
-                        <input type="text" id="filterDetail" placeholder="Search..." style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:6px;">
+                        <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.5rem; color:var(--text-200);">User Name / Email</label>
+                        <input type="text" id="filterUser" placeholder="Search..." style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:6px;">
                     </div>
                      <div>
-                        <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.5rem; color:var(--text-200);">Card Type</label>
-                         <select id="filterType" style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:6px;">
-                            <option value="(All)">(All)</option>
-                            <option value="Visa">Visa</option>
-                            <option value="MasterCard">MasterCard</option>
-                            <option value="Amex">Amex</option>
+                        <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.5rem; color:var(--text-200);">Status</label>
+                         <select id="filterStatus" style="width:100%; padding:0.5rem; border:1px solid #d1d5db; border-radius:6px;">
+                            <option value="">(All)</option>
+                            <option value="success">Success</option>
+                            <option value="pending">Pending</option>
+                            <option value="failed">Failed</option>
                         </select>
                     </div>
                 </div>
@@ -207,15 +205,14 @@
                     <tr>
                         <th>User</th>
                         <th>Email</th>
-                        <th>Type</th>
-                        <th>Card Number</th>
-                        <th>Name on Card</th>
-                        <th>Expires</th>
-                        <th>Created</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Payment Date</th>
+                        <th>Transaction ID</th>
                     </tr>
                 </thead>
                 <tbody id="params-table-body">
-                    <tr><td colspan="7" style="text-align:center; padding:2rem; color:#999;">Loading...</td></tr>
+                    <tr><td colspan="6" style="text-align:center; padding:2rem; color:#999;">Loading...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -247,52 +244,65 @@
 
         async function loadMethods() {
             const tbody = document.getElementById('params-table-body');
-            const detail = document.getElementById('filterDetail').value;
-            const type = document.getElementById('filterType').value;
+            const user = document.getElementById('filterUser').value;
+            const status = document.getElementById('filterStatus').value;
             const token = localStorage.getItem('incozi_token');
 
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem;">Loading...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem;">Loading...</td></tr>';
 
             try {
-                // Construct URL
-                let url = '/api/admin/payment-methods?';
-                if (detail) url += `cardDetail=${encodeURIComponent(detail)}&`;
-                if (type) url += `cardType=${encodeURIComponent(type)}`;
-
-                const res = await fetch(url, {
+                // Fetch all payments
+                const res = await fetch('http://localhost:3000/api/admin/payments', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
                 if (!res.ok) throw new Error('Failed to fetch');
 
-                const data = await res.json();
+                let data = await res.json();
+                
+                // Client-side filtering
+                if (user) {
+                    const userLower = user.toLowerCase();
+                    data = data.filter(p => 
+                        (p.users && (p.users.full_name.toLowerCase().includes(userLower) || p.users.email.toLowerCase().includes(userLower)))
+                    );
+                }
+                
+                if (status) {
+                    data = data.filter(p => p.payment_status === status);
+                }
+
                 tbody.innerHTML = '';
 
                 if (data.length === 0) {
-                     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem; color:#666;">No payment methods found.</td></tr>';
+                     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem; color:#666;">No payment records found.</td></tr>';
                      return;
                 }
 
-                data.forEach(m => {
+                data.forEach(p => {
                     const tr = document.createElement('tr');
-                    const userName = m.users ? m.users.full_name : 'Unknown';
-                    const userEmail = m.users ? m.users.email : '-';
+                    const userName = p.users ? p.users.full_name : 'Unknown';
+                    const userEmail = p.users ? p.users.email : '-';
+                    const statusColor = p.payment_status === 'success' ? '#10b981' : p.payment_status === 'pending' ? '#f59e0b' : '#ef4444';
 
                     tr.innerHTML = `
                         <td style="font-weight:500;">${userName}</td>
                         <td style="color:#666; font-size:0.9rem;">${userEmail}</td>
-                        <td>${m.card_type}</td>
-                        <td style="font-family:monospace;">**** **** **** ${m.last_four}</td>
-                        <td>${m.cardholder_name}</td>
-                        <td>${m.expiry_month}/${m.expiry_year}</td>
-                        <td style="font-size:0.85rem; color:#666;">${new Date(m.created_at).toLocaleDateString()}</td>
+                        <td style="font-weight:600;">$${(p.amount).toFixed(2)} ${p.currency || 'USD'}</td>
+                        <td>
+                            <span style="padding:0.25rem 0.75rem; border-radius:100px; font-size:0.75rem; font-weight:600; background:${statusColor}20; color:${statusColor}; text-transform:uppercase;">
+                                ${p.payment_status}
+                            </span>
+                        </td>
+                        <td style="font-size:0.85rem; color:#666;">${new Date(p.created_at).toLocaleDateString()} ${new Date(p.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                        <td style="font-family:monospace; font-size:0.85rem;">${p.transaction_id || 'N/A'}</td>
                     `;
                     tbody.appendChild(tr);
                 });
 
             } catch (err) {
                 console.error(err);
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:2rem; color:red;">Error loading data.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem; color:red;">Error loading data.</td></tr>';
             }
         }
     </script>

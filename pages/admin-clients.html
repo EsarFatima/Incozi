@@ -148,11 +148,137 @@
     .badge-admin { background: #dbeafe; color: #1e40af; }
     .badge-user { background: #e5e7eb; color: #374151; }
     
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 1rem;
+    }
+
+    .modal-header h2 {
+        font-size: 1.5rem;
+        color: var(--text-100);
+        margin: 0;
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--text-200);
+        transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+        color: var(--text-100);
+    }
+
+    .modal-section {
+        margin-bottom: 2rem;
+    }
+
+    .modal-section h3 {
+        font-size: 1.1rem;
+        color: var(--text-100);
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .info-label {
+        font-weight: 500;
+        color: var(--text-200);
+    }
+
+    .info-value {
+        color: var(--text-100);
+    }
+
+    .modal-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .modal-list li {
+        padding: 0.75rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        margin-bottom: 0.75rem;
+        background: #f9fafb;
+    }
+
+    .modal-list .list-title {
+        font-weight: 600;
+        color: var(--text-100);
+    }
+
+    .modal-list .list-subtitle {
+        font-size: 0.9rem;
+        color: var(--text-200);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 1.5rem;
+        color: var(--text-200);
+    }
+
+    .loading-state {
+        text-align: center;
+        padding: 1.5rem;
+        color: var(--text-200);
+    }
+    
     @media (max-width: 768px) {
         .dash-sidebar { display: none; }
         .dash-main { margin-left: 0; padding: 1rem; }
         .dash-table { font-size: 0.875rem; }
         .dash-table th, .dash-table td { padding: 0.5rem; }
+        
+        .modal-content {
+            width: 95%;
+            max-width: none;
+            padding: 1.5rem;
+        }
     }
   </style>
 </head>
@@ -175,10 +301,7 @@
                 <i class="fa-solid fa-calendar-check"></i> Bookings
             </a>
             <a href="admin-payments.html" class="dash-nav-item">
-                <i class="fa-regular fa-credit-card"></i> Payment Methods
-            </a>
-            <a href="admin-subscribers.html" class="dash-nav-item">
-                <i class="fa-solid fa-envelope"></i> Newsletter
+                <i class="fa-solid fa-receipt"></i> Payment Records
             </a>
         </nav>
         <div class="dash-user">
@@ -215,6 +338,57 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Details Modal -->
+    <div id="clientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Client Details</h2>
+                <button class="modal-close" onclick="closeClientModal()">&times;</button>
+            </div>
+
+            <!-- Client Profile Info -->
+            <div class="modal-section">
+                <h3>Profile Information</h3>
+                <div class="info-row">
+                    <span class="info-label">Full Name</span>
+                    <span class="info-value" id="clientName">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email</span>
+                    <span class="info-value" id="clientEmail">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Role</span>
+                    <span class="info-value" id="clientRole">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Member Since</span>
+                    <span class="info-value" id="clientJoined">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Verified</span>
+                    <span class="info-value" id="clientVerified">-</span>
+                </div>
+            </div>
+
+            <!-- Service History -->
+            <div class="modal-section">
+                <h3>Service History</h3>
+                <ul class="modal-list" id="servicesList">
+                    <li class="loading-state">Loading services...</li>
+                </ul>
+            </div>
+
+            <!-- Upcoming Bookings -->
+            <div class="modal-section">
+                <h3>Upcoming Bookings</h3>
+                <ul class="modal-list" id="bookingsList">
+                    <li class="loading-state">Loading bookings...</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -283,13 +457,104 @@
                     </td>
                     <td>${new Date(client.created_at).toLocaleDateString()}</td>
                     <td>
-                        <button onclick="alert('View details for ${client.full_name}')" style="cursor:pointer; background:none; border:none; color: var(--accent-200);">
+                        <button onclick="openClientModal('${client.id}', '${client.full_name}', '${client.email}', '${client.created_at}', '${client.is_verified ? 'Yes' : 'No'}')" style="cursor:pointer; background:none; border:none; color: var(--accent-200);">
                             View
                         </button>
                     </td>
                 </tr>
             `).join('');
         }
+
+        async function openClientModal(clientId, fullName, email, createdAt, isVerified) {
+            const modal = document.getElementById('clientModal');
+            const token = localStorage.getItem('incozi_token');
+
+            // Set basic client info
+            document.getElementById('clientName').textContent = fullName;
+            document.getElementById('clientEmail').textContent = email;
+            document.getElementById('clientRole').textContent = 'user';
+            document.getElementById('clientJoined').textContent = new Date(createdAt).toLocaleDateString();
+            document.getElementById('clientVerified').textContent = isVerified;
+
+            // Show modal
+            modal.classList.add('active');
+
+            // Fetch services and bookings
+            try {
+                // Fetch subscriptions (service history)
+                const servicesRes = await fetch(`${API_URL}/services/admin/orders`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const servicesData = servicesRes.ok ? await servicesRes.json() : [];
+                const clientServices = servicesData.filter(s => s.user_id === clientId);
+                renderServices(clientServices);
+
+                // Fetch bookings
+                const bookingsRes = await fetch(`${API_URL}/admin/bookings`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const bookingsData = bookingsRes.ok ? await bookingsRes.json() : [];
+                const clientBookings = bookingsData.filter(b => b.user_id === clientId);
+                renderBookings(clientBookings);
+            } catch (error) {
+                console.error('Error fetching client details:', error);
+                document.getElementById('servicesList').innerHTML = '<li class="empty-state">Error loading services</li>';
+                document.getElementById('bookingsList').innerHTML = '<li class="empty-state">Error loading bookings</li>';
+            }
+        }
+
+        function renderServices(services) {
+            const servicesList = document.getElementById('servicesList');
+            if (services.length === 0) {
+                servicesList.innerHTML = '<li class="empty-state">No services purchased</li>';
+                return;
+            }
+
+            servicesList.innerHTML = services.map(service => `
+                <li>
+                    <div class="list-title">${service.service_type || 'Service'}</div>
+                    <div class="list-subtitle">Status: ${service.status || 'pending'}</div>
+                    <div class="list-subtitle">Date: ${new Date(service.created_at).toLocaleDateString()}</div>
+                    ${service.amount ? `<div class="list-subtitle">Amount: $${(service.amount / 100).toFixed(2)}</div>` : ''}
+                </li>
+            `).join('');
+        }
+
+        function renderBookings(bookings) {
+            const bookingsList = document.getElementById('bookingsList');
+            
+            // Filter for upcoming bookings (scheduled_at > current time)
+            const now = new Date();
+            const upcomingBookings = bookings.filter(b => {
+                const scheduledDate = new Date(b.scheduled_at);
+                return scheduledDate > now;
+            }).sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+
+            if (upcomingBookings.length === 0) {
+                bookingsList.innerHTML = '<li class="empty-state">No upcoming bookings</li>';
+                return;
+            }
+
+            bookingsList.innerHTML = upcomingBookings.map(booking => `
+                <li>
+                    <div class="list-title">${booking.notes || 'Consultation'}</div>
+                    <div class="list-subtitle">Scheduled: ${new Date(booking.scheduled_at).toLocaleString()}</div>
+                    <div class="list-subtitle">Status: ${booking.status || 'booked'}</div>
+                </li>
+            `).join('');
+        }
+
+        function closeClientModal() {
+            const modal = document.getElementById('clientModal');
+            modal.classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('clientModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeClientModal();
+            }
+        });
     </script>
 </body>
 </html>

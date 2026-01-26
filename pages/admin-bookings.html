@@ -136,8 +136,8 @@
             <a href="admin-bookings.html" class="dash-nav-item active">
                 <i class="fa-solid fa-calendar-check"></i> Bookings
             </a>
-            <a href="admin-subscribers.html" class="dash-nav-item">
-                <i class="fa-solid fa-envelope"></i> Newsletter
+            <a href="admin-payments.html" class="dash-nav-item">
+                <i class="fa-solid fa-receipt"></i> Payment Records
             </a>
         </nav>
         <div class="dash-user">
@@ -177,6 +177,8 @@
     </div>
 
     <script>
+        const API_URL = 'http://localhost:3000/api';
+
         document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('incozi_token');
             if (!token) {
@@ -200,7 +202,7 @@
 
             // Fetch Bookings
             try {
-                const res = await fetch('/api/admin/bookings', {
+                const res = await fetch(`${API_URL}/admin/bookings`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {

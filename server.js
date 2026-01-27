@@ -19,6 +19,8 @@ const serviceRoutes = require('./backend/services'); // Import service routes
 const adminRoutes = require('./backend/admin'); // Import admin routes
 const consultationRoutes = require('./backend/consultations'); // Import consultation routes
 const dashboardRoutes = require('./backend/dashboard'); // Import dashboard routes
+const documentRoutes = require('./backend/documents'); // Import document routes
+const chatRoutes = require('./backend/chat'); // Import chat routes
 const { authenticateToken, requireAdmin } = require('./backend/middleware');
 const multer = require('multer');
 const fs = require('fs');
@@ -164,6 +166,8 @@ app.use('/api/payments', paymentRoutes(supabase));
 app.use('/api/services', serviceRoutes(supabase));
 app.use('/api/consultations', authenticateToken, consultationRoutes(supabase));
 app.use('/api/dashboard', authenticateToken, dashboardRoutes(supabase)); // Mount new dashboard routes
+app.use('/api/documents', authenticateToken, documentRoutes(supabase)); // Mount document routes
+app.use('/api/chat', authenticateToken, chatRoutes(supabase)); // Mount chat routes
 app.use('/api/admin', authenticateToken, adminRoutes(supabase));
 
 // --- Standalone Endpoints converted to Supabase ---

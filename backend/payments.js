@@ -11,7 +11,7 @@ module.exports = (supabase) => {
   router.post('/checkout', async (req, res) => {
     
     // 1. Validate Input
-    const { userId, planId, amount, currency, paymentMethod } = req.body;
+    const { userId, planId, amount, currency, paymentMethod, itemName } = req.body;
     
     // In a real app, you should fetch 'amount' from the database using 'planId' 
     // to prevent users from manipulating the price on the frontend.
@@ -42,9 +42,19 @@ module.exports = (supabase) => {
       }
 
       // 3. Create 'Pending' Subscription/Order in DB
+      // We store the 'itemName' (e.g. "Consultation - Tax") in a generic column if available
+      // The migration 20260127 added 'item_name' to subscriptions. Use it if possible.
+      // If table doesn't have it yet, this might error if we blindly insert. 
+      // But we assume migration is applied.
       const { data: subInsert, error: subError } = await supabase
         .from('subscriptions')
-        .insert([{ user_id: userId, plan_id: planId, status: 'pending', start_date: new Date().toISOString() }])
+        .insert([{ 
+            user_id: userId, 
+            plan_id: planId, 
+            status: 'pending', 
+            start_date: new Date().toISOString(),
+            item_name: itemName || null 
+        }])
         .select('id')
         .maybeSingle();
 
@@ -97,7 +107,7 @@ module.exports = (supabase) => {
              
              const { data: sub } = await supabase
                 .from('subscriptions')
-                .select('user_id, plan_id')
+                .select('user_id, plan_id, item_name')
                 .eq('id', orderId)
                 .maybeSingle();
 
@@ -127,24 +137,36 @@ module.exports = (supabase) => {
 
              // 4. Send Emails
              if (user && plan) {
+                 const isConsultation = sub.item_name && sub.item_name.includes('Consultation');
+                 
                  const orderDetails = {
                     transactionId: orderId,
-                    planName: plan.name,
+                    planName: sub.item_name || plan.name, // Use specific item name if available
                     currency: 'USD',
                     amount: plan.price,
                     customerName: user.full_name || 'Valued Customer',
                     customerEmail: user.email
                  };
 
-                 // Send to Buyer
-                 emailService.sendPurchaseConfirmation(user.email, orderDetails)
-                    .then(() => console.log('Order confirmation sent to buyer'))
-                    .catch(e => console.error('Failed to send buyer email:', e));
+                 if (isConsultation) {
+                     // Specific flow for Consultation
+                     emailService.sendConsultationPurchaseConfirmation(user.email, orderDetails.planName)
+                        .then(() => console.log('Consultation user email sent'))
+                        .catch(e => console.error('Failed to send consultation user email:', e));
 
-                 // Send to Admin
-                 emailService.sendNewOrderNotificationToAdmin(orderDetails)
-                    .then(() => console.log('Order notification sent to admin'))
-                    .catch(e => console.error('Failed to send admin email:', e));
+                     emailService.sendConsultationPurchaseAdmin(user, orderDetails.planName)
+                        .then(() => console.log('Consultation admin email sent'))
+                        .catch(e => console.error('Failed to send consultation admin email:', e));
+                 } else {
+                     // Standard flow
+                     emailService.sendPurchaseConfirmation(user.email, orderDetails)
+                        .then(() => console.log('Order confirmation sent to buyer'))
+                        .catch(e => console.error('Failed to send buyer email:', e));
+
+                     emailService.sendNewOrderNotificationToAdmin(orderDetails)
+                        .then(() => console.log('Order notification sent to admin'))
+                        .catch(e => console.error('Failed to send admin email:', e));
+                 }
              }
                 
              return res.json({ status: 'active' });

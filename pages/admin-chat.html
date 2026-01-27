@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Chat - Incozi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body { background-color: #f3f4f6; display: flex; min-height: 100vh; }
+    .dash-sidebar { width: 260px; background: #fff; border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; left: 0; top: 0; }
+    .dash-logo { padding: 1.5rem; font-size: 1.5rem; font-weight: 800; color: var(--accent-200); text-decoration: none; border-bottom: 1px solid #e5e7eb; }
+    .dash-nav { flex: 1; padding: 1.5rem 1rem; }
+    .dash-nav-item { display: flex; align-items: center; padding: 0.75rem 1rem; color: var(--text-200); text-decoration: none; border-radius: 8px; margin-bottom: 0.5rem; transition: all 0.2s; }
+    .dash-nav-item:hover { background: #f3f4f6; color: var(--accent-200); }
+    .dash-nav-item.active { background: var(--bg-200); color: var(--accent-200); font-weight: 600; }
+    .dash-nav-item i { margin-right: 0.75rem; width: 20px; }
+    .dash-main { margin-left: 260px; flex: 1; padding: 2rem; }
+    
+    .session-item { padding: 1rem; border-bottom: 1px solid #e5e7eb; cursor: pointer; transition: background 0.2s; }
+    .session-item:hover { background: #f9fafb; }
+    .session-item.active { background: #e0e7ff; }
+    .session-user { font-weight: 600; font-size: 0.95rem; }
+    .session-time { font-size: 0.8rem; color: #6b7280; }
+    
+    .msg-bubble { margin-bottom: 0.75rem; max-width: 70%; padding: 0.75rem; border-radius: 8px; font-size: 0.95rem; line-height: 1.4; }
+    .msg-user { background: #e5e7eb; color: #1f2937; align-self: flex-start; border-bottom-left-radius: 2px; }
+    .msg-admin { background: var(--accent-200); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
+  </style>
+</head>
+<body>
+
+  <aside class="dash-sidebar">
+    <a href="admin.html" class="dash-logo">incozi.</a>
+    <nav class="dash-nav">
+      <a href="admin.html" class="dash-nav-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+      <a href="admin-bookings.html" class="dash-nav-item"><i class="fa-solid fa-calendar"></i> Bookings</a>
+      <a href="admin-clients.html" class="dash-nav-item"><i class="fa-solid fa-users"></i> Clients</a>
+      <a href="admin-chat.html" class="dash-nav-item active"><i class="fa-regular fa-comments"></i> Chat Support</a>
+      <a href="admin-documents.html" class="dash-nav-item"><i class="fa-regular fa-folder-open"></i> Documents</a>
+      <a href="admin-payments.html" class="dash-nav-item"><i class="fa-solid fa-receipt"></i> Payments</a>
+    </nav>
+  </aside>
+
+  <main class="dash-main">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+        <h1 style="font-size:1.8rem;">Live Chat Support</h1>
+        <button id="refresh-btn" style="padding:0.5rem 1rem; cursor:pointer;">Refresh Sessions</button>
+    </div>
+
+    <div class="chat-admin-container" style="display: flex; height: calc(100vh - 150px); background: #fff; border-radius: 12px; border: 1px solid #e5e7eb; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+        
+        <!-- Sessions List -->
+        <div id="session-list" style="width: 300px; border-right: 1px solid #e5e7eb; overflow-y: auto; background:#f9fafb;">
+            <div style="padding:1rem; text-align:center; color:#6b7280;">Loading sessions...</div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="active-chat-area" style="flex: 1; display: flex; flex-direction: column;">
+            <div id="active-chat-header" style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600; background:#fff;">Select a chat session</div>
+            
+            <div id="active-chat-msgs" style="flex: 1; padding: 1.5rem; overflow-y: auto; background: #fff; display:flex; flex-direction:column;">
+                <!-- Messages -->
+                <div style="color:#9ca3af; text-align:center; margin-top:2rem;">No chat selected</div>
+            </div>
+            
+            <div class="admin-input-area" style="padding: 1rem; border-top: 1px solid #e5e7eb; display: flex; gap: 0.5rem; background:#f9fafb;">
+                <input type="text" id="admin-input" placeholder="Type your reply..." disabled style="flex: 1; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                <button id="admin-send-btn" disabled style="padding: 0 1.5rem; background: var(--accent-200); color: #fff; border: none; border-radius: 6px; font-weight:600; cursor:pointer;">Send</button>
+            </div>
+        </div>
+    </div>
+  </main>
+
+  <script>
+    let currentSessionId = null;
+    let pollInterval = null;
+    let activeSessionUser = null;
+
+    async function fetchSessions() {
+        const token = localStorage.getItem('incozi_token');
+        if(!token) { alert('Not authenticated'); window.location.href='../pages/account.html'; return; }
+
+        try {
+            const res = await fetch('/api/chat/admin/sessions', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            
+            if(res.status === 403) {
+                alert('Admin access required.');
+                return;
+            }
+
+            const sessions = await res.json();
+            renderSessions(sessions);
+        } catch(e) { console.error(e); }
+    }
+
+    function renderSessions(sessions) {
+        const list = document.getElementById('session-list');
+        list.innerHTML = '';
+
+        if(sessions.length === 0) {
+            list.innerHTML = '<div style="padding:1rem; text-align:center;">No open sessions</div>';
+            return;
+        }
+
+        sessions.forEach(s => {
+            const div = document.createElement('div');
+            div.className = 'session-item ' + (s.id === currentSessionId ? 'active' : '');
+            
+            const date = new Date(s.updated_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            div.innerHTML = `
+                <div class="session-user">${s.users ? s.users.full_name : 'User ' + s.user_id}</div>
+                <div class="session-time">Last active: ${date}</div>
+            `;
+            
+            div.onclick = () => selectSession(s);
+            list.appendChild(div);
+        });
+    }
+
+    async function selectSession(session) {
+        currentSessionId = session.id;
+        activeSessionUser = session.users ? session.users.full_name : 'User';
+        
+        document.getElementById('active-chat-header').textContent = `Chat with ${activeSessionUser}`;
+        document.getElementById('admin-input').disabled = false;
+        document.getElementById('admin-send-btn').disabled = false;
+        
+        fetchSessions(); // re-render list to show active state
+        loadMessages();
+        
+        if(pollInterval) clearInterval(pollInterval);
+        pollInterval = setInterval(loadMessages, 3000);
+    }
+
+    async function loadMessages() {
+        if(!currentSessionId) return;
+        const token = localStorage.getItem('incozi_token');
+        try {
+            const res = await fetch(`/api/chat/session/${currentSessionId}/messages`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const msgs = await res.json();
+            renderMessages(msgs);
+        } catch(e) { console.error(e); }
+    }
+
+    function renderMessages(msgs) {
+        const container = document.getElementById('active-chat-msgs');
+        container.innerHTML = '';
+        
+        let lastDate = null;
+        const now = new Date();
+        const todayStr = now.toLocaleDateString();
+
+        msgs.forEach(m => {
+            const date = new Date(m.created_at);
+            const dateStr = date.toLocaleDateString();
+
+            if (dateStr !== lastDate) {
+                const sep = document.createElement('div');
+                sep.className = 'chat-date-separator';
+                
+                let label = date.toLocaleDateString(undefined, {weekday: 'short', month: 'short', day: 'numeric'});
+                if (dateStr === todayStr) label = 'Today';
+                
+                sep.innerHTML = `<span>${label}</span>`;
+                container.appendChild(sep);
+                lastDate = dateStr;
+            }
+
+            const div = document.createElement('div');
+            const isAdminCode = (m.users && m.users.role === 'admin'); 
+            
+            div.className = `msg-bubble ${isAdminCode ? 'msg-admin' : 'msg-user'}`;
+            
+            const timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            div.innerHTML = `${m.message} <span class="msg-time">${timeStr}</span>`;
+            container.appendChild(div);
+        });
+        
+        container.scrollTop = container.scrollHeight;
+    }
+
+    async function sendReply() {
+        const input = document.getElementById('admin-input');
+        const text = input.value.trim();
+        if(!text || !currentSessionId) return;
+        
+        input.value = '';
+        const token = localStorage.getItem('incozi_token');
+
+        try {
+            await fetch('/api/chat/message', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ sessionId: currentSessionId, message: text })
+            });
+            loadMessages();
+        } catch(e) { console.error(e); }
+    }
+
+    document.getElementById('admin-send-btn').addEventListener('click', sendReply);
+    document.getElementById('admin-input').addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') sendReply();
+    });
+    
+    document.getElementById('refresh-btn').addEventListener('click', fetchSessions);
+
+    // Init
+    fetchSessions();
+    setInterval(fetchSessions, 10000); // Poll list occasionally for new sessions
+
+  </script>
+</body>
+</html>

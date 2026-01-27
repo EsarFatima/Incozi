@@ -450,25 +450,13 @@
      <div id="view-consultations" style="display: none;">
          <div class="home-grid-layout">
             <div class="content-card">
-                 <div class="section-title">Book a Consultation</div>
+                 <div class="section-title">Purchase a Consultation</div>
                  <form id="booking-form" style="display: grid; gap: 1rem;">
-                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
-                        <div>
-                            <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:0.5rem;">Date</label>
-                            <input type="date" id="book-date" required style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:6px;">
-                        </div>
-                        <div>
-                            <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:0.5rem;">Time (EST)</label>
-                            <select id="book-time" required style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:6px;">
-                                <option value="">Select Time</option>
-                                <option value="09:00">09:00</option>
-                                <option value="11:00">11:00</option>
-                                <option value="13:00">13:00</option>
-                                <option value="15:00">15:00</option>
-                            </select>
-                        </div>
-                     </div>
                      
+                     <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; border: 1px solid #bbf7d0; color: #166534; font-size: 0.95rem;">
+                        <i class="fa-solid fa-info-circle"></i> Once purchased, we will email you to schedule a time that works best.
+                     </div>
+
                      <div>
                         <label style="display:block; font-size:0.9rem; font-weight:600; margin-bottom:0.5rem;">Topic</label>
                         <select id="book-topic" required style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:6px;">
@@ -483,7 +471,7 @@
                         <textarea id="book-notes" rows="3" style="width:100%; padding:0.75rem; border:1px solid #ddd; border-radius:6px; font-family:inherit;"></textarea>
                      </div>
     
-                     <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                     <button type="submit" class="btn btn-primary">Add to Cart ($39)</button>
                      <div id="booking-msg" style="margin-top: 0.5rem;"></div>
                  </form>
              </div>
@@ -766,6 +754,50 @@
             document.getElementById('psect-' + tabName).style.display = 'block';
         };
 
+        // Upload Document Handler
+        const uploadForm = document.getElementById('upload-docs-form');
+        if (uploadForm) {
+            uploadForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const msgDiv = document.getElementById('upload-message');
+                const fileInput = document.getElementById('doc-files');
+                
+                if (fileInput.files.length === 0) {
+                    msgDiv.innerHTML = '<span style="color:red;">Please select files to upload.</span>';
+                    return;
+                }
+                
+                msgDiv.innerHTML = '<span style="color:#666;">Uploading...</span>';
+                
+                const formData = new FormData();
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    formData.append('documents', fileInput.files[i]);
+                }
+                
+                try {
+                    const res = await fetch('/api/documents/upload', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        body: formData
+                    });
+                    
+                    const data = await res.json();
+                    
+                    if (res.ok) {
+                        msgDiv.innerHTML = '<span style="color:green;">Upload successful!</span>';
+                        fileInput.value = ''; // Reset input
+                        loadDocuments(token); // Refresh list
+                        setTimeout(() => { msgDiv.innerHTML = ''; }, 3000);
+                    } else {
+                        throw new Error(data.error || 'Upload failed');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    msgDiv.innerHTML = `<span style="color:red;">Error: ${err.message}</span>`;
+                }
+            });
+        }
+
         // Profile Form Handlers
         document.getElementById('personal-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -832,79 +864,14 @@
         // Booking Form Handler
         const bookingForm = document.getElementById('booking-form');
          if(bookingForm) {
-            // 1. Availability Check
-            const dateInput = document.getElementById('book-date');
-            const timeSelect = document.getElementById('book-time');
-            
-            dateInput.addEventListener('change', async () => {
-                const dateVal = dateInput.value;
-                if(!dateVal) return;
-                
-                // Reset times - make all visible first
-                Array.from(timeSelect.options).forEach(opt => {
-                    opt.disabled = false; 
-                    opt.hidden = false; // Add hidden property reset
-                    opt.style.display = ''; // Reset CSS display
-                    
-                    // Reset text content if it was modified with (Booked)
-                    // We know the values are simple 09:00 etc.
-                    if (opt.value) opt.textContent = opt.value;
-                });
-
-                try {
-                    const res = await fetch(`/api/consultations/booked-slots?date=${dateVal}`);
-                    const bookedSlots = await res.json(); // Array of "HH:MM" strings
-                    
-                    if(Array.isArray(bookedSlots)) {
-                        Array.from(timeSelect.options).forEach(opt => {
-                             // Check if this option's value (HH:MM) is in bookedSlots
-                             if(bookedSlots.includes(opt.value)) {
-                                 // Completely hide the booked slot
-                                 opt.hidden = true; 
-                                 opt.style.display = 'none';
-                                 opt.disabled = true; // Fallback
-                             }
-                        });
-                    }
-                } catch(e) { console.error("Error checking availability", e); }
-            });
-
-            // 2. Submission
-            bookingForm.addEventListener('submit', async (e) => {
+            bookingForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                const msg = document.getElementById('booking-msg');
-                msg.textContent = 'Booking...';
-                
-                const date = document.getElementById('book-date').value;
-                const time = document.getElementById('book-time').value;
                 const topic = document.getElementById('book-topic').value;
-                const notes = document.getElementById('book-notes').value;
-
-                // date and time are already variables from earlier
+                const itemName = `Consultation (${topic})`;
                 
-                try {
-                    const res = await fetch('/api/consultations/book', { 
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                        body: JSON.stringify({ 
-                            date, // 'YYYY-MM-DD'
-                            time, // 'HH:MM'
-                            topic,
-                            notes
-                        })
-                    });
-                    
-                    if(res.ok) {
-                         msg.style.color = 'green'; msg.textContent = 'Booking confirmed!';
-                         bookingForm.reset();
-                         loadConsultations(token); // Refresh list
-                         loadCalendar(token); // Refresh calendar
-                    } else {
-                        const err = await res.json();
-                        throw new Error(err.error || 'Failed to book');
-                    }
-                } catch(err) {
-                    msg.style.color = 'red'; msg.textContent = err.message;
+                // Add to cart and redirect
+                if (window.addToCart) {
+                    window.addToCart(itemName, 39);
                 }
             });
          }
@@ -918,6 +885,31 @@
             });
         });
 
+        // Check for Payment Return (from Gateway or Simulator)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('payment_success') === 'true' || urlParams.get('payment_return') === 'true') {
+             const orderId = urlParams.get('order_id');
+             if (orderId) {
+                 // Trigger status check & activation
+                 fetch('/api/payments/verify-status', {
+                     method: 'POST',
+                     headers: { 'Content-Type': 'application/json' },
+                     body: JSON.stringify({ orderId: orderId })
+                 })
+                 .then(res => res.json())
+                 .then(data => {
+                     if (data.status === 'active') {
+                         alert('Payment successful! Your service has been activated.');
+                         // Clean URL
+                         window.history.replaceState({}, document.title, window.location.pathname);
+                         // Reload data
+                         loadServices(user.id);
+                     }
+                 })
+                 .catch(err => console.error('Payment Verification Failed:', err));
+             }
+        }
+        
         // Initialize Home
         loadDashboardStats(user.id);
         
@@ -946,8 +938,13 @@
                      headers: { 'Authorization': `Bearer ${localStorage.getItem('incozi_token')}` }
                 });
                 const docData = await docRes.json();
-                document.getElementById('stats-documents').textContent = docData.length || 0;
-            } catch(e) { console.error("Stats error", e); }
+                // Fix: Correctly targeting the Dashboard Counter element if ID differs
+                // In dashboard.html it might be different, but here in my-services.html
+                // we should check the HTML. I'll ensure I target 'stats-documents' as per previous code,
+                // but if the user meant 'Dashboard Overview' numbers, we'll double check.
+                const docStatEl = document.getElementById('stats-documents');
+                if(docStatEl) docStatEl.textContent = docData.length || 0;
+            } catch(e) { console.error("Stats doc error", e); }
 
             // Important Dates (Calendar + Consultations)
             loadImportantDates(userId, localStorage.getItem('incozi_token'));
@@ -1009,8 +1006,6 @@
         const container = document.getElementById('user-docs-list');
         container.innerHTML = 'Loading...';
         try {
-             // Mock documents if API fails (since backend structure is complex)
-             // or call real API
              const res = await fetch('/api/documents/my-documents', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -1027,17 +1022,21 @@
                 div.className = 'doc-card';
                 // Attempt to clean filename
                 const rawName = doc.file_path ? doc.file_path.split('/').pop() : 'Document'; 
-                const niceName = rawName.replace(/^\d+-\d+-/, '');
+                // Remove timestamp prefix if present (e.g., 1700000000-file.pdf)
+                const niceName = rawName.replace(/^\d+-\d+-/, '').replace(/^\d+-/, ''); // Handle both formats
 
                 div.innerHTML = `
                     <div class="doc-icon"><i class="fa fa-file-alt"></i></div>
                     <div class="doc-name" style="word-break: break-all; font-weight:600;">${niceName}</div>
                     <div class="doc-date">${new Date(doc.uploaded_at).toLocaleDateString()}</div>
-                    <a href="/${doc.file_path}" target="_blank" style="font-size: 0.8rem; margin-top: 0.5rem; text-decoration: none; color: var(--accent-200);">Download</a>
+                   <a href="../${doc.file_path}" target="_blank" class="download-link" style="font-size: 0.8rem; margin-top: 0.5rem; text-decoration: none; color: var(--accent-200);">
+                        <i class="fa fa-download"></i> Download
+                    </a>
                 `;
                 container.appendChild(div);
             });
         } catch (e) {
+            console.error(e);
             container.innerHTML = '<p style="color:red;">Failed to load documents.</p>';
         }
     }
@@ -1303,5 +1302,6 @@
     });
 
   </script>
+  <script src="../chat.js"></script>
 </body>
 </html>

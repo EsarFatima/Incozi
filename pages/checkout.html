@@ -135,6 +135,7 @@
         <li class="sidebar-divider"></li>
         <li><a href="account.html" class="sidebar-link-item"><i class="fa-regular fa-user"></i> My Account</a></li>
         <li><a href="cart.html" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+        <li><a href='#' class='sidebar-link-item logout-link' style='color: #ef4444;'><i class='fa-solid fa-arrow-right-from-bracket'></i> Sign Out</a></li>
       </ul>
     </div>
   </aside>
@@ -462,7 +463,8 @@
                     planId: DEFAULT_PLAN_ID, 
                     amount: orderAmount,
                     currency: 'USD',
-                    paymentMethod: 'card' 
+                    paymentMethod: 'card',
+                    itemName: item.item // Send the item name (e.g. "Consultation")
                 };
 
                 const res = await fetch(`${API_URL}/api/payments/checkout`, {
@@ -498,5 +500,7 @@
 
     });
   </script>
+  <script src="../chat.js"></script>
 </body>
 </html>
+

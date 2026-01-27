@@ -24,6 +24,27 @@ document.addEventListener('DOMContentLoaded', function () {
   if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
   if (closeBtn) closeBtn.addEventListener('click', toggleMenu);
   if (overlay) overlay.addEventListener('click', toggleMenu);
+  
+  /* --- Sign Out Logic (Universal) --- */
+  document.body.addEventListener('click', (e) => {
+      // Check if clicked element or parent is a logout link
+      const btn = e.target.closest('.logout-link');
+      if (btn) {
+          e.preventDefault();
+          
+          if(confirm('Are you sure you want to sign out?')) {
+              localStorage.removeItem('incozi_token');
+              localStorage.removeItem('incozi_user');
+              
+              // Redirect to account page (handle path difference)
+              if (window.location.pathname.includes('/pages/')) {
+                  window.location.href = 'account.html';
+              } else {
+                  window.location.href = 'pages/account.html';
+              }
+          }
+      }
+  });
 
 
   /* --- Scroll Animation --- */

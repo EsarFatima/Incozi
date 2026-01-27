@@ -384,6 +384,32 @@ const sendConsultationNotificationToAdmin = async (user, booking) => {
   return sendEmail(adminEmail, subject, wrapWithTemplate('New Consultation', content));
 };
 
+const sendConsultationPurchaseConfirmation = async (email, itemName) => {
+    const subject = 'Consultation Purchased - Next Steps';
+    const content = `
+      <h2>Payment Received</h2>
+      <p>Thank you for purchasing <strong>${itemName}</strong>.</p>
+      <p>We have received your payment. One of our specialists will reach out to you shortly via this email address to schedule a time that works best for you.</p>
+      <p>If you have any specific availability, feel free to reply to this email.</p>
+    `;
+    return sendEmail(email, subject, wrapWithTemplate('Consultation Actions', content));
+};
+
+const sendConsultationPurchaseAdmin = async (user, itemName) => {
+    const adminEmail = process.env.ADMIN_EMAIL;
+    if (!adminEmail) return;
+  
+    const subject = `[Action Required] New Consultation Purchased: ${user.full_name || user.email}`;
+    const content = `
+      <h2>New Consultation Purchase</h2>
+      <p><strong>Client:</strong> ${user.full_name || 'Unknown'} (${user.email})</p>
+      <p><strong>Service:</strong> ${itemName}</p>
+      <p>This client has paid for a consultation but it is <strong>not yet scheduled</strong>.</p>
+      <p style="background: #fff3cd; padding: 10px; border: 1px solid #ffeeba;">Please email the client at <a href="mailto:${user.email}">${user.email}</a> to arrange a meeting time.</p>
+    `;
+    return sendEmail(adminEmail, subject, wrapWithTemplate('Consultation Sold', content));
+};
+
 module.exports = {
   sendVerificationPin,
   sendNewsletterWelcome,
@@ -401,5 +427,7 @@ module.exports = {
   sendOrderStatusUpdate,
   sendUserUploadConfirmation,
   sendAdminUploadAlert,
-  sendConsultationNotificationToAdmin
+  sendConsultationNotificationToAdmin,
+  sendConsultationPurchaseConfirmation,
+  sendConsultationPurchaseAdmin
 };

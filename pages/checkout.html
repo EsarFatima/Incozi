@@ -237,7 +237,7 @@
       <input type="text" id="pin-input" placeholder="Enter 6-digit PIN" maxlength="6" style="font-size: 1.5rem; letter-spacing: 0.5rem; text-align: center; width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; margin-bottom: 1.5rem;">
       
       <button id="verify-pin-btn" class="btn btn-primary" style="width: 100%;">Verify & Complete Order</button>
-      <button onclick="document.getElementById('pin-modal').style.display='none'" style="background: none; border: none; color: #666; margin-top: 1rem; cursor: pointer; text-decoration: underline;">Cancel</button>
+      <button id="cancel-pin-btn" style="background: none; border: none; color: #666; margin-top: 1rem; cursor: pointer; text-decoration: underline;">Cancel</button>
     </div>
   </div>
 
@@ -404,14 +404,20 @@
            const enteredPin = document.getElementById('pin-input').value;
            const email = document.getElementById('email').value;
            const verifyBtn = document.getElementById('verify-pin-btn');
+           const cancelBtn = document.getElementById('cancel-pin-btn');
            
            if (!enteredPin || enteredPin.length < 6) {
                alert('Please enter a valid 6-digit PIN');
                return;
            }
 
-           const originalBtnText = verifyBtn.innerText;
+           // Store original text in a data attribute so we can recover it reliably
+           if (!verifyBtn.dataset.originalText) {
+               verifyBtn.dataset.originalText = verifyBtn.innerText;
+           }
+           
            verifyBtn.disabled = true;
+           cancelBtn.disabled = true; // Prevent cancelling while verifying
            verifyBtn.innerText = 'Verifying...';
 
            try {
@@ -421,6 +427,8 @@
                    headers: { 'Content-Type': 'application/json' },
                    body: JSON.stringify({ email, pin: enteredPin })
                });
+               
+               // ... rest of logic
                
                if (!verifyRes.ok) {
                    const errData = await verifyRes.json();
@@ -445,8 +453,9 @@
                 
                 if (cart.length > 1) {
                     if(!confirm("Note: Only the first item will be processed in this demo environment. Continue?")) {
-                        verifyBtn.innerText = originalBtnText;
+                        verifyBtn.innerText = verifyBtn.dataset.originalText || "Verify & Complete Order";
                         verifyBtn.disabled = false;
+                        cancelBtn.disabled = false;
                         return;
                     }
                 }
@@ -458,9 +467,13 @@
                     orderAmount = parseFloat(orderAmount.replace(/[^0-9.-]+/g, ""));
                 }
 
+                // If the item has an ID (Plan ID), use it. Otherwise fallback to default.
+                // WE USE item.id which we will ensure is set in the cart for new items.
+                const selectedPlanId = item.id || DEFAULT_PLAN_ID;
+
                 const payload = {
                     userId: userId,
-                    planId: DEFAULT_PLAN_ID, 
+                    planId: selectedPlanId, 
                     amount: orderAmount,
                     currency: 'USD',
                     paymentMethod: 'card',
@@ -486,16 +499,31 @@
                     }
                 } else {
                     alert('Payment Failed: ' + data.error);
-                    verifyBtn.innerText = originalBtnText;
+                    verifyBtn.innerText = verifyBtn.dataset.originalText || "Verify & Complete Order";
                     verifyBtn.disabled = false;
+                    cancelBtn.disabled = false;
                 }
 
            } catch (error) {
                console.error('Payment/Verify Error:', error);
                alert(error.message);
-               verifyBtn.innerText = originalBtnText;
+               verifyBtn.innerText = verifyBtn.dataset.originalText || "Verify & Complete Order";
                verifyBtn.disabled = false;
+               cancelBtn.disabled = false;
            }
+        });
+
+        // Cancel Button Logic
+        document.getElementById('cancel-pin-btn').addEventListener('click', () => {
+            const modal = document.getElementById('pin-modal');
+            const verifyBtn = document.getElementById('verify-pin-btn');
+            const pinInput = document.getElementById('pin-input');
+            
+            modal.style.display = 'none';
+            verifyBtn.disabled = false;
+            // Reset text if it was stored, or default
+            verifyBtn.innerText = verifyBtn.dataset.originalText || "Verify & Complete Order"; 
+            pinInput.value = ''; // Clear input
         });
 
     });

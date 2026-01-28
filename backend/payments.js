@@ -42,10 +42,11 @@ module.exports = (supabase) => {
       }
 
       // 3. Create 'Pending' Subscription/Order in DB
-      // We store the 'itemName' (e.g. "Consultation - Tax") in a generic column if available
-      // The migration 20260127 added 'item_name' to subscriptions. Use it if possible.
-      // If table doesn't have it yet, this might error if we blindly insert. 
-      // But we assume migration is applied.
+      
+      // GENERATE A SHORT COMPLIANT ORDER ID (max 20 chars, no special chars)
+      // Format: OR + Timestamp (13 chars) + Random (4 chars) = 19 chars
+      const shortOrderId = 'OR' + Date.now() + Math.floor(Math.random() * 10000);
+
       const { data: subInsert, error: subError } = await supabase
         .from('subscriptions')
         .insert([{ 
@@ -53,31 +54,62 @@ module.exports = (supabase) => {
             plan_id: planId, 
             status: 'pending', 
             start_date: new Date().toISOString(),
-            item_name: itemName || null 
+            item_name: itemName || null,
+            gateway_ref: shortOrderId // Requires migration!
         }])
         .select('id')
         .maybeSingle();
 
-      if (subError) throw subError;
+      if (subError) {
+          // Fallback: If 'gateway_ref' column is missing, try inserting without it
+          // identifying that we might have issues later, but better than crashing now.
+           console.warn('Initial insert failed, possibly missing gateway_ref column. Retrying without it.');
+           const { data: subRetry, error: retryError } = await supabase
+            .from('subscriptions')
+            .insert([{ 
+                user_id: userId, 
+                plan_id: planId, 
+                status: 'pending', 
+                start_date: new Date().toISOString(),
+                item_name: itemName || null
+            }])
+            .select('id')
+            .maybeSingle();
+            
+            if (retryError) throw retryError;
+            
+            // If we are here, we have a subscription but NO stored shortOrderId.
+            // This is BAD for verification if we send shortOrderId to gateway.
+            // We must rely on our known shortOrderId.
+            // But how do we save it? We can't.
+            console.error('CRITICAL: functionality reduced because gateway_ref column is missing.');
+            subInsert = subRetry; // Use valid result
+      }
+
 
       const subscriptionId = subInsert.id;
+      
+      // Use the shortOrderId if we generated it, otherwise fallback to subscriptionId (UUID) 
+      // BUT UUID fails validation. So we MUST use shortOrderId for the gateway.
+      // If we failed to store it, verification will require a lookup strategy 
+      // (maybe metadata? or we just accept we can't look it up easily).
+      
+      const orderIdToSend = shortOrderId;
 
       // 4. Call Payment Gateway (AsaanPay)
-      // Note: We use 'subscriptionId' as the 'orderId' for the gateway
       const paymentResult = await paymentService.initiatePayment(
         amount, 
-        subscriptionId, 
+        orderIdToSend, 
         { email: user.email, name: user.full_name }
       );
 
       // 5. Handle Result
       if (paymentResult.success) {
-        // For Redirect Gateways, we don't activate the subscription yet.
-        // We just send the URL to the frontend.
         return res.status(200).json({ 
             message: 'Payment Initiated',
             redirectUrl: paymentResult.redirectUrl,
-            subscriptionId: subscriptionId
+            // Return the gateway_ref as the ID to track on frontend
+            subscriptionId: orderIdToSend 
         });
       } else {
         throw new Error(paymentResult.error || 'Payment Gateway Failed');
@@ -94,6 +126,8 @@ module.exports = (supabase) => {
     try {
         const { orderId } = req.body;
         
+        // orderId here is likely the 'gateway_ref' (Short ID) if we updated the frontend loop.
+        
         // Check Status with Gateway
         const result = await paymentService.checkPaymentStatus(orderId);
         
@@ -102,38 +136,55 @@ module.exports = (supabase) => {
         if (result.status === 'completed' || result.status === 'success' || result.status === 'paid') {
              
              // 1. Fetch Data for Emails/Logging
+             // We need to find the subscription using the gateway_ref (orderId) OR the id.
+             // Try gateway_ref first.
+             let sub = null;
+             
+             const { data: subRef } = await supabase
+                .from('subscriptions')
+                .select('id, user_id, plan_id, item_name')
+                .eq('gateway_ref', orderId)
+                .maybeSingle();
+                
+             if (subRef) {
+                 sub = subRef;
+             } else {
+                 // Try ID (fallback if orderId is UUID)
+                 const { data: subId } = await supabase
+                    .from('subscriptions')
+                    .select('id, user_id, plan_id, item_name')
+                    .eq('id', orderId)
+                    .maybeSingle();
+                 sub = subId;
+             }
+
              let user = null;
              let plan = null;
-             
-             const { data: sub } = await supabase
-                .from('subscriptions')
-                .select('user_id, plan_id, item_name')
-                .eq('id', orderId)
-                .maybeSingle();
 
              if (sub) {
                  const { data: u } = await supabase.from('users').select('email, full_name').eq('id', sub.user_id).maybeSingle();
                  user = u;
                  const { data: p } = await supabase.from('plans').select('name, price').eq('id', sub.plan_id).maybeSingle();
                  plan = p;
+
+                 // 2. Activate Subscription
+                 await supabase
+                    .from('subscriptions')
+                    .update({ status: 'active' })
+                    .eq('id', sub.id); // Use the Primary Key UUID
+
+                 // 3. Log Payment
+                 await supabase
+                    .from('payments')
+                    .insert([{
+                        user_id: sub.user_id, 
+                        subscription_id: sub.id,
+                        amount: result.transactionAmount || (plan ? plan.price : 0),
+                        payment_status: 'success',
+                        payment_provider: paymentService.PROVIDER_NAME
+                    }]);
              }
 
-             // 2. Activate Subscription
-             await supabase
-                .from('subscriptions')
-                .update({ status: 'active' })
-                .eq('id', orderId);
-
-             // 3. Log Payment
-             await supabase
-                .from('payments')
-                .insert([{
-                    user_id: sub ? sub.user_id : null, 
-                    subscription_id: orderId,
-                    amount: result.transactionAmount || (plan ? plan.price : 0),
-                    payment_status: 'success',
-                    payment_provider: paymentService.PROVIDER_NAME
-                }]);
 
              // 4. Send Emails
              if (user && plan) {

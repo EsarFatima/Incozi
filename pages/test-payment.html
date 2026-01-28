@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Payment | Incozi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f3f4f6; }
+        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); text-align: center; max-width: 400px; }
+        .price { font-size: 2rem; font-weight: 700; color: #111827; margin: 1rem 0; }
+        .btn { display: inline-block; background: #2563eb; color: white; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; cursor: pointer; border: none; }
+        .btn:hover { background: #1d4ed8; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>Test Payment</h1>
+        <p>This is a test product to verify the AssanPay integration.</p>
+        <div class="price">PKR 10.00</div>
+        <button id="buyBtn" class="btn">Buy Now (Test)</button>
+    </div>
+
+    <script>
+        document.getElementById('buyBtn').addEventListener('click', function() {
+            const testItem = {
+                item: "Test Plan (10 PKR)",
+                price: 10.00,
+                // ID we created in the database
+                id: "82f3d3e1-bc91-40e7-a36e-b41f581285df",
+                type: "test" 
+            };
+            
+            // Clear existing cart and add test item
+            localStorage.setItem('incoziCart', JSON.stringify([testItem]));
+            
+            // Redirect to checkout
+            window.location.href = 'checkout.html';
+        });
+    </script>
+</body>
+</html>

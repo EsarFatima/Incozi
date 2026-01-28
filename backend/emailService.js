@@ -132,6 +132,27 @@ const sendContactFormNotificationToAdmin = async (data) => {
     return sendEmail(adminEmail, subject, wrapWithTemplate('New Lead', content));
 };
 
+const sendAdminChatMessageNotification = async (userName, userEmail, messageContent) => {
+    const adminEmail = process.env.ADMIN_EMAIL;
+    if (!adminEmail) {
+        console.warn('ADMIN_EMAIL is not defined in environment variables. Chat notification not sent.');
+        return;
+    }
+
+    const subject = `[New Chat] Message from ${userName}`;
+    const content = `
+      <h2>New Chat Message</h2>
+      <p><strong>${userName}</strong> has sent a new message in the chat.</p>
+      <div style="background-color: #f3f4f6; padding: 15px; border-left: 4px solid #4338ca; border-radius: 4px;">
+        <p><strong>User:</strong> ${userName} (<a href="mailto:${userEmail}">${userEmail}</a>)</p>
+        <p><strong>Message:</strong></p>
+        <p style="white-space: pre-wrap;">${messageContent}</p>
+      </div>
+      <p><em>Log in to the admin dashboard to reply.</em></p>
+    `;
+    return sendEmail(adminEmail, subject, wrapWithTemplate('New Chat Message', content));
+};
+
 const sendVerificationEmail = async (email, link) => {
   const subject = 'Verify your email address - Incozi';
   const content = `
@@ -415,6 +436,7 @@ module.exports = {
   sendNewsletterWelcome,
   sendContactFormAcknowledgement,
   sendContactFormNotificationToAdmin,
+  sendAdminChatMessageNotification,
   sendVerificationEmail,
   sendPasswordResetEmail,
   sendPurchaseConfirmation,

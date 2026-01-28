@@ -1097,11 +1097,21 @@
                 // Remove timestamp prefix if present (e.g., 1700000000-file.pdf)
                 const niceName = rawName.replace(/^\d+-\d+-/, '').replace(/^\d+-/, ''); // Handle both formats
 
+                // Construct download path - handle both relative and full paths
+                let downloadPath = doc.file_path;
+                if (!downloadPath.startsWith('uploads/') && !downloadPath.startsWith('assets/uploads/')) {
+                    downloadPath = 'uploads/' + downloadPath;
+                }
+                downloadPath = downloadPath.replace('assets/', ''); // Remove assets prefix if present
+                if (!downloadPath.startsWith('/')) {
+                    downloadPath = '/' + downloadPath;
+                }
+
                 div.innerHTML = `
                     <div class="doc-icon"><i class="fa fa-file-alt"></i></div>
                     <div class="doc-name" style="word-break: break-all; font-weight:600;">${niceName}</div>
                     <div class="doc-date">${new Date(doc.uploaded_at).toLocaleDateString()}</div>
-                   <a href="../${doc.file_path}" target="_blank" class="download-link" style="font-size: 0.8rem; margin-top: 0.5rem; text-decoration: none; color: var(--accent-200);">
+                   <a href="${downloadPath}" target="_blank" class="download-link" style="font-size: 0.8rem; margin-top: 0.5rem; text-decoration: none; color: var(--accent-200);">
                         <i class="fa fa-download"></i> Download
                     </a>
                 `;

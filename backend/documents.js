@@ -48,7 +48,7 @@ module.exports = (supabase) => {
      * POST /api/documents/upload
      * Upload a new document
      */
-    router.post('/upload', upload.array('files'), async (req, res) => {
+    router.post('/upload', upload.array('documents'), async (req, res) => {
         try {
             const userId = req.user.id;
             const files = req.files;
@@ -57,31 +57,32 @@ module.exports = (supabase) => {
                 return res.status(400).json({ error: 'No files uploaded' });
             }
 
-            const records = files.map(file => ({
-                user_id: userId,
-                file_path: file.path.replace(/\\/g, '/'), // Store relative path normalized
-                uploaded_by: 'client',
-                document_type: 'User Upload',
-                uploaded_at: new Date()
-            }));
+            // Get a default service ID if service_id is NOT NULL
+            let serviceId = null;
+            const { data: serviceData } = await supabase.from('services').select('id').limit(1).maybeSingle();
+            if (serviceData) {
+                serviceId = serviceData.id;
+            }
 
-            // If service_id is needed, it should be passed in headers or body,
-            // but for general docs upload we might strip it or make it nullable in DB.
-            // For now, let's assume 'documents' table allows nullable service_id OR we need to fetch one.
-            // Checking schema... documents.service_id might be NOT NULL.
-            // If so we need a default or modify schema. 
-            // In setup_supabase.sql: service_id BIGINT NOT NULL REFERENCES services(id)
-            // Fix: We'll need to update schema to allow NULL service_id for general uploads, 
-            // or assign a 'General' service if exists.
-            
-            // NOTE: Proceeding assuming schema allows null or we inserted a 'dummy' service in 
-            // previous migrations. If not, this insert will fail. 
-            // Let's modify the insert to handle potential service_id requirement if provided.
-            
+            const records = files.map(file => {
+                const record = {
+                    user_id: userId,
+                    file_path: file.path.replace(/\\/g, '/'), // Store relative path normalized
+                    uploaded_by: 'client',
+                    document_type: 'User Upload',
+                    uploaded_at: new Date()
+                };
+                // Only add service_id if we have one
+                if (serviceId) {
+                    record.service_id = serviceId;
+                }
+                return record;
+            });
+
             const { error } = await supabase.from('documents').insert(records);
             
             if (error) {
-                // If error is about service_id null constraint, we might need a fallback
+                console.error('Database insert error:', error);
                 throw error;
             }
 

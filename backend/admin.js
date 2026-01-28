@@ -134,24 +134,49 @@ function adminRoutes(supabase) {
     });
 
 
-    // GET /bookings - All bookings
-    router.get('/bookings', async (req, res) => {
+    // DELETE /documents/:id - Delete a document
+    router.delete('/documents/:id', async (req, res) => {
         try {
-            const { data, error } = await supabase
-                .from('consultations')
-                .select(`
-                    *,
-                    users (
-                        full_name,
-                        email
-                    )
-                `)
-                .order('scheduled_at', { ascending: true }); // Future first? Or by date
+            const docId = req.params.id;
 
-            if (error) throw error;
-            res.json(data);
+            // Get the document first to retrieve the file path
+            const { data: doc, error: fetchError } = await supabase
+                .from('documents')
+                .select('file_path')
+                .eq('id', docId)
+                .single();
+
+            if (fetchError || !doc) {
+                return res.status(404).json({ error: 'Document not found' });
+            }
+
+            // Delete from database
+            const { error: deleteError } = await supabase
+                .from('documents')
+                .delete()
+                .eq('id', docId);
+
+            if (deleteError) {
+                throw deleteError;
+            }
+
+            // Try to delete the physical file
+            const path = require('path');
+            const fs = require('fs');
+            const filePath = path.join(__dirname, '..', doc.file_path);
+            
+            if (fs.existsSync(filePath)) {
+                try {
+                    fs.unlinkSync(filePath);
+                } catch (fileErr) {
+                    console.error('Error deleting physical file:', fileErr);
+                    // Don't fail the response if file deletion fails, database record is already deleted
+                }
+            }
+
+            res.json({ message: 'Document deleted successfully' });
         } catch (error) {
-            console.error('Admin Bookings Error:', error);
+            console.error('Delete Document Error:', error);
             res.status(500).json({ error: error.message });
         }
     });

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { sendAdminChatMessageNotification } = require('./emailService');
 
 module.exports = (supabase) => {
 
@@ -118,6 +119,23 @@ module.exports = (supabase) => {
                 .from('chat_sessions')
                 .update({ updated_at: new Date() })
                 .eq('id', sessionId);
+
+            // Notify Admin via Email if sender is not admin
+            if (req.user.role !== 'admin') {
+                console.log('User is not admin, attempting to send notification email...');
+                // Fetch name for nicer email
+                const { data: uData } = await supabase
+                    .from('users')
+                    .select('full_name')
+                    .eq('id', req.user.id)
+                    .single();
+
+                const senderName = uData?.full_name || 'Client';
+                
+                // Send email asynchronously (don't block response)
+                sendAdminChatMessageNotification(senderName, req.user.email, message)
+                    .catch(err => console.error('Error sending chat notification email:', err));
+            }
 
             res.json(newMessage);
 

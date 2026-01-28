@@ -281,6 +281,21 @@
     
     <div class="sidebar-content">
       <ul class="sidebar-nav-list">
+        <!-- Dashboard Navigation -->
+        <li class="sidebar-group">
+            <span class="sidebar-group-title">Dashboard Menu</span>
+            <ul class="sidebar-sub-list">
+                <li><a href="#" onclick="switchTab('home'); toggleMenu(); return false;">Overview</a></li>
+                <li><a href="#" onclick="switchTab('services'); toggleMenu(); return false;">Services</a></li>
+                <li><a href="#" onclick="switchTab('documents'); toggleMenu(); return false;">Documents</a></li>
+                <li><a href="#" onclick="switchTab('consultations'); toggleMenu(); return false;">Consultations</a></li>
+                <li><a href="#" onclick="switchTab('calendar'); toggleMenu(); return false;">Calendar</a></li>
+                <li><a href="#" onclick="switchTab('profile'); toggleMenu(); return false;">Profile</a></li>
+            </ul>
+        </li>
+
+        <li class="sidebar-divider"></li>
+
         <li class="sidebar-group">
           <span class="sidebar-group-title">Services & Pricing</span>
           <ul class="sidebar-sub-list">
@@ -318,7 +333,8 @@
         <a href="#" class="dash-tab active" data-view="home"><i class="fa-solid fa-house"></i> Overview</a>
         <a href="#" class="dash-tab" data-view="services"><i class="fa-solid fa-layer-group"></i> Services</a>
         <a href="#" class="dash-tab" data-view="documents"><i class="fa-solid fa-file-contract"></i> Documents</a>
-        <a href="#" class="dash-tab" data-view="entities"><i class="fa-solid fa-building"></i> Entities</a>
+        <!-- Entities Tab Hidden/Removed per user request -->
+        <!-- <a href="#" class="dash-tab" data-view="entities"><i class="fa-solid fa-building"></i> Entities</a> -->
         <a href="#" class="dash-tab" data-view="consultations"><i class="fa-solid fa-comments"></i> Consultations</a>
         <a href="#" class="dash-tab" data-view="calendar"><i class="fa-solid fa-calendar-days"></i> Calendar</a>
         <a href="#" class="dash-tab" data-view="profile"><i class="fa-regular fa-user"></i> Profile</a>
@@ -366,6 +382,10 @@
                 </div>
                 <!-- Contact Support Modal Trigger -->
                 <button class="btn btn-primary" style="width: 100%; text-align: center;" onclick="openSupportModal()">Contact Support</button>
+                <div style="margin-top: 1rem; font-size: 0.9rem; color: #666; text-align: center;">
+                    Or email us at <a href="mailto:support@incozi.com" style="color: var(--accent-200);">support@incozi.com</a><br>
+                    Call: +1 (800) 123-4567
+                </div>
             </div>
             
             <!-- Important Dates -->
@@ -508,20 +528,12 @@
      <!-- View: Profile -->
      <div id="view-profile" style="display: none;">
          <div class="content-card">
-              <div class="section-title">Profile Settings</div>
-              <!-- Profile Tabs -->
-             <div class="dash-tabs" style="margin-bottom: 2rem; border-bottom: 1px solid #eee;">
-               <a href="#" class="dash-tab active" onclick="switchProfileTab('personal'); return false;" id="ptab-personal">Personal Info</a>
-               <a href="#" class="dash-tab" onclick="switchProfileTab('security'); return false;" id="ptab-security">Security</a>
-               <a href="#" class="dash-tab" onclick="switchProfileTab('preferences'); return false;" id="ptab-preferences">Preferences</a>
-             </divSign Out (Desktop) -->
-             <div style="margin-bottom: 2rem; display: flex; justify-content: flex-end;">
-                  <button class="btn logout-link" style="background: #fee2e2; color: #b91c1c; font-size: 0.9rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
+                 <div class="section-title" style="margin: 0; border: none; padding: 0;">Profile Settings</div>
+                 <button class="btn logout-link" style="background: #fee2e2; color: #b91c1c; font-size: 0.85rem; padding: 0.5rem 1rem;">
                      <i class="fa-solid fa-right-from-bracket"></i> Sign Out
-                  </button>
+                 </button>
              </div>
-             
-             <!-- >
              
              <!-- Personal Info -->
              <div id="psect-personal">
@@ -605,6 +617,8 @@
          </div>
      </div>
 
+
+    <!-- Modal Logic -->
      <!-- Support Modal -->
      <div id="supportModal" class="modal">
         <div class="modal-content">
@@ -628,9 +642,7 @@
                 <button type="submit" class="btn btn-primary" style="width:100%;">Send Message</button>
             </form>
         </div>
-     </div>
-
-  </main>
+     </div
 
   <!-- Footer -->
   <footer class="site-footer">
@@ -683,7 +695,21 @@
 
     </div>
   </footer>
-
+  <script>
+        function openSupportModal() {
+            const modal = document.getElementById('supportModal');
+            if(modal) {
+                modal.style.display = 'block';
+            }
+        }
+        function closeSupportModal() {
+            const modal = document.getElementById('supportModal');
+            if(modal) modal.style.display = 'none';
+        }
+        
+        // Close on outside click is handled in DOMContentLoaded to avoid overwriting other onclicks if any
+    </script>
+    
   <script src="../script.js"></script>
   <script>
     // DASHBOARD LOGIC
@@ -912,6 +938,52 @@
             if(document.getElementById(`view-${view}`)) {
                 switchTab(view);
             }
+    
+    async function loadImportantDates(userId, token) {
+        const container = document.getElementById('dashboard-important-dates');
+        try {
+            // Fetch Consultations
+            const res = await fetch('/api/consultations', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const consultations = await res.json();
+            
+            container.innerHTML = '';
+            
+            if (!consultations || consultations.length === 0) {
+                 container.innerHTML = '<p style="color:#999; font-size:0.9rem;">No upcoming important dates.</p>';
+                 return;
+            }
+
+            // Sort by date soonest first
+            consultations.sort((a,b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+
+            consultations.slice(0, 5).forEach(item => {
+                const date = new Date(item.scheduled_at);
+                const day = date.getDate();
+                const month = date.toLocaleString('default', { month: 'short' });
+                const time = date.toLocaleTimeString([], { hour12: true, hour: '2-digit', minute:'2-digit' });
+
+                const row = document.createElement('div');
+                row.style.cssText = 'display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #f3f4f6;';
+                row.innerHTML = `
+                    <div style="background: var(--bg-100); color: var(--accent-200); padding: 0.5rem; border-radius: 8px; text-align: center; min-width: 50px;">
+                        <div style="font-weight: 700; font-size: 1.1rem; line-height: 1;">${day}</div>
+                        <div style="font-size: 0.75rem; text-transform: uppercase;">${month}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-100);">Consultation</div>
+                        <div style="font-size: 0.85rem; color: var(--text-200);">${time}</div>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+            
+        } catch (error) {
+            console.error(error);
+            container.innerHTML = '<p style="color:#999;">Unable to load dates.</p>';
+        }
+    }
         }
     });
 

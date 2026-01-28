@@ -24,9 +24,31 @@
     .session-user { font-weight: 600; font-size: 0.95rem; }
     .session-time { font-size: 0.8rem; color: #6b7280; }
     
-    .msg-bubble { margin-bottom: 0.75rem; max-width: 70%; padding: 0.75rem; border-radius: 8px; font-size: 0.95rem; line-height: 1.4; }
+    .msg-bubble { margin-bottom: 0.75rem; max-width: 70%; padding: 0.75rem; border-radius: 8px; font-size: 0.95rem; line-height: 1.4; position: relative; }
+    .msg-bubble:hover .delete-msg-btn { opacity: 1; pointer-events: auto; }
     .msg-user { background: #e5e7eb; color: #1f2937; align-self: flex-start; border-bottom-left-radius: 2px; }
     .msg-admin { background: var(--accent-200); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
+
+    .delete-msg-btn {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 <body>
@@ -164,6 +186,7 @@
             if (dateStr !== lastDate) {
                 const sep = document.createElement('div');
                 sep.className = 'chat-date-separator';
+                sep.style.textAlign = 'center'; sep.style.margin = '1rem 0'; sep.style.opacity = '0.6'; sep.style.fontSize = '0.85rem';
                 
                 let label = date.toLocaleDateString(undefined, {weekday: 'short', month: 'short', day: 'numeric'});
                 if (dateStr === todayStr) label = 'Today';
@@ -180,11 +203,40 @@
             
             const timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             
-            div.innerHTML = `${m.message} <span class="msg-time">${timeStr}</span>`;
+            // Add delete button for Admin
+            div.innerHTML = `
+                ${m.message} 
+                <span class="msg-time" style="display:block; font-size:0.75rem; margin-top:4px; opacity:0.8; text-align:right;">${timeStr}</span>
+                <button class="delete-msg-btn" onclick="deleteMessage('${m.id}')" title="Delete message"><i class="fa-solid fa-trash"></i></button>
+            `;
             container.appendChild(div);
         });
         
         container.scrollTop = container.scrollHeight;
+    }
+
+    async function deleteMessage(msgId) {
+        if(!confirm('Are you sure you want to delete this message?')) return;
+        
+        const token = localStorage.getItem('incozi_token');
+        try {
+            const res = await fetch(`/api/chat/message/${msgId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                alert(data.error || 'Failed to delete');
+                return;
+            }
+
+            // Reload messages on success
+            loadMessages();
+        } catch (e) {
+            console.error(e);
+            alert('Error deleting message');
+        }
     }
 
     async function sendReply() {

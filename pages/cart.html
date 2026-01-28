@@ -318,7 +318,7 @@
                     <span id="cart-total">$0.00</span>
                 </div>
                 
-                <button class="btn btn-primary btn-block" onclick="window.location.href='checkout.html'" style="margin-top: 1.5rem; padding: 1rem;">Proceed to Checkout</button>
+                <button class="btn btn-primary btn-block" id="checkout-btn" style="margin-top: 1.5rem; padding: 1rem;">Proceed to Payment</button>
                 
                 <div class="secure-badge">
                     <i class="fa-solid fa-lock"></i> Secure SSL Encrypted Checkout
@@ -383,6 +383,93 @@
 
   <script src="../script.js"></script>
   <script>
+    const API_URL = 'http://localhost:3000';
+
+    async function proceedToCheckout() {
+        const btn = document.getElementById('checkout-btn');
+        const originalText = btn.innerText;
+        
+        // Check if user is logged in
+        const userJson = localStorage.getItem('incozi_user');
+        if (!userJson) {
+            alert('Please log in to complete your purchase.');
+            window.location.href = 'account.html';
+            return;
+        }
+        let userId;
+        try {
+            userId = JSON.parse(userJson).id;
+        } catch(e) {
+            alert('Session invalid. Please login again.');
+            window.location.href = 'account.html';
+            return;
+        }
+        
+        // Get Cart
+        const cart = JSON.parse(localStorage.getItem('incoziCart')) || [];
+        if (cart.length === 0) {
+            alert('Your cart is empty');
+            return;
+        }
+
+        if (cart.length > 1) {
+            if(!confirm("Note: Only the first item will be processed in this demo environment. Continue?")) {
+                return;
+            }
+        }
+
+        btn.disabled = true;
+        btn.innerText = 'Processing...';
+
+        try {
+            const item = cart[0];
+            let orderAmount = item.price;
+            // Robust parsing same as loadCart
+            if (typeof orderAmount === 'string') {
+                orderAmount = parseFloat(orderAmount.replace(/[^0-9.-]+/g, ""));
+            }
+            if (isNaN(orderAmount)) orderAmount = 0;
+            
+            const selectedPlanId = item.id || "982748ed-36cc-4d74-8b33-5bdd65217b68"; // Fallback ID
+
+            const payload = {
+                userId: userId,
+                planId: selectedPlanId, 
+                amount: orderAmount,
+                currency: 'USD',
+                paymentMethod: 'asanpay',
+                itemName: item.item 
+            };
+
+            const res = await fetch(`${API_URL}/api/payments/checkout`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            const data = await res.json();
+            
+            if (res.ok) {
+                if (data.redirectUrl) {
+                    // localStorage.removeItem('incoziCart'); // Keep cart until payment confirmed
+                    window.location.href = data.redirectUrl;
+                } else {
+                    alert('Order created successfully!');
+                    localStorage.removeItem('incoziCart');
+                    window.location.href = '../index.html';
+                }
+            } else {
+                throw new Error(data.error || 'Payment initialization failed');
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert('Error: ' + error.message);
+            btn.disabled = false;
+            btn.innerText = originalText;
+        }
+    }
+
     function loadCart() {
         const cart = JSON.parse(localStorage.getItem('incoziCart')) || [];
         const container = document.getElementById('cart-items-container');
@@ -472,7 +559,13 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', loadCart);
+    document.addEventListener('DOMContentLoaded', () => {
+        loadCart();
+        const checkoutBtn = document.getElementById('checkout-btn');
+        if(checkoutBtn) {
+            checkoutBtn.addEventListener('click', proceedToCheckout);
+        }
+    });
   </script>
   <script src="../chat.js"></script>
 </body>

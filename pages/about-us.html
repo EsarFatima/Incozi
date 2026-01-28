@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About Us | Incozi - US Company Formation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .about-header {
+      padding: 6rem 1.5rem;
+      background: linear-gradient(135deg, var(--bg-100) 0%, #f0f9ff 100%);
+      text-align: center;
+    }
+    .about-header-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .about-header h1 {
+      font-size: 3rem;
+      color: var(--accent-200);
+      margin-bottom: 1rem;
+      font-weight: 800;
+    }
+    .about-header p {
+      color: var(--text-200);
+      font-size: 1.25rem;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    .about-container {
+      max-width: 1200px;
+      margin: 4rem auto;
+      padding: 0 1.5rem 6rem;
+    }
+
+    /* Mission & Vision */
+    .mission-vision {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 5rem;
+      align-items: center;
+    }
+
+    .mission-vision-item {
+      background: #fff;
+      padding: 2.5rem;
+      border-radius: 16px;
+      border-left: 4px solid var(--accent-200);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .mission-vision-item h3 {
+      font-size: 1.5rem;
+      color: var(--accent-200);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .mission-vision-item p {
+      color: var(--text-200);
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    /* Why Choose Us */
+    .why-choose {
+      background: #f9fafb;
+      padding: 4rem 1.5rem;
+      margin-bottom: 5rem;
+      border-radius: 16px;
+    }
+
+    .why-choose h2 {
+      font-size: 2rem;
+      color: var(--accent-200);
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #e0e7ff 0%, #f0f9ff 100%);
+      color: var(--accent-200);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin: 0 auto 1rem;
+    }
+
+    .feature-card h4 {
+      font-size: 1.2rem;
+      color: var(--text-100);
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-card p {
+      color: var(--text-200);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Team Section */
+    .team-section {
+      margin-bottom: 5rem;
+    }
+
+    .team-section h2 {
+      font-size: 2rem;
+      color: var(--accent-200);
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2.5rem;
+    }
+
+    .team-member {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .team-member:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .team-member-avatar {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, var(--accent-200) 0%, var(--accent-100) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      color: #fff;
+    }
+
+    .team-member-info {
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .team-member-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-100);
+      margin-bottom: 0.25rem;
+    }
+
+    .team-member-role {
+      font-size: 0.95rem;
+      color: var(--accent-200);
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    .team-member-bio {
+      font-size: 0.9rem;
+      color: var(--text-200);
+      line-height: 1.6;
+    }
+
+    /* Values Section */
+    .values-section {
+      background: #f9fafb;
+      padding: 4rem 1.5rem;
+      margin-bottom: 5rem;
+      border-radius: 16px;
+    }
+
+    .values-section h2 {
+      font-size: 2rem;
+      color: var(--accent-200);
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .value-item {
+      text-align: center;
+    }
+
+    .value-icon {
+      font-size: 2.5rem;
+      color: var(--accent-200);
+      margin-bottom: 1rem;
+    }
+
+    .value-item h4 {
+      font-size: 1.1rem;
+      color: var(--text-100);
+      margin-bottom: 0.5rem;
+    }
+
+    .value-item p {
+      color: var(--text-200);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* CTA Section */
+    .about-cta {
+      background: linear-gradient(135deg, var(--accent-200) 0%, var(--accent-100) 100%);
+      padding: 4rem 1.5rem;
+      text-align: center;
+      border-radius: 16px;
+      color: #fff;
+    }
+
+    .about-cta h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    .about-cta p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      color: rgba(255,255,255,0.95);
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      background: #fff;
+      color: var(--accent-200);
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 768px) {
+      .about-header h1 {
+        font-size: 2rem;
+      }
+      .mission-vision {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .about-header p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">incozi.</a>
+      
+      <!-- Navbar Links (Desktop) -->
+      <nav class="main-nav" style="display: none;">
+          <ul class="nav-list" style="display: flex; gap: 1.5rem; list-style: none; align-items: center; margin: 0;">
+              <li class="nav-item">
+                  <a href="#" class="nav-link">Services & Pricing <i class="fa-solid fa-chevron-down"></i></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="incorporation.html">Incorporation</a></li>
+                      <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+                      <li><a href="bookkeeping.html">Bookkeeping</a></li>
+                      <li><a href="consultation.html">Consultation</a></li>
+                  </ul>
+              </li>
+              <li><a href="blog.html" class="nav-link">Blog</a></li>
+              <li><a href="my-services.html" class="nav-link">My Services</a></li>
+              <li><a href="account.html" class="nav-link" aria-label="My Account"><i class="fa-regular fa-user"></i></a></li>
+              <li><a href="cart.html" class="nav-link" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+          </ul>
+      </nav>
+
+      <!-- Menu Toggle (Hamburger) -->
+      <button class="menu-toggle custom-toggle" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </header>
+
+  <style>
+      .custom-toggle {
+          background: none; 
+          border: none; 
+          font-size: 1.5rem; 
+          cursor: pointer; 
+          color: var(--text-100);
+          display: block;
+          margin-left: 1.5rem;
+      }
+      @media (min-width: 769px) {
+          .main-nav { display: block !important; }
+      }
+      @media (max-width: 768px) {
+          .main-nav { display: none !important; }
+      }
+  </style>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar-overlay"></div>
+  <aside class="sidebar-menu">
+    <div class="sidebar-header-row">
+      <span class="sidebar-title">Menu</span>
+      <button class="sidebar-close" aria-label="Close Menu"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div class="sidebar-content">
+      <ul class="sidebar-nav-list">
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">Services & Pricing</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="consultation.html">Consultation</a></li>
+             <li><a href="incorporation.html">Incorporation</a></li>
+             <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+             <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          </ul>
+        </li>
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">About Us</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="about-us.html" style="color: var(--accent-200); font-weight: 600;">Who We Are</a></li>
+             <li><a href="faq.html">FAQs</a></li>
+             <li><a href="#">Contact Us</a></li>
+          </ul>
+        </li>
+        <li class="sidebar-divider"></li>
+        <li><a href="account.html" class="sidebar-link-item"><i class="fa-regular fa-user"></i> My Account</a></li>
+        <li><a href="my-services.html" class="sidebar-link-item"><i class="fa-solid fa-briefcase"></i> My Services</a></li>
+        <li><a href="cart.html" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
+        <li class="sidebar-divider"></li>
+        <li><a href="blog.html" class="sidebar-link-item"><i class="fa-solid fa-newspaper"></i> Blog</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Page Header -->
+  <div class="about-header">
+    <div class="about-header-content">
+      <h1>About Incozi</h1>
+      <p>We believe every entrepreneur deserves access to world-class business formation and compliance services. Our mission is to make US company formation simple, affordable, and accessible to anyone, anywhere.</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="about-container">
+
+    <!-- Mission & Vision -->
+    <section class="mission-vision">
+      <div class="mission-vision-item">
+        <h3><i class="fa-solid fa-bullseye"></i> Our Mission</h3>
+        <p>To empower global entrepreneurs and businesses by providing accessible, affordable, and reliable US company formation and compliance services. We aim to remove barriers to business ownership and help our clients succeed internationally.</p>
+      </div>
+      <div class="mission-vision-item">
+        <h3><i class="fa-solid fa-star"></i> Our Vision</h3>
+        <p>To be the leading trusted partner for US company formation, enabling businesses worldwide to establish and grow their presence in the United States with confidence and ease.</p>
+      </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="why-choose">
+      <h2>Why Choose Incozi?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <h4>Expert Team</h4>
+          <p>Our team consists of experienced business formation specialists and compliance experts with years of industry knowledge.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
+          <h4>Fast & Efficient</h4>
+          <p>We streamline the entire process to get your business registered quickly without compromising on quality or compliance.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-dollar-sign"></i></div>
+          <h4>Affordable Pricing</h4>
+          <p>Transparent, competitive pricing with no hidden fees. We offer flexible payment options to suit your needs.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-handshake"></i></div>
+          <h4>Personalized Support</h4>
+          <p>Every business is unique. We provide customized solutions tailored to your specific industry and requirements.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-globe"></i></div>
+          <h4>Global Reach</h4>
+          <p>Whether you're in Singapore, Canada, or Australia, we help entrepreneurs establish US businesses from anywhere.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-headset"></i></div>
+          <h4>Ongoing Guidance</h4>
+          <p>Our support doesn't end at registration. We provide continuous guidance on compliance, taxes, and growth strategies.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Our Values -->
+    <section class="values-section">
+      <h2>Our Core Values</h2>
+      <div class="values-grid">
+        <div class="value-item">
+          <div class="value-icon"><i class="fa-solid fa-compass"></i></div>
+          <h4>Integrity</h4>
+          <p>We conduct our business with honesty and transparency in all our interactions.</p>
+        </div>
+        <div class="value-item">
+          <div class="value-icon"><i class="fa-solid fa-rocket"></i></div>
+          <h4>Innovation</h4>
+          <p>We continuously improve our services to meet the evolving needs of modern businesses.</p>
+        </div>
+        <div class="value-item">
+          <div class="value-icon"><i class="fa-solid fa-heart"></i></div>
+          <h4>Client Focus</h4>
+          <p>Your success is our success. We prioritize your needs at every step of the journey.</p>
+        </div>
+        <div class="value-item">
+          <div class="value-icon"><i class="fa-solid fa-medal"></i></div>
+          <h4>Excellence</h4>
+          <p>We strive for the highest standards in service quality and professional expertise.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="about-cta">
+      <h2>Ready to Start Your US Business Journey?</h2>
+      <p>Let our experts guide you through every step of company formation and compliance. We're here to make your entrepreneurial dreams a reality.</p>
+      <a href="my-services.html" class="cta-button">Get Started Today</a>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      
+      <!-- Brand & Address -->
+      <div class="footer-col brand-col">
+        <a href="../index.html" class="footer-logo">incozi.</a>
+        <p class="tagline">Dream Worldwide, <br>Launch Stateside</p>
+
+        <div class="social-links">
+          <a href="https://www.linkedin.com/company/us-tax-advisory-%E2%80%93-incozi/" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin"></i></a>
+        </div>
+      </div>
+
+      <!-- Services Links -->
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../index.html#services">Services & Pricing</a></li>
+          <li><a href="incorporation.html">Incorporation</a></li>
+          <li><a href="tax-compliance.html">Tax & Compliance</a></li>
+          <li><a href="bookkeeping.html">Bookkeeping</a></li>
+          <li><a href="consultation.html">Consultation</a></li>
+        </ul>
+      </div>
+
+      <!-- About Links -->
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="about-us.html" style="color: var(--accent-200); font-weight: 600;">Who We Are</a></li>
+          <li><a href="faq.html">FAQs</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <!-- Useful Links -->
+      <div class="footer-col">
+        <h4>Useful Links</h4>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="account.html">Login/Register</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="terms.html">Terms of Service</a></li>
+          <li><a href="privacy-policy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </footer>
+
+  <script src="../script.js"></script>
+</body>
+</html>

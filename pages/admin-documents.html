@@ -11,6 +11,7 @@
     body {
         background-color: #f3f4f6;
         display: flex;
+        flex-direction: row;
         min-height: 100vh;
     }
     
@@ -87,6 +88,26 @@
         margin-left: 260px;
         padding: 2rem;
         overflow-y: auto;
+        width: calc(100% - 260px);
+    }
+    
+    .mobile-nav-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--accent-200);
+        margin-right: 1rem;
+    }
+    
+    .mobile-header {
+        display: none;
+        padding: 1rem;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        justify-content: space-between;
+        align-items: center;
     }
     
     .dash-header {
@@ -214,12 +235,92 @@
     .sign-out-btn:hover {
         color: #dc2626;
     }
+    
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 2rem;
+        gap: 1rem;
+    }
+
+    .admin-header h1 {
+        font-size: 1.75rem;
+        margin: 0;
+        word-break: break-word;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 1024px) {
+        .dash-sidebar { width: 220px; }
+        .dash-main { margin-left: 220px; width: calc(100% - 220px); padding: 1.5rem; }
+        .admin-header { flex-direction: column; }
+    }
+    
+    @media (max-width: 768px) {
+        body { flex-direction: column; }
+        .mobile-header { display: flex !important; }
+        .dash-sidebar { 
+            position: fixed; 
+            left: -260px; 
+            top: 0; 
+            height: 100vh; 
+            transition: left 0.3s ease; 
+            z-index: 99;
+            width: 260px;
+        }
+        .dash-sidebar.open { left: 0; }
+        .mobile-nav-toggle { display: block; }
+        .dash-main { 
+            margin-left: 0 !important; 
+            width: 100% !important; 
+            padding: 1rem;
+        }
+        
+        .admin-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .admin-header h1 {
+            font-size: 1.5rem;
+        }
+        
+        .admin-header button, .admin-header > button {
+            align-self: flex-start;
+        }
+        
+        .dash-table {
+            font-size: 0.8rem;
+            width: 100%;
+            overflow-x: auto;
+            display: block;
+        }
+        
+        .dash-table th, .dash-table td { 
+            padding: 0.6rem 0.4rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .dash-main { padding: 0.75rem; }
+        .admin-header h1 { font-size: 1.35rem; }
+        .dash-table th, .dash-table td { padding: 0.5rem 0.25rem; font-size: 0.75rem; }
+    }
   </style>
 </head>
 <body>
 
+  <!-- Mobile Header Toggle -->
+  <div class="mobile-header" id="mobileHeader">
+      <button class="mobile-nav-toggle" id="mobileMenuToggle" aria-label="Toggle Menu">
+          <i class="fa-solid fa-bars"></i>
+      </button>
+      <span style="font-size: 1.25rem; font-weight: 700; color: var(--accent-200);">incozi.</span>
+  </div>
+
   <!-- Sidebar -->
-  <aside class="dash-sidebar">
+  <aside class="dash-sidebar" id="dashSidebar">
     <a href="../index.html" class="dash-logo">incozi.</a>
     
     <nav class="dash-nav">
@@ -269,6 +370,26 @@
   
   <script src="../script.js"></script>
   <script>
+    // Mobile menu toggle
+    document.addEventListener('DOMContentLoaded', () => {
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const dashSidebar = document.getElementById('dashSidebar');
+        
+        if (mobileMenuToggle && dashSidebar) {
+            mobileMenuToggle.addEventListener('click', () => {
+                dashSidebar.classList.toggle('open');
+            });
+            
+            // Close sidebar when clicking on a nav item
+            const navItems = dashSidebar.querySelectorAll('.dash-nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    dashSidebar.classList.remove('open');
+                });
+            });
+        }
+    });
+
     // Check if admin is logged in
     const token = localStorage.getItem('incozi_token');
     const userStr = localStorage.getItem('incozi_user');

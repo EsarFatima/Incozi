@@ -12,6 +12,7 @@
         background-color: #f3f4f6;
         display: flex;
         min-height: 100vh;
+        flex-direction: row;
     }
     
     .dash-sidebar {
@@ -91,13 +92,34 @@
         margin-left: 260px;
         flex: 1;
         padding: 2rem;
+        width: calc(100% - 260px);
+    }
+    
+    .mobile-nav-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--accent-200);
+        margin-right: 1rem;
+    }
+    
+    .mobile-header {
+        display: none;
+        padding: 1rem;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        justify-content: space-between;
+        align-items: center;
     }
     
     .admin-header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
         margin-bottom: 2rem;
+        gap: 1.5rem;
     }
 
     .stat-card {
@@ -113,16 +135,147 @@
         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
     
+    .stats-grid {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+        gap: 1.5rem !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    /* Tablet responsiveness */
+    @media (max-width: 1024px) {
+        .dash-sidebar {
+            width: 220px;
+        }
+        
+        .dash-main {
+            margin-left: 220px;
+            width: calc(100% - 220px);
+            padding: 1.5rem;
+        }
+        
+        .admin-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+    
+    /* Mobile responsiveness */
     @media (max-width: 768px) {
-        .dash-sidebar { display: none; }
-        .dash-main { margin-left: 0; padding: 1rem; }
+        body {
+            flex-direction: column;
+        }
+        
+        .mobile-header {
+            display: flex !important;
+        }
+        
+        .dash-sidebar { 
+            display: none !important;
+            width: 100%;
+            position: fixed;
+            height: 100vh;
+            right: -100%;
+            border-right: none;
+            border-left: 1px solid #e5e7eb;
+            z-index: 99;
+            transition: right 0.3s ease;
+        }
+        
+        .dash-sidebar.open {
+            display: flex !important;
+            right: 0;
+        }
+        
+        .mobile-nav-toggle {
+            display: block;
+        }
+        
+        .dash-main { 
+            margin-left: 0 !important;
+            width: 100% !important;
+            padding: 1rem;
+        }
+        
+        .admin-header {
+            flex-direction: column;
+            align-items: stretch;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+        
+        .admin-header h1 {
+            font-size: 1.75rem !important;
+        }
+        
+        .admin-header p {
+            font-size: 0.9rem !important;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
+        }
+        
+        .stat-card {
+            padding: 1.5rem;
+        }
+        
+        .stat-card > div {
+            flex-direction: column !important;
+            gap: 1rem !important;
+        }
+        
+        .stat-card > div > div:first-child {
+            width: 100%;
+        }
+        
+        .stat-card > div > div:last-child {
+            align-self: flex-end;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .dash-main {
+            padding: 0.75rem;
+        }
+        
+        .admin-header h1 {
+            font-size: 1.5rem !important;
+        }
+        
+        .stat-card {
+            padding: 1.25rem;
+        }
+        
+        .stat-card div[style*="font-size: 2.5rem"] {
+            font-size: 2rem !important;
+        }
+        
+        .stat-card div[style*="width:50px"] {
+            width: 45px !important;
+            height: 45px !important;
+            font-size: 1.25rem !important;
+        }
     }
   </style>
 </head>
 <body>
 
+    <!-- Mobile Header Toggle -->
+    <div class="mobile-header" id="mobileHeader">
+        <button class="mobile-nav-toggle" id="mobileMenuToggle" aria-label="Toggle Menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <span style="font-size: 1.25rem; font-weight: 700; color: var(--accent-200);">incozi.</span>
+    </div>
+
     <!-- Sidebar -->
-    <div class="dash-sidebar">
+    <div class="dash-sidebar" id="dashSidebar">
         <a href="../index.html" class="dash-logo">incozi.</a>
         <nav class="dash-nav">
             <a href="admin.html" class="dash-nav-item active">
@@ -220,6 +373,28 @@
         </div>
         
     </div>
+
+    <script>
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const dashSidebar = document.getElementById('dashSidebar');
+            
+            if (mobileMenuToggle && dashSidebar) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    dashSidebar.classList.toggle('open');
+                });
+                
+                // Close sidebar when clicking on a nav item
+                const navItems = dashSidebar.querySelectorAll('.dash-nav-item');
+                navItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        dashSidebar.classList.remove('open');
+                    });
+                });
+            }
+        });
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {

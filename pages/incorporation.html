@@ -151,13 +151,94 @@
         padding: 0.5rem 1rem; border-radius: 99px; display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem;
     }
     
+    @media (max-width: 1024px) {
+        .hero-row { gap: 2rem; }
+        .hero-service h1 { font-size: 2rem; }
+        .pricing-card-lg { padding: 2rem; }
+    }
+
     @media (max-width: 768px) {
-        .hero-row { flex-direction: column; }
-        .hero-service { text-align: center; }
-        .hero-service p { margin: 0 auto 2rem; }
-        .pricing-card-lg { flex-direction: column; text-align: center; }
-        .price-col { border-left: none; border-top: 1px solid #e5e7eb; padding-left: 0; padding-top: 2rem; }
-        .feature-item { justify-content: flex-start; text-align: left; }
+        .hero-row { 
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .hero-text, .hero-img { flex: 1; }
+        .hero-service { 
+            text-align: center;
+            padding: 3rem 0 2rem;
+        }
+        .hero-service h1 { 
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+        .hero-service p { 
+            margin: 0 auto 1.5rem;
+            font-size: 1rem;
+        }
+        .hero-img { text-align: center; }
+        .hero-img img { max-width: 100%; }
+        
+        .package-includes {
+            padding: 3rem 1.5rem;
+        }
+        .package-includes h2 { 
+            font-size: 1.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .package-subtitle {
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+        
+        .pkg-tabs {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.25rem;
+        }
+        .pkg-tab-btn {
+            padding: 0.6rem 1.25rem;
+            font-size: 0.9rem;
+        }
+        
+        .pricing-card-lg { 
+            flex-direction: column;
+            padding: 1.5rem;
+            gap: 1.5rem;
+            max-width: 100%;
+        }
+        .features-col { flex: 1; }
+        .price-col { 
+            border-left: none;
+            border-top: 1px solid #e5e7eb;
+            padding-left: 0;
+            padding-top: 1.5rem;
+            text-align: center;
+        }
+        .big-price { font-size: 2.25rem; }
+        .feature-item { 
+            justify-content: flex-start;
+            text-align: left;
+        }
+        
+        .entity-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        .entity-card {
+            padding: 1.5rem;
+        }
+        
+        .highlights-badge {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-service h1 { font-size: 1.5rem; }
+        .big-price { font-size: 1.85rem; }
+        .feature-item { font-size: 0.9rem; }
+        .package-includes h2 { font-size: 1.5rem; }
     }
   </style>
 </head>

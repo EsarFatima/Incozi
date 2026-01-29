@@ -281,21 +281,8 @@
     
     <div class="sidebar-content">
       <ul class="sidebar-nav-list">
-        <!-- Dashboard Navigation -->
-        <li class="sidebar-group">
-            <span class="sidebar-group-title">Dashboard Menu</span>
-            <ul class="sidebar-sub-list">
-                <li><a href="#" onclick="switchTab('home'); toggleMenu(); return false;">Overview</a></li>
-                <li><a href="#" onclick="switchTab('services'); toggleMenu(); return false;">Services</a></li>
-                <li><a href="#" onclick="switchTab('documents'); toggleMenu(); return false;">Documents</a></li>
-                <li><a href="#" onclick="switchTab('consultations'); toggleMenu(); return false;">Consultations</a></li>
-                <li><a href="#" onclick="switchTab('calendar'); toggleMenu(); return false;">Calendar</a></li>
-                <li><a href="#" onclick="switchTab('profile'); toggleMenu(); return false;">Profile</a></li>
-            </ul>
-        </li>
-
-        <li class="sidebar-divider"></li>
-
+        
+        <!-- Services Section -->
         <li class="sidebar-group">
           <span class="sidebar-group-title">Services & Pricing</span>
           <ul class="sidebar-sub-list">
@@ -305,15 +292,29 @@
              <li><a href="bookkeeping.html">Bookkeeping</a></li>
           </ul>
         </li>
+
+        <!-- About Section -->
+        <li class="sidebar-group">
+          <span class="sidebar-group-title">About Us</span>
+          <ul class="sidebar-sub-list">
+             <li><a href="about-us.html">Who We Are</a></li>
+             <li><a href="faq.html">FAQs</a></li>
+             <li><a href="#" onclick="openSupportModal(); return false;">Contact Us</a></li>
+          </ul>
+        </li>
+
+        <!-- Blog Section -->
         <li class="sidebar-group">
           <a href="blog.html" class="sidebar-group-title" style="display:block; cursor:pointer;">Blog</a>
         </li>
+
         <li class="sidebar-divider"></li>
+
+        <!-- User Actions -->
         <li><a href="account.html" class="sidebar-link-item"><i class="fa-regular fa-user"></i> My Account</a></li>
         <li><a href="my-services.html" class="sidebar-link-item"><i class="fa-solid fa-briefcase"></i> My Services</a></li>
         <li><a href="cart.html" class="sidebar-link-item"><i class="fa-solid fa-cart-shopping"></i> Cart</a></li>
-        <li class="sidebar-divider"></li>
-        <li><a href="#" class="sidebar-link-item logout-link"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a></li>
+        <li><a href="#" class="sidebar-link-item logout-link" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a></li>
       </ul>
     </div>
   </aside>
@@ -383,8 +384,8 @@
                 <!-- Contact Support Modal Trigger -->
                 <button class="btn btn-primary" style="width: 100%; text-align: center;" onclick="openSupportModal()">Contact Support</button>
                 <div style="margin-top: 1rem; font-size: 0.9rem; color: #666; text-align: center;">
-                    Or email us at <a href="mailto:support@incozi.com" style="color: var(--accent-200);">support@incozi.com</a><br>
-                    Call: +1 (800) 123-4567
+                    Or email us at <a href="mailto:esaarfatima62@gmail.com" style="color: var(--accent-200);">esaarfatima62@gmail.com</a><br>
+                    Call: 000000
                 </div>
             </div>
             

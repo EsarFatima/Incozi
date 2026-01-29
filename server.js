@@ -246,7 +246,11 @@ app.get('/api/admin/subscribers', authenticateToken, requireAdmin, async (req, r
 });
 
 // Start Server
-app.listen(PORT, () => {
-    console.log(`Server listening on http://localhost:${PORT}`);
-    console.log('Connected to Supabase (via REST Client).');
-});
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server listening on http://localhost:${PORT}`);
+        console.log('Connected to Supabase (via REST Client).');
+    });
+}
+
+module.exports = app;

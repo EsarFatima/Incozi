@@ -809,11 +809,21 @@
                         loadDocuments(token); // Refresh list
                         setTimeout(() => { msgDiv.innerHTML = ''; }, 3000);
                     } else {
-                        throw new Error(data.error || 'Upload failed');
+                         // Combine error and details if available
+                         let errorMsg = data.error || 'Upload failed';
+                         if (data.details) {
+                             // If details is an array, join it
+                             if (Array.isArray(data.details)) {
+                                 errorMsg += ': ' + data.details.join(', ');
+                             } else {
+                                 errorMsg += ': ' + JSON.stringify(data.details);
+                             }
+                         }
+                        throw new Error(errorMsg);
                     }
                 } catch (err) {
                     console.error(err);
-                    msgDiv.innerHTML = `<span style="color:red;">Error: ${err.message}</span>`;
+                    msgDiv.innerHTML = `<span style="color:red; font-size: 0.85rem;">Error: ${err.message}</span>`;
                 }
             });
         }

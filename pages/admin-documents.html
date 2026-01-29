@@ -401,14 +401,7 @@
                                             <td>${doc.document_type || 'File'}</td>
                                             <td>${new Date(doc.uploaded_at).toLocaleDateString()}</td>
                                             <td style="display: flex; gap: 1rem;">
-                                                <a href="${(() => {
-                                                    const filePath = doc.file_path;
-                                                    if (filePath.startsWith('uploads/')) {
-                                                        return '../' + filePath;
-                                                    } else {
-                                                        return '../uploads/' + filePath;
-                                                    }
-                                                })()}" target="_blank" style="color: var(--accent-200); font-weight: 600; text-decoration: none;">Download</a>
+                                                <a href="${doc.download_url || (doc.file_path.startsWith('uploads/') ? '../' + doc.file_path : '../uploads/' + doc.file_path)}" target="_blank" style="color: var(--accent-200); font-weight: 600; text-decoration: none;">Download</a>
                                                 <button class="delete-doc-btn" data-doc-id="${doc.id}" style="background: none; border: none; color: #ef4444; font-weight: 600; cursor: pointer; text-decoration: none; padding: 0;">Delete</button>
                                             </td>
                                         </tr>

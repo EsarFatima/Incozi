@@ -1091,14 +1091,20 @@
                 // Remove timestamp prefix if present (e.g., 1700000000-file.pdf)
                 const niceName = rawName.replace(/^\d+-\d+-/, '').replace(/^\d+-/, ''); // Handle both formats
 
-                // Construct download path - handle both relative and full paths
-                let downloadPath = doc.file_path;
-                if (!downloadPath.startsWith('uploads/') && !downloadPath.startsWith('assets/uploads/')) {
-                    downloadPath = 'uploads/' + downloadPath;
+                // Construct download path using signed URL if available
+                let downloadPath = doc.download_url || doc.file_path;
+                
+                // Fallback for legacy paths if download_url is not set or matches file_path (for local)
+                if ((!doc.download_url) && !downloadPath.startsWith('http') && !downloadPath.startsWith('uploads/') && !downloadPath.startsWith('assets/uploads/')) {
+                     downloadPath = 'uploads/' + downloadPath;
                 }
-                downloadPath = downloadPath.replace('assets/', ''); // Remove assets prefix if present
-                if (!downloadPath.startsWith('/')) {
-                    downloadPath = '/' + downloadPath;
+                
+                // Ensure local paths start with / if they aren't absolute URI
+                if (!downloadPath.startsWith('http')) {
+                     downloadPath = downloadPath.replace('assets/', ''); // Remove assets prefix if present
+                     if (!downloadPath.startsWith('/')) {
+                        downloadPath = '/' + downloadPath;
+                     }
                 }
 
                 div.innerHTML = `

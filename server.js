@@ -36,22 +36,8 @@ app.use(express.static(path.join(__dirname)));
 // For this stage, static serving is fine.
 app.use('/uploads', express.static(path.join(__dirname, 'assets/uploads')));
 
-// Configure Multer for File Uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadDir = 'assets/uploads/';
-    if (!fs.existsSync(uploadDir)){
-        fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    // Sanitize filename
-    const cleanName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + '-' + cleanName);
-  }
-});
+// Configure Multer for File Uploads (Memory Storage for Supabase)
+const storage = multer.memoryStorage();
 
 const upload = multer({ 
     storage: storage,
@@ -70,7 +56,6 @@ app.post('/api/documents/upload', authenticateToken, upload.array('documents', 1
         const userId = req.user.id;
         
         // FIX: Retrieve a default Service ID for the 'NOT NULL' constraint
-        // Ideally, we make the column nullable, but as a fallback, we grab the first service.
         let serviceId = null;
         const { data: serviceData } = await supabase.from('services').select('id').limit(1).maybeSingle();
         if (serviceData) {
@@ -82,17 +67,33 @@ app.post('/api/documents/upload', authenticateToken, upload.array('documents', 1
         const errors = [];
 
         for (const file of req.files) {
-            const filePath = `uploads/${file.filename}`; // Relative path for DB
+            // Sanitize filename
+            const cleanName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+            const uniqueName = `${Date.now()}-${cleanName}`;
+            const filePath = `user_uploads/${userId}/${uniqueName}`; // Organized by user
+
+            // Upload to Supabase Storage 'documents' bucket
+            const { data: storageData, error: storageError } = await supabase
+                .storage
+                .from('documents')
+                .upload(filePath, file.buffer, {
+                    contentType: file.mimetype,
+                    upsert: false
+                });
+
+            if (storageError) {
+                 console.error('Storage Upload Error:', storageError);
+                 errors.push(file.originalname + ': ' + storageError.message);
+                 continue; // Skip DB insert if storage failed
+            }
             
             const insertPayload = {
                 user_id: userId,
-                file_path: filePath, 
+                file_path: filePath, // Store the Storage path
                 document_type: file.mimetype,
                 uploaded_by: 'client'
             };
             
-            // Only add service_id if we found one. If the DB requires it and we didn't find one, it will fail.
-            // If the DB allows null, this is fine.
             if (serviceId) {
                 insertPayload.service_id = serviceId;
             }
@@ -145,14 +146,33 @@ app.post('/api/documents/upload', authenticateToken, upload.array('documents', 1
 // 2. Get My Documents
 app.get('/api/documents/my-documents', authenticateToken, async (req, res) => {
     try {
-        const { data, error } = await supabase
+        const { data: docs, error } = await supabase
             .from('documents')
             .select('*')
             .eq('user_id', req.user.id)
             .order('uploaded_at', { ascending: false });
         
         if (error) throw error;
-        res.json(data);
+
+        // Generate Signed URLs for Supabase Storage
+        const signedDocs = await Promise.all(docs.map(async (doc) => {
+            // Check if it's a storage path (local paths started with upload/)
+            // We assume new uploads don't start with 'uploads/' or we just check validity
+            if (doc.file_path && !doc.file_path.startsWith('uploads/') && !doc.file_path.startsWith('http')) {
+                const { data: signedData } = await supabase
+                    .storage
+                    .from('documents')
+                    .createSignedUrl(doc.file_path, 3600); // 1 hour
+                
+                if (signedData) {
+                    return { ...doc, download_url: signedData.signedUrl };
+                }
+            }
+            // Fallback for legacy local files (won't work on Vercel but keeps logic safe)
+            return { ...doc, download_url: doc.file_path.startsWith('uploads/') ? doc.file_path : `uploads/${doc.file_path}` };
+        }));
+
+        res.json(signedDocs);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

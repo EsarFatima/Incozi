@@ -79,7 +79,7 @@ function adminRoutes(supabase) {
     router.get('/documents', async (req, res) => {
         try {
             // Join with users reference to get uploader name
-            const { data, error } = await supabase
+            const { data: docs, error } = await supabase
                 .from('documents')
                 .select(`
                     *,
@@ -91,7 +91,25 @@ function adminRoutes(supabase) {
                 .order('uploaded_at', { ascending: false });
 
             if (error) throw error;
-            res.json(data);
+
+            // Generate Signed URLs for Supabase Storage
+            const signedDocs = await Promise.all(docs.map(async (doc) => {
+                // Check if it's a storage path (not starting with uploads/ legacy)
+                if (doc.file_path && !doc.file_path.startsWith('uploads/') && !doc.file_path.startsWith('http')) {
+                    const { data: signedData } = await supabase
+                        .storage
+                        .from('documents')
+                        .createSignedUrl(doc.file_path, 3600); // 1 hour
+                    
+                    if (signedData) {
+                        return { ...doc, download_url: signedData.signedUrl };
+                    }
+                }
+                // Fallback for legacy
+                return { ...doc, download_url: doc.file_path.startsWith('uploads/') ? doc.file_path : `uploads/${doc.file_path}` };
+            }));
+
+            res.json(signedDocs);
         } catch (error) {
             console.error('Admin Documents Error:', error);
             res.status(500).json({ error: error.message });
@@ -160,17 +178,27 @@ function adminRoutes(supabase) {
                 throw deleteError;
             }
 
-            // Try to delete the physical file
-            const path = require('path');
-            const fs = require('fs');
-            const filePath = path.join(__dirname, '..', doc.file_path);
-            
-            if (fs.existsSync(filePath)) {
-                try {
-                    fs.unlinkSync(filePath);
-                } catch (fileErr) {
-                    console.error('Error deleting physical file:', fileErr);
-                    // Don't fail the response if file deletion fails, database record is already deleted
+            // Clean up file
+            if (doc.file_path) {
+                if (!doc.file_path.startsWith('uploads/')) {
+                     // Delete from Supabase Storage
+                     const { error: storageError } = await supabase.storage
+                        .from('documents')
+                        .remove([doc.file_path]);
+                     if (storageError) console.error('Storage delete warning:', storageError);
+                } else {
+                     // Delete from Local Filesystem (Legacy)
+                    const path = require('path');
+                    const fs = require('fs');
+                    const filePath = path.join(__dirname, '..', doc.file_path);
+                    
+                    if (fs.existsSync(filePath)) {
+                        try {
+                            fs.unlinkSync(filePath);
+                        } catch (fileErr) {
+                            console.error('Error deleting physical file:', fileErr);
+                        }
+                    }
                 }
             }
 

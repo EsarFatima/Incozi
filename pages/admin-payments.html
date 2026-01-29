@@ -255,7 +255,7 @@
 
             try {
                 // Fetch all payments
-                const res = await fetch('http://localhost:3000/api/admin/payments', {
+                const res = await fetch('/api/admin/payments', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 

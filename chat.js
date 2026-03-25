@@ -77,7 +77,7 @@
         const userStr = localStorage.getItem('incozi_user');
 
         if(!token || !userStr) {
-            msgContainer.innerHTML = '<div class="chat-msg system">Please log in to chat with support. <br><a href="account.html" style="color:blue;">Login here</a></div>';
+            msgContainer.innerHTML = '<div class="chat-msg system">Please log in to chat with support. <br><a href="/pages/account.html" style="color:blue;">Login here</a></div>';
             return;
         }
         

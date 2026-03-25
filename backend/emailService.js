@@ -432,6 +432,7 @@ const sendConsultationPurchaseAdmin = async (user, itemName) => {
 };
 
 module.exports = {
+  sendEmail,
   sendVerificationPin,
   sendNewsletterWelcome,
   sendContactFormAcknowledgement,

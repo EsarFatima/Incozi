@@ -93,6 +93,11 @@ module.exports = (supabase) => {
       const isMatch = await bcrypt.compare(password, user.password_hash);
       if (!isMatch) return res.status(401).json({ error: 'Invalid email or password' });
 
+      // Check if email is verified
+      if (!user.is_verified) {
+        return res.status(401).json({ error: 'Please verify your email address before logging in.' });
+      }
+
       // 3. Create Token
       const token = jwt.sign(
         { id: user.id, email: user.email, role: user.role, is_verified: user.is_verified },

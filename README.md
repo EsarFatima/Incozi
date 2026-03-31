@@ -1,6 +1,7 @@
 # Incozi
 
 **Incozi** is a full-stack business services web platform built for a chartered accountant client. It enables clients to browse, book, and pay for professional services — including US company incorporation, tax compliance, bookkeeping, and consultations — while giving the firm an admin dashboard to manage everything.
+<img width="1895" height="875" alt="image" src="https://github.com/user-attachments/assets/de4c03b2-ff8f-4b36-9d92-526aaef84eec" />
 
 ---
 

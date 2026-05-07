@@ -1,25 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
+const emailService = require('./emailService');
 
-// Configure upload
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-      const uploadDir = 'assets/uploads/';
-      if (!fs.existsSync(uploadDir)){
-          fs.mkdirSync(uploadDir, { recursive: true });
-      }
-      cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-      const cleanName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      cb(null, uniqueSuffix + '-' + cleanName);
-  }
+// Configure Multer for File Uploads (Memory Storage for Supabase)
+const storage = multer.memoryStorage();
+const upload = multer({ 
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
 });
-const upload = multer({ storage: storage });
 
 module.exports = (supabase) => {
 
@@ -37,7 +26,25 @@ module.exports = (supabase) => {
                 .order('uploaded_at', { ascending: false });
 
             if (error) throw error;
-            res.json(data);
+
+            // Generate Signed URLs for Supabase Storage
+            const signedDocs = await Promise.all(data.map(async (doc) => {
+                if (doc.file_path && !doc.file_path.startsWith('uploads/') && !doc.file_path.startsWith('http')) {
+                    const { data: signedData } = await supabase
+                        .storage
+                        .from('documents')
+                        .createSignedUrl(doc.file_path, 3600); // 1 hour
+                    
+                    if (signedData) {
+                        return { ...doc, download_url: signedData.signedUrl };
+                    }
+                }
+                // Fallback for legacy local files
+                const fallback = doc.file_path.startsWith('uploads/') ? doc.file_path : `assets/uploads/${doc.file_path}`;
+                return { ...doc, download_url: fallback };
+            }));
+
+            res.json(signedDocs);
         } catch (err) {
             console.error("Fetch docs error:", err);
             res.status(500).json({ error: err.message });
@@ -48,7 +55,7 @@ module.exports = (supabase) => {
      * POST /api/documents/upload
      * Upload a new document
      */
-    router.post('/upload', upload.array('documents'), async (req, res) => {
+    router.post('/upload', upload.array('documents', 10), async (req, res) => {
         try {
             const userId = req.user.id;
             const files = req.files;
@@ -64,29 +71,78 @@ module.exports = (supabase) => {
                 serviceId = serviceData.id;
             }
 
-            const records = files.map(file => {
-                const record = {
-                    user_id: userId,
-                    file_path: file.path.replace(/\\/g, '/'), // Store relative path normalized
-                    uploaded_by: 'client',
-                    document_type: 'User Upload',
-                    uploaded_at: new Date()
-                };
-                // Only add service_id if we have one
-                if (serviceId) {
-                    record.service_id = serviceId;
-                }
-                return record;
-            });
+            const uploadedFiles = [];
+            const fileNames = [];
+            const errors = [];
 
-            const { error } = await supabase.from('documents').insert(records);
-            
-            if (error) {
-                console.error('Database insert error:', error);
-                throw error;
+            for (const file of files) {
+                // Sanitize filename
+                const cleanName = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+                const uniqueName = `${Date.now()}-${cleanName}`;
+                const filePath = `user_uploads/${userId}/${uniqueName}`;
+
+                // Upload to Supabase Storage 'documents' bucket
+                const { error: storageError } = await supabase
+                    .storage
+                    .from('documents')
+                    .upload(filePath, file.buffer, {
+                        contentType: file.mimetype,
+                        upsert: false
+                    });
+
+                if (storageError) {
+                     console.error('Storage Upload Error:', storageError);
+                     errors.push(file.originalname + ': ' + storageError.message);
+                     continue;
+                }
+                
+                const insertPayload = {
+                    user_id: userId,
+                    file_path: filePath,
+                    document_type: file.mimetype,
+                    uploaded_by: 'client'
+                };
+                
+                if (serviceId) {
+                    insertPayload.service_id = serviceId;
+                }
+
+                const { data, error } = await supabase
+                    .from('documents')
+                    .insert(insertPayload)
+                    .select()
+                    .single();
+                
+                if (error) {
+                    console.error('DB Insert Error for file:', file.originalname, error);
+                    errors.push(file.originalname + ': ' + error.message);
+                } else {
+                    uploadedFiles.push(data);
+                    fileNames.push(file.originalname);
+                }
             }
 
-            res.json({ message: 'Files uploaded successfully', count: files.length });
+            // Fetch user details for email
+            const { data: user } = await supabase.from('users').select('email, full_name').eq('id', userId).single();
+            
+            if (user && fileNames.length > 0) {
+               try {
+                   await emailService.sendUserUploadConfirmation(user.email, fileNames);
+                   await emailService.sendAdminUploadAlert(user, fileNames);
+               } catch (emailErr) {
+                   console.error("Email failed:", emailErr);
+               }
+            }
+            
+            if (uploadedFiles.length === 0 && errors.length > 0) {
+                 return res.status(500).json({ error: 'Upload failed for all files.', details: errors });
+            }
+
+            res.json({ 
+                message: 'Files processed', 
+                files: uploadedFiles, 
+                errors: errors.length > 0 ? errors : undefined 
+            });
 
         } catch (err) {
             console.error("Upload docs error:", err);
